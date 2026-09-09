@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 03 · Validação de dados com Pydantic · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="3">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 03</p>
+    <h1>Validação de dados com Pydantic</h1>
+    <p class="sub">Hoje a sua API para de confiar em quem está do outro lado.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 1 · O contrato</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Um pedido que não deveria existir</h2>
+    <div class="codigo">
+      <div class="arquivo">requisição que a API de ontem aceita sem reclamar</div>
+      <pre>POST /pedidos
+{
+  <span class="str">"cliente"</span>: <span class="str">""</span>,
+  <span class="str">"item_id"</span>: <span class="str">"pizza"</span>,
+  <span class="str">"quantidade"</span>: <span class="num">-3</span>,
+  <span class="str">"observacao"</span>: <span class="str">"..."</span>
+}</pre>
+    </div>
+    <div class="alerta">Cliente sem nome. Item que não é número. Quantidade <strong>negativa</strong>, ou seja, o restaurante vai <em>dever</em> pizza para o cliente. E a sua API respondeu <code>200 OK</code>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · O JEITO NA MÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A tentativa óbvia</p>
+    <h2>Validar na mão</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/pedidos.py</div>
+      <pre><span class="fn">@router.post</span>(<span class="str">""</span>)
+<span class="kw">async def</span> <span class="fn">criar_pedido</span>(request: Request):
+    dados = <span class="kw">await</span> request.<span class="fn">json</span>()
+
+    <span class="kw">if</span> <span class="str">"cliente"</span> <span class="kw">not in</span> dados <span class="kw">or</span> <span class="kw">not</span> dados[<span class="str">"cliente"</span>].<span class="fn">strip</span>():
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(<span class="num">400</span>, <span class="str">"cliente é obrigatório"</span>)
+    <span class="kw">if not</span> <span class="fn">isinstance</span>(dados.<span class="fn">get</span>(<span class="str">"item_id"</span>), <span class="kw">int</span>):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(<span class="num">400</span>, <span class="str">"item_id precisa ser número"</span>)
+    <span class="com"># ... e ainda faltam quantidade, observação, tipo do preço</span></pre>
+    </div>
+    <div class="destaque">Funciona, e é <b>insustentável</b>: doze linhas para três campos, repetidas em cada rota.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · ANTES / DEPOIS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A virada</p>
+    <h2>Descrever em vez de conferir</h2>
+    <div class="comparacao">
+      <div class="lado ruim">
+        <div class="rotulo">Conferindo campo a campo</div>
+        <div class="codigo compacto"><pre><span class="kw">if</span> <span class="str">"cliente"</span> <span class="kw">not in</span> dados:
+    <span class="kw">raise</span> ...
+<span class="kw">if not</span> dados[<span class="str">"cliente"</span>].<span class="fn">strip</span>():
+    <span class="kw">raise</span> ...
+<span class="kw">if not</span> <span class="fn">isinstance</span>(
+    dados[<span class="str">"quantidade"</span>], <span class="kw">int</span>):
+    <span class="kw">raise</span> ...
+<span class="kw">if</span> dados[<span class="str">"quantidade"</span>] &lt;= <span class="num">0</span>:
+    <span class="kw">raise</span> ...</pre></div>
+      </div>
+      <div class="lado bom">
+        <div class="rotulo">Declarando como o dado é</div>
+        <div class="codigo compacto"><pre><span class="kw">class</span> <span class="fn">PedidoCriar</span>(BaseModel):
+    cliente: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">2</span>)
+    item_id: <span class="kw">int</span>
+    quantidade: <span class="kw">int</span> = <span class="fn">Field</span>(gt=<span class="num">0</span>)
+    observacao: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span></pre></div>
+      </div>
+    </div>
+    <p class="dica">Quatro linhas descrevem o que doze linhas conferiam, e a segunda versão ainda <b>aparece no /docs</b>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · CONCEITO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Pydantic: o formato como código</h2>
+    <p class="intro">Um <code>BaseModel</code> é uma classe que descreve o formato de um dado. O FastAPI usa essa descrição para três coisas ao mesmo tempo, sem você pedir:</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Converte</span><span class="d">Transforma o JSON que chegou em objeto Python já tipado.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Valida</span><span class="d">Recusa o que não bate com a descrição, antes da sua função rodar.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Documenta</span><span class="d">Publica o formato exato no <code>/docs</code>, campo por campo.</span></div>
+    </div>
+    <div class="destaque">Ideia central: <b>descreva o dado uma vez</b> e ganhe validação, conversão e documentação.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · A ROTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
+    <h2>A rota que ficou honesta</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/pedidos.py</div>
+      <pre><span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>)
+<span class="kw">def</span> <span class="fn">criar_pedido</span>(pedido: PedidoCriar):
+    novo = {<span class="str">"id"</span>: <span class="fn">len</span>(pedidos) + <span class="num">1</span>, **pedido.<span class="fn">model_dump</span>()}
+    pedidos.<span class="fn">append</span>(novo)
+    <span class="kw">return</span> novo</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie a pasta <code>backend/esquemas/</code> e escreva a classe <code>PedidoCriar</code> herdando de <code>BaseModel</code>.</li>
+      <li>Na rota, troque o <code>Request</code> pelo tipo do modelo: <code>pedido: PedidoCriar</code>. Toda a validação virou essa anotação.</li>
+      <li>Apague as doze linhas de <code>if</code>. Dentro da função, <code>pedido.quantidade</code> já é um inteiro maior que zero, garantido.</li>
+      <li>Acrescente <code>status_code=201</code> no decorador para comunicar que algo foi criado.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · 422 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
+    <h2>422, e com o motivo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">resposta automática do FastAPI</div>
+      <pre>{
+  <span class="str">"detail"</span>: [
+    { <span class="str">"loc"</span>: [<span class="str">"body"</span>, <span class="str">"quantidade"</span>],
+      <span class="str">"msg"</span>: <span class="str">"Input should be greater than 0"</span> }
+  ]
+}</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abra o <code>/docs</code>, encontre o <code>POST /pedidos</code> e clique em <b>Try it out</b>.</li>
+      <li>Mande de propósito o pedido quebrado do começo da aula, com <code>quantidade: -3</code>.</li>
+      <li>Leia a resposta: status <code>422</code>, dizendo <b>qual campo</b> falhou e <b>por quê</b>. É disso que o React precisa para pintar de vermelho o campo certo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · ENTRADA vs SAÍDA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Boa prática</p>
+    <h2>O que entra não é o que sai</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Entrada / Saída</th></tr></thead>
+      <tbody>
+        <tr><td><code>cliente</code>, <code>item_id</code>, <code>quantidade</code></td><td class="neutro">o cliente envia, e volta na resposta</td></tr>
+        <tr><td><code>id</code></td><td>só sai, porque quem gera é o servidor</td></tr>
+        <tr><td><code>criado_em</code>, <code>status</code></td><td>só sai, porque o cliente não escolhe</td></tr>
+        <tr><td><code>observacao_interna</code></td><td>nunca sai, é da cozinha</td></tr>
+      </tbody>
+    </table>
+    <div class="alerta">Usar o <strong>mesmo modelo</strong> para entrada e saída é como deixar um cliente definir o próprio <code>id</code> ou ver dado interno do restaurante. Na aula 13 isso vira falha de segurança de verdade.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · RESPONSE MODEL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>Dois modelos, um por direção</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">O que o cliente manda</div>
+        <div class="codigo compacto"><pre><span class="kw">class</span> <span class="fn">PedidoCriar</span>(BaseModel):
+    cliente: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">2</span>)
+    item_id: <span class="kw">int</span>
+    quantidade: <span class="kw">int</span> = <span class="fn">Field</span>(gt=<span class="num">0</span>)</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">O que a API devolve</div>
+        <div class="codigo compacto"><pre><span class="kw">class</span> <span class="fn">PedidoSaida</span>(BaseModel):
+    id: <span class="kw">int</span>
+    cliente: <span class="kw">str</span>
+    total: <span class="kw">float</span></pre></div>
+      </div>
+    </div>
+    <ol class="passos curta">
+      <li>Escreva as duas classes em <code>backend/esquemas/pedido.py</code>.</li>
+      <li>Repare no <code>id</code> e no <code>total</code>: quem gera os dois é o servidor, não o cliente.</li>
+      <li>Declare a saída no decorador, com <code>response_model=PedidoSaida</code>.</li>
+      <li>Confira o <code>/docs</code>: os dois formatos aparecem separados agora.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · CORS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O obstáculo final</p>
+    <h2>"Mas no /docs funcionava!"</h2>
+    <p class="intro">Você aponta o React para a sua API e o console mostra um erro que não fala de pedido nenhum:</p>
+    <div class="codigo compacto">
+      <div class="arquivo">console do navegador</div>
+      <pre><span class="com">Access to fetch at 'http://127.0.0.1:8000/itens' from origin
+'http://localhost:5173' has been blocked by CORS policy</span></pre>
+    </div>
+    <p class="intro">A API está certa. O navegador é que <strong>bloqueia por padrão</strong> uma página de um endereço pedindo dados de outro. É proteção, não defeito. O servidor precisa autorizar explicitamente.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · CORS CÓDIGO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <h2>Autorizando o seu front</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/main.py · from fastapi.middleware.cors import CORSMiddleware</div>
+      <pre>app.<span class="fn">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=[<span class="str">"http://localhost:5173"</span>],
+    allow_methods=[<span class="str">"*"</span>], allow_headers=[<span class="str">"*"</span>],
+)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Descubra o endereço exato do seu front. O <code>npm run dev</code> imprime ele no terminal.</li>
+      <li>Registre o middleware no <code>main.py</code> com <b>só esse endereço</b> em <code>allow_origins</code>.</li>
+      <li>Recarregue o React. O erro do console some e a lista aparece na tela.</li>
+    </ol>
+    <div class="alerta"><strong>Nunca</strong> <code>allow_origins=["*"]</code>: isso libera a sua API para o mundo inteiro.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 03</p>
+    <h2>A primeira ponte de verdade</h2>
+    <p class="intro">Ao final da atividade, a tela da sua persona estará exibindo dados vindos da sua API.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Crie os modelos de <b>entrada e de saída</b> da ação principal da persona, com duas restrições no mínimo (<code>min_length</code>, <code>gt</code>, <code>le</code>).</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Implemente o <code>POST</code> usando os dois modelos, devolvendo <code>201</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Habilite o CORS <b>só para o endereço do seu front</b> e troque o array chumbado do React por um <code>fetch</code> na sua API.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Prove que funciona: mande um dado inválido pelo <code>/docs</code>, receba <code>422</code>, e mostre a tela renderizando dados do servidor.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-03-modelos.md">copiar o prompt que ataca os modelos</button>
+      <a class="btn" href="../prompts/aula-03-regras.md" download="REGRAS_AULA3.md">baixar o REGRAS_AULA3.md</a>
+    </div>
+    <p class="dica"><b>Entrega no repositório</b> até o fim da aula. Na aula 4 a gente quebra essa rota em camadas.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 3</h2>
+    <ul class="recap">
+      <li>Validar na mão funciona e <b>não escala</b>. Fora que nem aparece na documentação.</li>
+      <li>Um <b>BaseModel</b> descreve o dado uma vez e entrega conversão, validação e documentação juntas.</li>
+      <li>O <b>422</b> diz qual campo falhou e por quê. É o que o formulário precisa.</li>
+      <li><b>Entrada e saída são modelos diferentes.</b> O cliente não define <code>id</code> nem vê dado interno.</li>
+      <li>O CORS é <b>proteção do navegador</b>. Autorize o seu front, nunca o mundo inteiro.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> a sua rota já faz validação, regra e acesso a dado ao mesmo tempo. Vamos ver ela chegar a oitenta linhas e então separar em camadas.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 02 · Métodos HTTP, status e rotas · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="2">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 02</p>
+    <h1>Métodos HTTP, status e rotas</h1>
+    <p class="sub">A lista que você escreveu ontem vira endereço, método e resposta.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 1 · O contrato</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>O front precisa saber o que pedir</h2>
+    <p class="intro">Você entregou o <code>CONTRATO.md</code> com duas listas: os dados que a tela mostra e as ações que o usuário dispara. Só que "ver a lista" e "finalizar o pedido" não são endereços. O navegador não entende português.</p>
+    <div class="alerta">Sem uma convenção, cada um inventaria a sua: <code>/pegarCardapio</code>, <code>/listaDeItens</code>, <code>/menu2</code>. <strong>REST é a convenção que o mercado já combinou.</strong></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · CONCEITO HTTP -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Toda conversa tem duas falas</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Requisição</span><span class="d">Um método (o verbo) mais um caminho (o substantivo), e às vezes um corpo</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Resposta</span><span class="d">Um código de status (deu certo?) e o corpo em JSON</span></div>
+    </div>
+    <div class="destaque">A ideia do REST em uma frase: <b>o caminho diz de qual coisa você está falando, o método diz o que você quer fazer com ela.</b></div>
+    <p class="dica"><b>Consequência prática:</b> o caminho é sempre um substantivo no plural, como <code>/itens</code> e <code>/pedidos</code>. Nunca um verbo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · MÉTODOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Os quatro métodos do dia a dia</h2>
+    <table>
+      <thead><tr><th>Ação no cardápio digital</th><th>Método e caminho</th></tr></thead>
+      <tbody>
+        <tr><td>Listar os itens do cardápio</td><td><code>GET /itens</code></td></tr>
+        <tr><td>Ver um item específico</td><td><code>GET /itens/3</code></td></tr>
+        <tr><td>Criar um pedido novo</td><td><code>POST /pedidos</code></td></tr>
+        <tr><td>Alterar um pedido existente</td><td><code>PUT /pedidos/7</code></td></tr>
+        <tr><td>Cancelar um pedido</td><td><code>DELETE /pedidos/7</code></td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>Note o padrão:</b> o mesmo caminho <code>/pedidos/7</code> serve para ver, alterar e apagar. Quem decide é o método.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · STATUS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Os códigos que importam agora</h2>
+    <table>
+      <thead><tr><th>Código</th><th>O que ele comunica</th></tr></thead>
+      <tbody>
+        <tr><td><code>200 OK</code></td><td class="neutro">Deu certo, aqui está o que você pediu</td></tr>
+        <tr><td><code>201 Created</code></td><td class="neutro">Criei o recurso que você mandou</td></tr>
+        <tr><td><code>404 Not Found</code></td><td class="neutro">Esse item não existe</td></tr>
+        <tr><td><code>422 Unprocessable</code></td><td class="neutro">Você mandou dado inválido (a aula 3 é sobre isso)</td></tr>
+        <tr><td><code>500 Server Error</code></td><td class="neutro">Quebrou do meu lado, e a culpa é sua, desenvolvedor</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">O front <b>toma decisão pelo status</b>: 200 renderiza a lista, 404 mostra "não encontrado", 500 mostra erro genérico. Devolver 200 com uma mensagem de erro dentro quebra o front.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · GET /itens -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
+    <h2>O cardápio respondendo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/main.py</div>
+      <pre>cardapio = [
+    {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nome"</span>: <span class="str">"Pizza Marguerita"</span>, <span class="str">"preco"</span>: <span class="num">39.90</span>, <span class="str">"categoria"</span>: <span class="str">"prato"</span>},
+    {<span class="str">"id"</span>: <span class="num">2</span>, <span class="str">"nome"</span>: <span class="str">"Suco de Laranja"</span>,  <span class="str">"preco"</span>: <span class="num">12.50</span>, <span class="str">"categoria"</span>: <span class="str">"bebida"</span>},
+]
+
+<span class="fn">@app.get</span>(<span class="str">"/itens"</span>)
+<span class="kw">def</span> <span class="fn">listar_itens</span>():
+    <span class="kw">return</span> cardapio</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Copie a lista de dados do seu front para dentro do <code>main.py</code>, em formato Python.</li>
+      <li>Crie a rota <code>GET /itens</code> devolvendo a lista inteira. Uma linha de <code>return</code> resolve.</li>
+      <li>Abra <code>/itens</code>. Ainda é mentira, mas agora é mentira no lugar certo: o banco chega no Ciclo 2.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · PATH PARAM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
+    <h2>Um item específico</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/main.py · from fastapi import HTTPException</div>
+      <pre><span class="fn">@app.get</span>(<span class="str">"/itens/{item_id}"</span>)
+<span class="kw">def</span> <span class="fn">obter_item</span>(item_id: <span class="kw">int</span>):
+    <span class="kw">for</span> item <span class="kw">in</span> cardapio:
+        <span class="kw">if</span> item[<span class="str">"id"</span>] == item_id:
+            <span class="kw">return</span> item
+    <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">404</span>, detail=<span class="str">"Item não encontrado"</span>)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Escreva o caminho com <code>{item_id}</code> entre chaves e repita o mesmo nome no parâmetro da função.</li>
+      <li>Anote o tipo: <code>item_id: int</code>. Só isso já faz o FastAPI converter e validar antes da função rodar.</li>
+      <li>Teste os três casos: <code>/itens/1</code> devolve o item, <code>/itens/99</code> devolve 404, <code>/itens/abc</code> devolve 422.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · QUERY PARAM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>Filtrando sem criar rota nova</h2>
+    <div class="comparacao">
+      <div class="lado ruim">
+        <div class="rotulo">Uma rota por filtro</div>
+        <div class="codigo compacto"><pre><span class="fn">@app.get</span>(<span class="str">"/itens/bebidas"</span>)
+<span class="fn">@app.get</span>(<span class="str">"/itens/pratos"</span>)
+<span class="fn">@app.get</span>(<span class="str">"/itens/sobremesas"</span>)
+<span class="com"># e a próxima categoria?</span></pre></div>
+      </div>
+      <div class="lado bom">
+        <div class="rotulo">Um parâmetro de consulta</div>
+        <div class="codigo compacto"><pre><span class="fn">@app.get</span>(<span class="str">"/itens"</span>)
+<span class="kw">def</span> <span class="fn">listar_itens</span>(categoria: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span>):
+    <span class="kw">if</span> categoria <span class="kw">is None</span>:
+        <span class="kw">return</span> cardapio
+    <span class="kw">return</span> [i <span class="kw">for</span> i <span class="kw">in</span> cardapio
+            <span class="kw">if</span> i[<span class="str">"categoria"</span>] == categoria]</pre></div>
+      </div>
+    </div>
+    <ol class="passos curta">
+      <li>Acrescente <code>categoria</code> como parâmetro da função com valor padrão <code>None</code>. Ele não aparece no caminho, então vira parâmetro de consulta.</li>
+      <li>Confira <code>/itens</code> e depois <code>/itens?categoria=bebida</code>. A próxima categoria não vai exigir código novo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · APIROUTER -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <h2>O main.py não pode virar o sistema inteiro</h2>
+    <p class="intro">Duas rotas cabem num arquivo. Vinte não.</p>
+    <ol class="passos curta">
+      <li>Crie a pasta <code>backend/rotas/</code> com dois arquivos: <code>itens.py</code> e <code>pedidos.py</code>.</li>
+      <li>Em cada um, use <code>router = APIRouter()</code> no lugar de <code>app</code>, e <code>@router.get</code> no lugar de <code>@app.get</code>.</li>
+      <li>Tire o prefixo dos caminhos: ele passa a ser declarado no <code>main.py</code>.</li>
+      <li>Registre os dois no <code>main.py</code> e confira o <code>/docs</code>: as rotas agora aparecem agrupadas por tag.</li>
+    </ol>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/main.py</div>
+      <pre><span class="kw">from</span> rotas <span class="kw">import</span> itens, pedidos
+
+app.<span class="fn">include_router</span>(itens.router, prefix=<span class="str">"/itens"</span>, tags=[<span class="str">"Cardápio"</span>])
+app.<span class="fn">include_router</span>(pedidos.router, prefix=<span class="str">"/pedidos"</span>, tags=[<span class="str">"Pedidos"</span>])</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · /docs -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">O ponto alto da aula</p>
+    <h2>O contrato que ninguém escreveu</h2>
+    <p class="intro">Abra <code>/docs</code> de novo. Estão lá: todos os caminhos, os métodos, os parâmetros, os tipos e os códigos de status. Você não escreveu uma linha dessa página.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">→</div><span class="t">Para o front</span><span class="d">É a documentação de quem vai consumir a sua API, inclusive você mesmo, na aula 3.</span></div>
+      <div class="cartao"><div class="icone">→</div><span class="t">Para testar</span><span class="d">Dá para disparar requisição direto da página, sem escrever cliente nenhum.</span></div>
+      <div class="cartao"><div class="icone">→</div><span class="t">Para outra pessoa</span><span class="d">Duas pessoas conseguem trabalhar em paralelo olhando o mesmo contrato.</span></div>
+    </div>
+    <p class="dica"><b>Guarde esta ideia:</b> o contrato não é um documento que você mantém à parte. Ele é o reflexo do seu código, e por isso nunca fica desatualizado.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 02</p>
+    <h2>A API da sua persona</h2>
+    <p class="intro">Individual, usando o <code>CONTRATO.md</code> da sua persona como roteiro.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Escolha <b>três ações</b> da sua lista e transforme cada uma em método mais caminho, seguindo a convenção REST.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Implemente as três rotas com dados fixos em memória. Pelo menos uma precisa ter <b>parâmetro de caminho</b> e devolver <code>404</code> quando não achar.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Separe as rotas em pelo menos <b>dois arquivos</b> com <code>APIRouter</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Mande o endereço do seu <code>/docs</code> para um colega. <b>Sem explicar nada.</b> Se ele conseguir usar a sua API só lendo a página, o contrato está bom.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-02-rotas.md">copiar o prompt de revisão das rotas</button>
+      <a class="btn" href="../prompts/aula-02-regras.md" download="REGRAS_AULA2.md">baixar o REGRAS_AULA2.md</a>
+    </div>
+    <p class="dica"><b>Combinado da IA:</b> pode gerar as rotas. Mas eu vou apontar uma linha e perguntar por que o status é aquele.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 2</h2>
+    <ul class="recap">
+      <li>O <b>caminho</b> diz de qual coisa você fala; o <b>método</b> diz o que fazer com ela.</li>
+      <li>O <b>status</b> é o que o front usa para decidir o que mostrar. Não devolva 200 para erro.</li>
+      <li>Parâmetro de caminho identifica; <b>parâmetro de consulta filtra</b>.</li>
+      <li>Escrever o <b>tipo</b> já ganha conversão e validação de graça.</li>
+      <li>O <b>/docs</b> é o contrato, e ele se atualiza sozinho porque nasce do código.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> o que acontece quando o cliente manda um pedido com preço negativo, sem nome e com o campo errado. Spoiler: hoje o seu sistema aceita.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

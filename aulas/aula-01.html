@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 01 · Primeira API com FastAPI · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="1">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 01</p>
+    <h1>Primeira API com FastAPI</h1>
+    <p class="sub">Hoje a tela que você fez na UC5 ganha um servidor de verdade.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 1 · O contrato</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · MAPA DA UC -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde a gente vai chegar</p>
+    <h2>Cinco ciclos, um sistema</h2>
+    <p class="intro">Cada ciclo abre com um problema concreto e fecha com uma entrega que funciona. Você não vai esperar o fim da UC para ter algo rodando.</p>
+    <table>
+      <thead><tr><th>Ciclo</th><th>A pergunta que ele responde</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · O contrato</strong></td><td class="neutro">A tela que eu já fiz precisa de quais dados?</td></tr>
+        <tr><td><strong>2 · A persistência</strong></td><td class="neutro">Por que meus dados somem quando eu reinicio o servidor?</td></tr>
+        <tr><td><strong>3 · As regras</strong></td><td class="neutro">O que o meu sistema não pode deixar acontecer?</td></tr>
+        <tr><td><strong>4 · O acesso</strong></td><td class="neutro">Quem pode fazer isso com os dados da minha persona?</td></tr>
+        <tr><td><strong>5 · A entrega</strong></td><td class="neutro">Você consegue explicar o que a IA escreveu?</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Onde os dados da tela moram hoje</h2>
+    <div class="codigo">
+      <div class="arquivo">exemplo do professor · frontend/src/dados/cardapio.js</div>
+      <pre><span class="kw">export const</span> cardapio = [
+  { <span class="fn">id</span>: <span class="num">1</span>, <span class="fn">nome</span>: <span class="str">"Pizza Marguerita"</span>, <span class="fn">preco</span>: <span class="num">39.90</span> },
+  { <span class="fn">id</span>: <span class="num">2</span>, <span class="fn">nome</span>: <span class="str">"Lasanha Bolonhesa"</span>, <span class="fn">preco</span>: <span class="num">42.00</span> },
+  { <span class="fn">id</span>: <span class="num">3</span>, <span class="fn">nome</span>: <span class="str">"Suco de Laranja"</span>,   <span class="fn">preco</span>: <span class="num">12.50</span> }
+];  <span class="com">// e se o restaurante mudar o preço?</span></pre>
+    </div>
+    <div class="alerta">A sua tela tem um arquivo assim, com os dados da sua persona. Ela está pronta e <strong>os dados são mentira</strong>: mudar um preço exige alterar o código e publicar de novo.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · CONCEITO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Back-end é quem responde</h2>
+    <p class="intro">O front-end desenha e pergunta. O back-end guarda, decide e responde. Entre os dois existe um combinado de quem pede o quê e recebe o quê, e esse combinado tem nome: <strong>a API</strong>.</p>
+    <div class="destaque">Ideia central: <b>a tela deixa de ser dona dos dados</b> e passa a ser apenas quem os apresenta.</div>
+    <p class="dica"><b>Repare:</b> nada do que você fez na UC5 será jogado fora. O React continua igual. Só muda de onde ele busca a lista.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · FLUXO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Como funciona</p>
+    <h2>O caminho de um pedido</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">A tela pede</span><span class="d">O React faz uma requisição HTTP para um endereço da API</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">A API responde</span><span class="d">O servidor executa a função da rota e devolve JSON</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">A tela mostra</span><span class="d">O React recebe o JSON e renderiza o cardápio</span></div>
+    </div>
+    <p class="intro">Os três passos acontecem em milissegundos e são independentes. Dá para testar a API sem abrir a tela, e é exatamente isso que vamos fazer hoje.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · REPOSITÓRIO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
+    <h2>Organizando o repositório</h2>
+    <p class="intro">Front e back convivem no mesmo repositório, em pastas separadas. Cada um roda por conta própria.</p>
+    <ol class="passos">
+      <li>Na raiz do seu repositório, crie a pasta <code>backend/</code>. É onde a API vai morar.</li>
+      <li>Mova o projeto React da UC5 inteiro para uma pasta <code>frontend/</code>, sem alterar nada dentro dele.</li>
+      <li>Crie um <code>.gitignore</code> na raiz com três linhas: <code>venv/</code>, <code>node_modules/</code> e <code>.env</code>.</li>
+      <li>Rode <code>git status</code>. Se aparecer alguma dessas três pastas na lista, o <code>.gitignore</code> está no lugar errado.</li>
+    </ol>
+    <div class="destaque">Segredo e dependência nunca vão para o Git. Essa regra vale da aula 1 até a entrega final.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · AMBIENTE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
+    <h2>Montando o ambiente</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · dentro de backend/</div>
+      <pre>python -m venv venv
+venv\Scripts\activate        <span class="com"># Windows</span>
+<span class="com"># source venv/bin/activate    # Linux e Mac</span>
+
+pip install <span class="str">"fastapi[standard]"</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abra o terminal <b>dentro de</b> <code>backend/</code>. Fora dela, o venv nasce no lugar errado.</li>
+      <li>Crie o ambiente virtual e ative. O nome <code>(venv)</code> passa a aparecer no início da linha.</li>
+      <li>Instale o FastAPI. Se o <code>(venv)</code> não estiver ali, você acabou de instalar na máquina toda.</li>
+      <li>O venv guarda as versões só deste projeto. Sem ele, instalar algo aqui quebra outro projeto da sua máquina.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · PRIMEIRO ENDPOINT -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>A menor API que existe</h2>
+    <div class="codigo">
+      <div class="arquivo">backend/main.py</div>
+      <pre><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+
+app = <span class="fn">FastAPI</span>(title=<span class="str">"Cardápio Digital"</span>)
+
+<span class="fn">@app.get</span>(<span class="str">"/health"</span>)
+<span class="kw">def</span> <span class="fn">health</span>():
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"ok"</span>}</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie <code>backend/main.py</code> e digite as seis linhas. Digite, não cole.</li>
+      <li>O decorador <code>@app.get("/health")</code> diz: quando pedirem este endereço com GET, rode a função.</li>
+      <li>O dicionário devolvido pela função vira JSON sozinho. Você não converte nada.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · SUBIR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <h2>Subindo o servidor</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · dentro de backend/, com o venv ativo</div>
+      <pre>fastapi dev main.py
+
+<span class="com">#  Server started at http://127.0.0.1:8000</span>
+<span class="com">#  Documentation at http://127.0.0.1:8000/docs</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode o comando. O terminal fica ocupado, e é assim mesmo: o servidor está no ar.</li>
+      <li>Abra <code>http://127.0.0.1:8000/health</code>. Você deve ver <code>{"status":"ok"}</code>.</li>
+      <li>Abra <code>http://127.0.0.1:8000/docs</code>. A rota <code>/health</code> está listada lá.</li>
+    </ol>
+    <div class="destaque">Ninguém escreveu a página do <b>/docs</b>: o FastAPI gerou tudo a partir do seu código.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · COMBINADO DA IA -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">O combinado da turma</p>
+    <h2>A IA pode escrever. Você tem que explicar.</h2>
+    <p class="intro">Vocês usam IA desde a UC5 e vão continuar usando aqui, todo dia, do primeiro commit até a entrega final. A partir de agora vale uma regra, e ela vale nas três avaliações:</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Pode gerar</span><span class="d">Use a IA para escrever, refatorar e documentar à vontade.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Tem que ler</span><span class="d">Código que entra no repositório é código que você entendeu linha a linha.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Vai explicar</span><span class="d">Toda entrega tem arguição individual: eu aponto uma linha, você justifica.</span></div>
+    </div>
+    <p class="dica"><b>Traduzindo:</b> não existe "a IA que fez". Existe o que você entregou.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 01</p>
+    <h2>Engenharia reversa da sua própria tela</h2>
+    <p class="intro">Individual, com a persona que você sorteou hoje. O que sair daqui é o que você vai programar nas próximas quatro aulas.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Suba o <code>backend/</code> com o <code>/health</code> respondendo e faça o <b>primeiro commit</b>.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Abra a IA dentro do <code>frontend/</code> e cole o prompt do botão. Ela devolve um <b>rascunho</b>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Confira linha a linha: apague o que a tela não exibe. Item com <code>?</code> é chute dela.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Escreva <b>com as suas palavras</b> o que o servidor faria em cada ação. Ainda sem código.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-01-contrato.md">copiar o prompt do CONTRATO.md</button>
+    </div>
+    <p class="dica"><b>Entrega:</b> o <code>backend/CONTRATO.md</code> revisado por você, no seu repositório.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · A DOR DO CONTEXTO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de amanhã</p>
+    <h2>Chat novo, projeto desconhecido</h2>
+    <p class="intro">Amanhã você abre um chat e pede a rota que lista os itens da sua tela.</p>
+    <div class="codigo compacto">
+      <div class="arquivo">o que costuma voltar quando ninguém explicou o projeto</div>
+      <pre><span class="kw">from</span> flask <span class="kw">import</span> Flask      <span class="com"># framework que a gente não usa</span>
+app = <span class="fn">Flask</span>(__name__)        <span class="com"># na raiz, fora de backend/</span>
+
+<span class="fn">@app.route</span>(<span class="str">"/items"</span>)         <span class="com"># em inglês, e sem /docs nenhum</span>
+<span class="kw">def</span> <span class="fn">get_items</span>():
+    <span class="kw">return</span> <span class="fn">jsonify</span>(items)</pre>
+    </div>
+    <div class="alerta">Ela não errou por acaso. <strong>Ninguém contou a ela</strong> que aqui é FastAPI, que o código mora em <code>backend/</code> e quem é a sua persona.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · OS DOIS ARQUIVOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Dois arquivos guiam a IA</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">CONTEXT.md · você escreve</div>
+        <div class="codigo">
+          <pre>Back-end FastAPI em `backend/`.
+Front React da UC5 em `frontend/`.
+Rodar: `fastapi dev main.py`.
+Código e respostas em português.
+Persona: a sua, em uma linha.</pre>
+        </div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">REGRAS.md · eu entrego pronto</div>
+        <div class="codigo">
+          <pre>Pode usar: @app.get, def, dict,
+lista em memória, /docs.
+Não use: banco, ORM, Pydantic,
+APIRouter, login, async def.
+Se precisar disso, avise antes.</pre>
+        </div>
+      </div>
+    </div>
+    <div class="acoes">
+      <a class="btn" href="../prompts/aula-01-regras.md" download="REGRAS_AULA1.md">baixar o REGRAS_AULA1.md</a>
+    </div>
+    <p class="dica"><b>Por que o segundo:</b> sem limite, ela resolve a aula 1 com banco de dados e você entrega o que não sabe explicar.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · GERAR O ARQUIVO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa</p>
+    <h2>Peça o rascunho, entregue a versão</h2>
+    <ol class="passos">
+      <li>Na raiz do seu repositório, peça à IA: leia as pastas e escreva um <code>CONTEXT.md</code> com a stack, a estrutura e como rodar.</li>
+      <li>Leia linha a linha e apague o que não é verdade. Ela chuta versão, chuta pasta, chuta framework.</li>
+      <li>Escreva à mão o que ela não tem como saber: quem é a sua persona e qual é a dor dela.</li>
+      <li>Commite o arquivo. Ele é parte do projeto, igual ao código.</li>
+      <li>Abra um chat novo e peça algo pequeno. Se ela acertar a pasta e o framework, o arquivo está bom.</li>
+    </ol>
+    <p class="dica"><b>Repare na ordem:</b> a IA escreve o rascunho. Quem assina o arquivo é você.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · A IA NO COMANDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Até onde isso chega</p>
+    <h2>A aula de hoje cabe em um prompt</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">chat com a IA · com o CONTEXT.md já no repositório</div>
+      <pre>Siga o CONTEXT.md e o REGRAS.md deste repositório.
+Crie backend/ com venv e fastapi[standard], um
+main.py com a rota GET /health devolvendo
+{"status": "ok"}, e o .gitignore da raiz.
+Não toque em frontend/.</pre>
+    </div>
+    <div class="alerta">Isso só funciona enquanto o arquivo for verdade. <strong>Contexto desatualizado mente com convicção</strong>: atualize no mesmo commit que muda a estrutura.</div>
+    <p class="dica"><b>E os quatro passos que você fez à mão?</b> Foram para você saber conferir o que voltou.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 1</h2>
+    <ul class="recap">
+      <li>A tela da UC5 tinha dados <b>chumbados no código</b>, e é isso que o back-end vem resolver.</li>
+      <li>Front e back convivem no <b>mesmo repositório</b>, em pastas separadas, cada um com seu ambiente.</li>
+      <li>Uma rota é uma <b>função com um decorador</b>. O que ela devolve vira JSON.</li>
+      <li>O <b>/docs</b> nasce sozinho a partir do código, e é ele que o front vai ler.</li>
+      <li>O combinado: <b>a IA pode escrever, você tem que explicar.</b></li>
+      <li>O <b>CONTEXT.md</b> apresenta o projeto à IA. O <b>REGRAS.md</b> diz até onde ela pode ir hoje.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> transformar a lista do CONTRATO.md em endpoints de verdade, com métodos, status codes e a sua API respondendo em JSON.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
