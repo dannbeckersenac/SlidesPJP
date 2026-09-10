@@ -43,6 +43,12 @@ Isto define o que pode e o que não pode ser assumido como conhecido:
 - **A UC5 veio ANTES da UC4 nesta turma.** O front-end de cada aluno **já existe** e é o
   cliente real da API que ele vai construir aqui. Não trate o React como exercício futuro.
 
+**O Python que a turma não viu.** A lista do curso anterior é o teto. Tudo que fica fora dela
+precisa de explicação em slide antes de aparecer em código, mesmo que pareça "só Python". Os casos
+que já apareceram: `isinstance`, desempacotamento com `**`, métodos de dicionário como `.get`,
+compreensão de lista, anotação `str | None`, herança (`class X(BaseModel)`), `lambda`. Na dúvida,
+trate como não visto.
+
 ### Enquadramento formal (PTD)
 
 O plano de trabalho docente está aprovado e **não deve ser alterado**. O material tem que caber nele:
@@ -67,7 +73,7 @@ Exemplos de como isso já está montado, para você seguir o mesmo padrão:
 | Aula | A dor demonstrada primeiro | Só então entra |
 |---|---|---|
 | 1 | o `cardapio.js` do React com os preços chumbados | a API |
-| 3 | validar campo a campo no `if`, doze linhas para três campos | Pydantic |
+| 3 | a rota com `dados: dict` aceita quantidade negativa; validar no `if` cansa e ainda deixa um 500 | Pydantic |
 | 4 | uma função de rota com 80 linhas fazendo tudo | as camadas |
 | 6 | derrubar o `uvicorn` ao vivo e ver os dados sumirem | o banco e o ORM |
 | 13 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
@@ -79,6 +85,32 @@ Corolários:
   ainda que o código fique melhor.
 - Explicação técnica antes do problema é o defeito mais comum. Se um slide começa com
   "o Pydantic é uma biblioteca de validação", ele está errado.
+
+### Destrinchar: o padrão desde a aula 2
+
+As primeiras versões das aulas tinham de 12 a 14 slides, e o docente as achou atropeladas: a
+turma não acompanha quando um slide assume o que ninguém explicou. As aulas 2 e 3 foram refeitas
+com mais slides e passos menores, e **esse é o padrão da aula 4 em diante**. Na prática:
+
+- **Um slide, uma ideia nova.** Se o slide apresenta duas coisas, são dois slides.
+- **O Python que falta vem antes, no slide dele.** Antes do código que usa `isinstance`, um slide
+  mostra o que é `isinstance` e a turma testa no terminal. Eyebrow: `Python que faltava`.
+- **Versão simples antes do atalho.** Mostre primeiro o jeito explícito que funciona (montar o
+  dicionário campo a campo), depois o atalho que a IA costuma escrever (`**pedido.model_dump()`),
+  explicando cada peça. Diga que as duas funcionam e que vale entregar a que o aluno sabe explicar.
+- **Onde paramos.** Depois da dor, mostre o código ou a estrutura que a turma tem hoje e aponte por
+  que ele não resolve. É a ponte entre a aula anterior e a de hoje.
+- **Leitura linha a linha.** Código com construção nova ganha um slide em que cada linha tem um
+  comentário explicando o que faz. Comentário no `<pre>` não custa altura.
+- **Analogia quando o conceito é abstrato**, e a mesma analogia do começo ao fim da aula. A aula 2
+  usa o requerimento de repartição para requisição, método, gaveta de arquivo e status.
+- **Contexto histórico curto** quando explica por que a ferramenta é assim. A aula 2 conta o SOAP
+  antes do REST, com as diferenças e onde o SOAP ainda existe.
+- **Todo passo que depende de uma ação no front ou no terminal ganha o seu slide.** Se o exercício
+  pede um `fetch` no React, algum slide mostra o `fetch`.
+- **Rode o código antes de pôr no slide.** Monte um backend descartável na pasta temporária e teste
+  cada trecho. Foi assim que apareceram um `async def` fora do ledger e um `response_model` que
+  exigia um campo que a rota nunca preenchia.
 
 ---
 
@@ -133,6 +165,19 @@ repo-do-aluno/
 **Estrutura interna do backend, ensinada a partir da aula 4:** `router` → `service` → `repository`.
 A rota não acessa banco; o service não sabe que existe SQL.
 
+**A estrutura de pastas do backend, aula a aula.** Nomes em português. Toda aula que cria pasta ou
+arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de calibragem (seção 11).
+
+| Até a aula | `backend/` tem |
+|---|---|
+| 1 | `venv/`, `main.py` com a rota `/health` |
+| 2 | `rotas/<recurso>.py` no plural, com `APIRouter` e a lista em memória; o `main.py` só liga os routers |
+| 3 | `esquemas/<recurso>.py` no singular, com os esquemas Pydantic de entrada e de saída |
+| 4 em diante | definir ao criar a aula 4, no mesmo padrão (os `regras` da aula 3 já proíbem `servicos/` e `repositorios/`, que são os nomes naturais) |
+
+**Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
+A palavra **modelo** fica para a classe do SQLAlchemy, na aula 7. Não misture nos slides.
+
 ---
 
 ## 6. Ledger — o que a turma sabe em cada ponto
@@ -143,8 +188,8 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | Aula | Introduz |
 |---|---|
 | 1 | `venv`, instalar FastAPI, `@app.get`, função de rota, dict vira JSON, `/docs`, `fastapi dev` |
-| 2 | métodos HTTP, status codes, parâmetro de caminho, parâmetro de consulta, `HTTPException` 404, `APIRouter`, tipo no parâmetro |
-| 3 | Pydantic `BaseModel`, `Field`, erro 422, modelo de entrada ≠ de saída, `response_model`, `status_code=201`, CORS |
+| 2 | anatomia de requisição e resposta HTTP, SOAP e REST (história), métodos HTTP, status codes e suas famílias, parâmetro de caminho, parâmetro de consulta, filtro com laço e depois com compreensão de lista, `HTTPException` 404, `APIRouter`, pasta `rotas/`, tipo no parâmetro |
+| 3 | corpo recebido como `dict` (só como contraste), `isinstance`, Pydantic `BaseModel`, `Field` e suas restrições, erro 422, esquema de entrada ≠ de saída, pasta `esquemas/`, `model_dump()` e `**`, `response_model`, `status_code=201`, primeiro `fetch` no React, CORS |
 | 4 | separação router/service/repository, estrutura de pacotes, `.env` e configuração, `Depends` |
 | 5 | consumo completo pelo React, estados de carregamento e erro *(avaliação: entrega parcial)* |
 | 6 | modelagem, DER, conexão MySQL, SQL escrito à mão |
@@ -318,20 +363,33 @@ de mão na massa (funciona em slide claro, escuro e de exercício; variante `.pa
 Destaque de sintaxe é manual, com `<span>`: `kw` palavra-chave · `str` texto · `com` comentário ·
 `fn` função e decorador · `num` número.
 
+**Todo bloco de código tem botão de copiar.** O `slides.js` cria um botão `copiar` no canto superior
+direito de cada `.codigo` e copia só o texto do `<pre>`, sem o rótulo do `.arquivo`. Não escreva esse
+botão no HTML: basta o bloco existir. Duas consequências: o que está no `<pre>` precisa funcionar
+colado como está (nada de `...` no meio de código que o aluno vai rodar), e o fim da primeira linha
+do bloco fica sob o botão quando não há `.arquivo`, então linha longa ali pede um `.arquivo` em cima.
+Clique no botão não troca de slide, e ele some na impressão.
+
 ### Ritmo de uma aula
 
 Aula de 4h, turma noturna. **Toda aula termina em exercício** — a atenção não sustenta
-quatro horas de exposição. O formato que já está nas aulas 1 a 3:
+quatro horas de exposição. O formato das aulas 2 e 3, que é o padrão daqui em diante (seção 3,
+"Destrinchar"):
 
 1. Slide de título (escuro)
 2. A dor, demonstrável ao vivo
-3. O conceito
-4. Três a cinco slides de mão na massa, com código real e curto
-5. Exercício (roxo), com 4 tarefas numeradas e uma entrega concreta no repositório
-6. Recapitulação (escuro), com 5 pontos e um gancho para a próxima aula
+3. Onde paramos: o código ou a estrutura que a turma tem hoje, e por que ele não resolve a dor
+4. O Python ou o conceito de base que falta, um slide para cada, antes de aparecer em código
+5. O conceito novo, em vários slides: analogia, história quando ajudar, leitura linha a linha,
+   tabela de referência
+6. A árvore de pastas do backend, quando a aula cria pasta ou arquivo, seguida do slide de
+   calibragem com o botão do `aula-NN-estrutura.md`
+7. Cinco ou seis slides de mão na massa, com eyebrow `Mão na massa · passo N de M`, código real e curto
+8. Exercício (roxo), com 4 tarefas numeradas e uma entrega concreta no repositório
+9. Recapitulação (escuro), com 5 pontos e um gancho para a próxima aula
 
-Entre 12 e 14 slides. Blocos de código curtos: se não cabe confortavelmente na tela projetada,
-está grande demais.
+Entre 18 e 22 slides. Os slides de conceito passam rápido na fala; o que não pode é faltar o
+degrau. Blocos de código curtos: se não cabe confortavelmente na tela projetada, está grande demais.
 
 **Orçamento de altura.** O `.corpo` de um slide tem cerca de **620px** úteis. O `.eyebrow` mais o `h2`
 já comem ~110px, então sobram ~510px para o conteúdo. Custos aproximados, para você estimar antes de
@@ -373,13 +431,21 @@ descreve o projeto dele: essa distinção é ensinada na aula 1.
 
 ### Como escrever um arquivo de regras
 
-O `regras` é cumulativo e espelha o ledger da seção 6. São sempre as mesmas quatro partes:
+O `regras` é cumulativo e espelha o ledger da seção 6. São sempre as mesmas cinco partes:
 
-1. **O projeto.** Pastas, idioma, persona.
+1. **O projeto.** Pastas, a árvore do `backend/` até aquela aula (seção 5), idioma, persona.
 2. **O que já foi visto, e pode usar.** Só o acumulado até aquela aula.
 3. **O que ainda não foi visto, e não deve aparecer.** Tudo que está no ledger depois dela.
-4. **Como responder.** Uma coisa por vez, avisar antes de usar o que está na lista de cima,
+4. **Como escrever o código.** Todo código gerado vem comentado em português, com um comentário
+   curto acima de cada rota, função ou bloco dizendo o que faz e por quê. O comentário explica a
+   intenção sem repetir a linha, explica o que é novo para a turma na primeira vez que aparece e
+   fica no código entregue. Depois do código, a IA resume os arquivos criados ou alterados e diz
+   como testar. Esta parte é igual em todas as aulas: copie da aula anterior.
+5. **Como responder.** Uma coisa por vez, avisar antes de usar o que está na lista de cima,
    justificar em uma linha.
+
+A parte 4 existe por causa da seção 8: o aluno estuda para a arguição pelos comentários do código
+que a IA escreveu. Código sem comentário é código que ele entrega sem saber explicar.
 
 Ao criar a aula N, crie o `prompts/aula-NN-regras.md` junto. Aula sem regras é aula em que a IA
 vai escrever a aula seguinte no lugar do aluno.
@@ -397,6 +463,12 @@ Padrões que funcionam, e já estão no repositório:
 - **Revisor que não escreve** (`aula-02-rotas.md`): a IA aponta arquivo e linha, e devolve três
   perguntas de arguição.
 - **Adversário** (`aula-03-modelos.md`): a IA tenta furar a validação e lista os JSON que passam.
+- **Calibrador de estrutura** (`aula-03-estrutura.md`): a IA compara o `backend/` do aluno com a
+  árvore da aula, lista as diferenças e os movimentos, **para e espera** o aluno responder
+  `pode seguir`, e só então move arquivos e ajusta imports, sem tocar em lógica. Toda aula que cria
+  pasta ou arquivo ganha o seu `aula-NN-estrutura.md`, com a árvore acumulada até ela (seção 5) e
+  a lista das pastas que ainda não podem existir. O botão fica no slide de calibragem, logo antes
+  da mão na massa.
 
 Todo prompt fecha com uma seção de limites obrigatórios, coerente com o ledger.
 
@@ -497,6 +569,10 @@ ficam melhores como passos numerados do que como parágrafo.
 
 - Verifique o ledger da seção 6 antes de escrever código em slide.
 - Escreva a dor antes da solução.
+- Destrinche (seção 3): um slide por ideia, o Python que falta antes do código que o usa, versão
+  simples antes do atalho. Entre 18 e 22 slides. Se a aula saiu com 14, falta degrau.
+- Teste todo trecho de código dos slides num backend descartável antes de dar a aula por pronta.
+- Aula que cria pasta ou arquivo mostra a árvore do `backend/` e ganha o `prompts/aula-NN-estrutura.md`.
 - Use o cardápio digital como exemplo, sempre como projeto do professor; deixe a persona para o exercício.
 - Nunca atribua o cardápio à turma, e nunca fale em equipe: o trabalho é individual.
 - Todo slide de mão na massa leva `<ol class="passos">`. Código sem passo a passo é slide incompleto.
@@ -504,7 +580,8 @@ ficam melhores como passos numerados do que como parágrafo.
 - Meça a altura de todo slide que você criar ou alterar (seção 10). Slide que transborda não avisa.
 - Releia procurando os padrões da seção 12 antes de entregar. Eles entram sozinhos.
 - Rodapé de slide fica vazio no HTML, menos o da capa. Quem preenche é o `slides.js`.
-- Crie o `prompts/aula-NN-regras.md` junto com a aula, e ligue o botão no slide de exercício (seção 11).
+- Crie o `prompts/aula-NN-regras.md` junto com a aula, com as cinco partes, e ligue o botão no slide de exercício (seção 11).
+- Não escreva botão de copiar em bloco de código: o `slides.js` põe um em todo `.codigo`. Escreva o `<pre>` de modo que ele funcione colado.
 - Depois de criar uma aula, marque `pronto: true` no manifesto.
 - Não altere o PTD, as datas de avaliação nem a estrutura dos cinco ciclos sem o docente pedir.
 - Ao renderizar para conferir, o slide tem 1280×720 e é escalado por JS. Confira num viewport amplo,

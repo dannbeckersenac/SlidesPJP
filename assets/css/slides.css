@@ -111,7 +111,7 @@ html, body {
 
 code, .mono { font-family: var(--mono); }
 
-p code, li code, td code, .intro code {
+p code, li code, td code, .intro code, .destaque code, .alerta code, .cartao code {
   font-family: var(--mono);
   font-size: .86em;
   color: var(--azul);
@@ -301,11 +301,32 @@ td:last-child.neutro { color: var(--cinza-texto); font-weight: 400; }
 /* ---------- bloco de código ---------- */
 
 .codigo {
+  position: relative;
   background: var(--escuro);
   border-radius: 12px;
   overflow: hidden;
   margin: 6px 0 12px;
 }
+
+/* criado pelo slides.js em todo .codigo */
+.copiar-codigo {
+  position: absolute;
+  top: 7px; right: 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: .06em;
+  color: #93B4FF;
+  background: rgba(15,23,42,.85);
+  border: 1px solid #2B3F66;
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+  opacity: .75;
+}
+
+.copiar-codigo:hover, .copiar-codigo:focus-visible { opacity: 1; background: #1B2B4D; }
+.copiar-codigo:focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; }
+.copiar-codigo.feito { color: #8FD3A6; border-color: #2F6B45; opacity: 1; }
 
 .slide.escuro .codigo { background: #060B16; border: 1px solid #22304C; }
 
@@ -506,7 +527,7 @@ td:last-child.neutro { color: var(--cinza-texto); font-weight: 400; }
 .barra .contador { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
 @media print {
-  .barra, .acoes { display: none; }
+  .barra, .acoes, .copiar-codigo { display: none; }
   .slide { display: flex !important; position: relative; page-break-after: always; transform: none !important; box-shadow: none; }
   html, body { overflow: visible; background: #FFF; }
 }

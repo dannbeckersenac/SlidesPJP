@@ -46,7 +46,7 @@
   });
 
   document.querySelector(".palco").addEventListener("click", function (e) {
-    if (e.target.closest(".acoes")) return; /* botão de prompt não troca de slide */
+    if (e.target.closest(".acoes, .copiar-codigo")) return; /* botão de copiar não troca de slide */
     if (e.clientX < window.innerWidth * 0.32) anterior(); else proximo();
   });
 
@@ -108,6 +108,32 @@
       }
       if (paraArea(texto)) avisar(botao, "copiado"); else window.open(url, "_blank");
     });
+  });
+
+  /* ----- botão de copiar em todo bloco de código -----
+     Nenhum HTML de aula escreve este botão: ele é criado aqui, no canto
+     superior direito de cada .codigo, e copia só o texto do <pre>. ----- */
+  Array.prototype.forEach.call(document.querySelectorAll(".codigo"), function (bloco) {
+    var pre = bloco.querySelector("pre");
+    if (!pre) return;
+    var botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "copiar-codigo";
+    botao.textContent = "copiar";
+    botao.setAttribute("aria-label", "Copiar o código");
+    botao.addEventListener("click", function () {
+      var texto = pre.textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function () {
+          avisar(botao, "copiado");
+        }, function () {
+          if (paraArea(texto)) avisar(botao, "copiado");
+        });
+        return;
+      }
+      if (paraArea(texto)) avisar(botao, "copiado");
+    });
+    bloco.appendChild(botao);
   });
 
   window.addEventListener("resize", escalar);

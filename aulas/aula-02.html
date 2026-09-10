@@ -14,7 +14,7 @@
   <div class="corpo">
     <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 02</p>
     <h1>Métodos HTTP, status e rotas</h1>
-    <p class="sub">A lista que você escreveu ontem vira endereço, método e resposta.</p>
+    <p class="sub">O contrato que você escreveu ontem vira endereço, método e resposta.</p>
   </div>
   <div class="rodape"><span>Ciclo 1 · O contrato</span><span>Senac Blumenau · 2026.10.78</span></div>
 </section>
@@ -24,29 +24,209 @@
   <div class="corpo">
     <p class="eyebrow">A dor de hoje</p>
     <h2>O front precisa saber o que pedir</h2>
-    <p class="intro">Você entregou o <code>CONTRATO.md</code> com duas listas: os dados que a tela mostra e as ações que o usuário dispara. Só que "ver a lista" e "finalizar o pedido" não são endereços. O navegador não entende português.</p>
+    <p class="intro">Você entregou o <code>CONTRATO.md</code> com quatro seções. Hoje duas delas viram API: os dados que a tela mostra e as ações que o usuário dispara. Só que "ver a lista" e "finalizar o pedido" não são endereços. O navegador não entende português.</p>
     <div class="alerta">Sem uma convenção, cada um inventaria a sua: <code>/pegarCardapio</code>, <code>/listaDeItens</code>, <code>/menu2</code>. <strong>REST é a convenção que o mercado já combinou.</strong></div>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 3 · CONCEITO HTTP -->
+<!-- 3 · ANALOGIA DA REQUISIÇÃO -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Conceito</p>
-    <h2>Toda conversa tem duas falas</h2>
-    <div class="fluxo">
-      <div class="passo"><span class="t">Requisição</span><span class="d">Um método (o verbo) mais um caminho (o substantivo), e às vezes um corpo</span></div>
-      <span class="seta">→</span>
-      <div class="passo enfase"><span class="t">Resposta</span><span class="d">Um código de status (deu certo?) e o corpo em JSON</span></div>
-    </div>
-    <div class="destaque">A ideia do REST em uma frase: <b>o caminho diz de qual coisa você está falando, o método diz o que você quer fazer com ela.</b></div>
-    <p class="dica"><b>Consequência prática:</b> o caminho é sempre um substantivo no plural, como <code>/itens</code> e <code>/pedidos</code>. Nunca um verbo.</p>
+    <p class="eyebrow">Antes do REST, o HTTP · analogia</p>
+    <h2>Uma requisição é um formulário</h2>
+    <p class="intro">Pense no requerimento de uma repartição. Os campos são fixos, e por isso qualquer atendente sabe o que fazer com ele.</p>
+    <table>
+      <thead><tr><th>No requerimento</th><th>Na requisição HTTP</th></tr></thead>
+      <tbody>
+        <tr><td>O setor para onde ele vai</td><td>O caminho: <code>/itens/3</code></td></tr>
+        <tr><td>"Marque uma opção: consultar, incluir, alterar, cancelar"</td><td>O método: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code></td></tr>
+        <tr><td>Os dados de quem está pedindo</td><td>Os cabeçalhos</td></tr>
+        <tr><td>Os documentos anexados</td><td>O corpo, em JSON</td></tr>
+        <tr><td>O carimbo na volta: deferido ou indeferido</td><td>O código de status: <code>200</code>, <code>404</code></td></tr>
+      </tbody>
+    </table>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 4 · MÉTODOS -->
+<!-- 4 · A REQUISIÇÃO DE VERDADE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Veja acontecer</p>
+    <h2>A conversa que o navegador esconde</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Requisição · resumida</div>
+        <div class="codigo compacto"><pre><span class="fn">GET</span> <span class="str">/health</span> HTTP/1.1
+Host: 127.0.0.1:8000
+Accept: text/html</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">Resposta · resumida</div>
+        <div class="codigo compacto"><pre>HTTP/1.1 <span class="num">200</span> OK
+content-type: application/json
+
+{<span class="str">"status"</span>:<span class="str">"ok"</span>}</pre></div>
+      </div>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal, confira que a API da aula 1 está no ar com <code>fastapi dev main.py</code>.</li>
+      <li>No navegador, aperte <b>F12</b> e abra a aba <b>Rede</b> (Network).</li>
+      <li>Com a aba aberta, acesse <code>http://127.0.0.1:8000/health</code>.</li>
+      <li>Clique na linha <code>health</code>. Em Cabeçalhos aparecem o método <code>GET</code> e o status <code>200 OK</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · HISTÓRIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Um pouco de história</p>
+    <h2>O HTTP nasceu para buscar páginas</h2>
+    <p class="intro">Fazer um sistema conversar com outro veio depois. E o REST não foi a primeira tentativa.</p>
+    <div class="fluxo">
+      <div class="passo"><span class="t">1991 · HTTP</span><span class="d">A web nasce. O navegador pede uma página, o servidor entrega.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">1998 · SOAP</span><span class="d">Empresas querem integrar sistemas. A mensagem vira um envelope XML.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">2000 · REST</span><span class="d">Roy Fielding, um dos autores do HTTP, descreve o estilo da web na tese de doutorado.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Hoje</span><span class="d">Quase toda API pública é REST com JSON.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · SOAP x REST NO CÓDIGO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Um pouco de história</p>
+    <h2>O mesmo pedido, nos dois estilos</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">SOAP · buscar o item 3</div>
+        <div class="codigo"><pre><span class="fn">POST</span> <span class="str">/CardapioService</span> HTTP/1.1
+
+&lt;soap:Envelope xmlns:soap=<span class="str">"..."</span>&gt;
+  &lt;soap:Body&gt;
+    &lt;<span class="fn">ObterItem</span>&gt;
+      &lt;id&gt;<span class="num">3</span>&lt;/id&gt;
+    &lt;/<span class="fn">ObterItem</span>&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">REST · buscar o item 3</div>
+        <div class="codigo"><pre><span class="fn">GET</span> <span class="str">/itens/3</span> HTTP/1.1</pre></div>
+      </div>
+    </div>
+    <div class="destaque">No SOAP, todo pedido vai por POST para o mesmo endereço, e <b>a ação vai escrita dentro do XML</b>. No REST, o método e o caminho já dizem tudo.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · DIFERENÇAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Um pouco de história</p>
+    <h2>As diferenças que importam</h2>
+    <table>
+      <thead><tr><th></th><th>SOAP</th><th>REST</th></tr></thead>
+      <tbody>
+        <tr><td>Mensagem</td><td>XML, dentro de um envelope</td><td>JSON, na prática</td></tr>
+        <tr><td>Endereço</td><td>um só para o serviço inteiro</td><td>um para cada recurso</td></tr>
+        <tr><td>Método</td><td>quase sempre <code>POST</code></td><td>o que combina com a ação</td></tr>
+        <tr><td>Contrato</td><td>WSDL, escrito antes do código</td><td>OpenAPI, o seu <code>/docs</code></td></tr>
+        <tr><td>Erro</td><td>um <code>Fault</code> dentro do XML</td><td>o código de status</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>Repare no contrato:</b> o SOAP exigia um arquivo WSDL escrito à mão. No FastAPI, o <code>/docs</code> faz esse papel e sai do seu código.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · ONDE O SOAP AINDA ESTÁ -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Um pouco de história</p>
+    <h2>O SOAP não morreu</h2>
+    <p class="intro">Ele ficou onde o contrato rígido compensa o peso do XML.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Nota fiscal eletrônica</span><span class="d">Os serviços da SEFAZ para emitir <span style="white-space:nowrap">NF-e</span> são SOAP, com o XML assinado digitalmente.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Bancos e seguradoras</span><span class="d">Integrações de vinte anos atrás. Ninguém reescreve o que movimenta dinheiro sem motivo.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">ERPs e governo</span><span class="d">Sistemas de gestão grandes e órgãos públicos ainda publicam serviços em SOAP.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · REST EM QUATRO IDEIAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>REST em quatro ideias</h2>
+    <p class="intro">O Fielding olhou para a web que já funcionava e resumiu por que ela funcionava.</p>
+    <div class="cartoes n4">
+      <div class="cartao"><div class="icone">1</div><span class="t">Recurso</span><span class="d">Cada coisa que o sistema guarda tem endereço próprio: <code>/itens/3</code>.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Poucos verbos</span><span class="d">Os mesmos métodos servem para qualquer recurso.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Representação</span><span class="d">O que viaja é uma descrição do recurso, hoje em JSON.</span></div>
+      <div class="cartao"><div class="icone">4</div><span class="t">Sem memória</span><span class="d">Cada requisição chega completa. O servidor não lembra da anterior.</span></div>
+    </div>
+    <p class="dica"><b>De volta à repartição:</b> <code>/pedidos</code> é a gaveta do arquivo e <code>/pedidos/7</code> é a pasta 7. Em qualquer gaveta você faz as mesmas quatro coisas.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · SUBSTANTIVO E VERBO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito · a regra prática</p>
+    <h2>O caminho é substantivo, o método é verbo</h2>
+    <div class="comparacao">
+      <div class="lado ruim">
+        <div class="rotulo">Verbo no caminho</div>
+        <div class="codigo"><pre><span class="fn">GET</span>  <span class="str">/pegarCardapio</span>
+<span class="fn">GET</span>  <span class="str">/verItem?id=3</span>
+<span class="fn">POST</span> <span class="str">/criarPedido</span>
+<span class="fn">POST</span> <span class="str">/cancelarPedido/7</span></pre></div>
+      </div>
+      <div class="lado bom">
+        <div class="rotulo">Substantivo no caminho</div>
+        <div class="codigo"><pre><span class="fn">GET</span>    <span class="str">/itens</span>
+<span class="fn">GET</span>    <span class="str">/itens/3</span>
+<span class="fn">POST</span>   <span class="str">/pedidos</span>
+<span class="fn">DELETE</span> <span class="str">/pedidos/7</span></pre></div>
+      </div>
+    </div>
+    <div class="destaque">A ideia do REST em uma frase: <b>o caminho diz de qual coisa você está falando, o método diz o que você quer fazer com ela.</b></div>
+    <p class="dica"><b>Consequência prática:</b> caminho no plural e em minúsculas, como <code>/itens</code> e <code>/pedidos</code>. Nunca um verbo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · O QUE CADA MÉTODO PROMETE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>O que cada método promete</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Para quê</th><th>Altera dados?</th><th>Leva corpo?</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET</code></td><td>ler</td><td>não</td><td class="neutro">não</td></tr>
+        <tr><td><code>POST</code></td><td>criar</td><td>sim</td><td class="neutro">sim, o recurso novo</td></tr>
+        <tr><td><code>PUT</code></td><td>substituir</td><td>sim</td><td class="neutro">sim, a versão nova</td></tr>
+        <tr><td><code>DELETE</code></td><td>remover</td><td>sim</td><td class="neutro">não</td></tr>
+      </tbody>
+    </table>
+    <div class="alerta"><strong>GET nunca altera nada.</strong> Navegador, buscador e cache repetem GET à vontade. Uma rota GET que apaga dado vai apagar sem ninguém pedir.</div>
+    <p class="dica"><b>Na repartição:</b> GET é pedir para ver a pasta. Pode pedir cem vezes, o arquivo continua igual.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · MÉTODOS NO CARDÁPIO -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Referência</p>
@@ -66,7 +246,26 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 5 · STATUS -->
+<!-- 13 · FAMÍLIAS DE STATUS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O primeiro dígito diz de quem é a culpa</h2>
+    <table>
+      <thead><tr><th>Família</th><th>Quer dizer</th><th>No balcão da repartição</th></tr></thead>
+      <tbody>
+        <tr><td><code>2xx</code></td><td>deu certo</td><td class="neutro">"Deferido. Aqui está."</td></tr>
+        <tr><td><code>3xx</code></td><td>está em outro lugar</td><td class="neutro">"Isso agora é no outro prédio."</td></tr>
+        <tr><td><code>4xx</code></td><td>quem pediu errou</td><td class="neutro">"O seu formulário veio errado."</td></tr>
+        <tr><td><code>5xx</code></td><td>quem responde errou</td><td class="neutro">"O sistema caiu aqui dentro."</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>Existe ainda a família 1xx,</b> só informativa. Você quase não vai cruzar com ela.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · STATUS -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Referência</p>
@@ -86,7 +285,7 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 6 · GET /itens -->
+<!-- 15 · GET /itens -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Mão na massa · passo 1 de 4</p>
@@ -111,7 +310,7 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 7 · PATH PARAM -->
+<!-- 16 · PATH PARAM -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Mão na massa · passo 2 de 4</p>
@@ -134,38 +333,89 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 8 · QUERY PARAM -->
+<!-- 17 · QUERY PARAM, O CONCEITO -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <p class="eyebrow">Conceito</p>
     <h2>Filtrando sem criar rota nova</h2>
     <div class="comparacao">
       <div class="lado ruim">
         <div class="rotulo">Uma rota por filtro</div>
-        <div class="codigo compacto"><pre><span class="fn">@app.get</span>(<span class="str">"/itens/bebidas"</span>)
-<span class="fn">@app.get</span>(<span class="str">"/itens/pratos"</span>)
-<span class="fn">@app.get</span>(<span class="str">"/itens/sobremesas"</span>)
+        <div class="codigo compacto"><pre><span class="fn">GET</span> <span class="str">/itens/bebidas</span>
+<span class="fn">GET</span> <span class="str">/itens/pratos</span>
+<span class="fn">GET</span> <span class="str">/itens/sobremesas</span>
 <span class="com"># e a próxima categoria?</span></pre></div>
       </div>
       <div class="lado bom">
         <div class="rotulo">Um parâmetro de consulta</div>
-        <div class="codigo compacto"><pre><span class="fn">@app.get</span>(<span class="str">"/itens"</span>)
-<span class="kw">def</span> <span class="fn">listar_itens</span>(categoria: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span>):
-    <span class="kw">if</span> categoria <span class="kw">is None</span>:
-        <span class="kw">return</span> cardapio
-    <span class="kw">return</span> [i <span class="kw">for</span> i <span class="kw">in</span> cardapio
-            <span class="kw">if</span> i[<span class="str">"categoria"</span>] == categoria]</pre></div>
+        <div class="codigo compacto"><pre><span class="fn">GET</span> <span class="str">/itens?categoria=bebida</span>
+<span class="fn">GET</span> <span class="str">/itens?categoria=prato</span>
+<span class="fn">GET</span> <span class="str">/itens?categoria=sobremesa</span>
+<span class="fn">GET</span> <span class="str">/itens</span>   <span class="com"># sem filtro, vem tudo</span></pre></div>
       </div>
     </div>
+    <div class="destaque">Tudo que vem depois do <code>?</code> é consulta, no formato <b>nome=valor</b>. O caminho continua <code>/itens</code>, e uma rota só atende todos os filtros.</div>
+    <p class="dica"><b>Para não confundir:</b> o parâmetro de caminho (<code>/itens/3</code>) aponta um item. O de consulta (<code>?categoria=bebida</code>) filtra a lista.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · QUERY PARAM COM LAÇO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>O filtro com um laço</h2>
+    <div class="codigo compacto">
+      <pre><span class="fn">@app.get</span>(<span class="str">"/itens"</span>)
+<span class="kw">def</span> <span class="fn">listar_itens</span>(categoria: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span>):  <span class="com"># texto ou nada; padrão None</span>
+    <span class="kw">if</span> categoria <span class="kw">is None</span>:                         <span class="com"># não veio ?categoria= na URL</span>
+        <span class="kw">return</span> cardapio
+    filtrados = []
+    <span class="kw">for</span> item <span class="kw">in</span> cardapio:
+        <span class="kw">if</span> item[<span class="str">"categoria"</span>] == categoria:
+            filtrados.<span class="fn">append</span>(item)
+    <span class="kw">return</span> filtrados</pre>
+    </div>
     <ol class="passos curta">
-      <li>Acrescente <code>categoria</code> como parâmetro da função com valor padrão <code>None</code>. Ele não aparece no caminho, então vira parâmetro de consulta.</li>
-      <li>Confira <code>/itens</code> e depois <code>/itens?categoria=bebida</code>. A próxima categoria não vai exigir código novo.</li>
+      <li>No <code>main.py</code>, acrescente à rota <code>GET /itens</code> o parâmetro <code>categoria</code>, com padrão <code>None</code>.</li>
+      <li>Abaixo do <code>if</code>, monte a lista <code>filtrados</code> com o laço, como no código.</li>
+      <li>Abra <code>/itens?categoria=bebida</code>: só as bebidas aparecem. Sem o <code>?</code>, volta tudo.</li>
     </ol>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 9 · APIROUTER -->
+<!-- 19 · COMPREENSÃO DE LISTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava · o atalho</p>
+    <h2>O mesmo filtro, em compreensão de lista</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Com laço</div>
+        <div class="codigo compacto"><pre>filtrados = []
+<span class="kw">for</span> item <span class="kw">in</span> cardapio:
+    <span class="kw">if</span> item[<span class="str">"categoria"</span>] == categoria:
+        filtrados.<span class="fn">append</span>(item)</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">Com compreensão de lista</div>
+        <div class="codigo compacto"><pre>filtrados = [item
+    <span class="kw">for</span> item <span class="kw">in</span> cardapio
+    <span class="kw">if</span> item[<span class="str">"categoria"</span>] == categoria]</pre></div>
+      </div>
+    </div>
+    <ol class="passos curta">
+      <li><code>[item</code>, no começo: o que vai para dentro da lista nova.</li>
+      <li><code>for item in cardapio</code>: o mesmo laço da esquerda.</li>
+      <li><code>if ...</code>: o mesmo filtro. Só entra o item que passar.</li>
+    </ol>
+    <div class="destaque">O resultado é igual, e a IA costuma escrever a da direita numa linha só. <b>Entregue a que você sabe explicar.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · APIROUTER -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Mão na massa · passo 4 de 4</p>
@@ -188,7 +438,7 @@ app.<span class="fn">include_router</span>(pedidos.router, prefix=<span class="s
   <div class="rodape"></div>
 </section>
 
-<!-- 10 · /docs -->
+<!-- 21 · /docs -->
 <section class="slide escuro">
   <div class="corpo">
     <p class="eyebrow">O ponto alto da aula</p>
@@ -204,7 +454,7 @@ app.<span class="fn">include_router</span>(pedidos.router, prefix=<span class="s
   <div class="rodape"></div>
 </section>
 
-<!-- 11 · EXERCÍCIO -->
+<!-- 22 · EXERCÍCIO -->
 <section class="slide exercicio">
   <div class="corpo">
     <p class="eyebrow">Exercício 02</p>
@@ -220,12 +470,11 @@ app.<span class="fn">include_router</span>(pedidos.router, prefix=<span class="s
       <button class="btn" data-copiar="../prompts/aula-02-rotas.md">copiar o prompt de revisão das rotas</button>
       <a class="btn" href="../prompts/aula-02-regras.md" download="REGRAS_AULA2.md">baixar o REGRAS_AULA2.md</a>
     </div>
-    <p class="dica"><b>Combinado da IA:</b> pode gerar as rotas. Mas eu vou apontar uma linha e perguntar por que o status é aquele.</p>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 12 · RECAP -->
+<!-- 23 · RECAP -->
 <section class="slide escuro">
   <div class="corpo">
     <p class="eyebrow">Recapitulando</p>
@@ -237,7 +486,7 @@ app.<span class="fn">include_router</span>(pedidos.router, prefix=<span class="s
       <li>Escrever o <b>tipo</b> já ganha conversão e validação de graça.</li>
       <li>O <b>/docs</b> é o contrato, e ele se atualiza sozinho porque nasce do código.</li>
     </ul>
-    <p class="proximo"><b>Próxima aula:</b> o que acontece quando o cliente manda um pedido com preço negativo, sem nome e com o campo errado. Spoiler: hoje o seu sistema aceita.</p>
+    <p class="proximo"><b>Próxima aula:</b> o que acontece quando o cliente manda um pedido com preço negativo, sem nome e com o campo errado.</p>
   </div>
   <div class="rodape"></div>
 </section>

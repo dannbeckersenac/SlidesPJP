@@ -14,3 +14,5 @@ Duas regras ao escrever um arquivo novo aqui:
 
 1. A seção "não use" do `regras` espelha o ledger do `CLAUDE.md`. Tudo que a turma ainda não viu entra nela.
 2. Prompt não entrega o exercício pronto. Ele produz rascunho para o aluno revisar, ou questiona o que o aluno escreveu.
+3. Todo `regras` tem a seção "Como escrever o código": a IA comenta em português o que gera e, no
+   fim, diz o que mudou e como testar. Ela é igual em todas as aulas.

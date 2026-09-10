@@ -39,7 +39,48 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 3 · O JEITO NA MÃO -->
+<!-- 3 · POR QUE ELA ACEITOU -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>Por que ela aceitou</h2>
+    <p class="intro">A sua rota de criar provavelmente está parecida com esta.</p>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/pedidos.py, como ficou na aula 2</div>
+      <pre>pedidos = []  <span class="com"># a lista em memória</span>
+<span class="fn">@router.post</span>(<span class="str">""</span>)  <span class="com"># "" porque o prefixo /pedidos vem do main.py</span>
+<span class="kw">def</span> <span class="fn">criar_pedido</span>(dados: <span class="kw">dict</span>):  <span class="com"># dict: o dado vem no corpo</span>
+    pedidos.<span class="fn">append</span>(dados)
+    <span class="kw">return</span> dados</pre>
+    </div>
+    <div class="destaque">Na aula 2, o tipo <code>int</code> recusou <code>/itens/abc</code>. Aqui o tipo é <code>dict</code>, e ele só garante que chegou um dicionário. <b>O que tem dentro, ninguém conferiu.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · ISINSTANCE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>Perguntando o tipo de um valor</h2>
+    <p class="intro">Para conferir na mão, você precisa saber se <code>"pizza"</code> é número. A função <code>isinstance(valor, tipo)</code> responde <code>True</code> ou <code>False</code>.</p>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · modo interativo do python</div>
+      <pre><span class="fn">isinstance</span>(<span class="num">3</span>, <span class="kw">int</span>)          <span class="com"># True</span>
+<span class="fn">isinstance</span>(<span class="str">"pizza"</span>, <span class="kw">int</span>)    <span class="com"># False</span>
+<span class="fn">isinstance</span>(<span class="str">"Ana"</span>, <span class="kw">str</span>)      <span class="com"># True</span>
+<span class="fn">isinstance</span>(<span class="num">-3</span>, <span class="kw">int</span>)         <span class="com"># True: é inteiro, mesmo negativo</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal, com o venv ativo, digite <code>python</code> para abrir o modo interativo.</li>
+      <li>Digite as quatro linhas, uma por vez, e compare a resposta com o comentário.</li>
+      <li>Digite <code>exit()</code> para voltar ao terminal normal.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · O JEITO NA MÃO -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">A tentativa óbvia</p>
@@ -47,21 +88,19 @@
     <div class="codigo compacto">
       <div class="arquivo">backend/rotas/pedidos.py</div>
       <pre><span class="fn">@router.post</span>(<span class="str">""</span>)
-<span class="kw">async def</span> <span class="fn">criar_pedido</span>(request: Request):
-    dados = <span class="kw">await</span> request.<span class="fn">json</span>()
-
-    <span class="kw">if</span> <span class="str">"cliente"</span> <span class="kw">not in</span> dados <span class="kw">or</span> <span class="kw">not</span> dados[<span class="str">"cliente"</span>].<span class="fn">strip</span>():
-        <span class="kw">raise</span> <span class="fn">HTTPException</span>(<span class="num">400</span>, <span class="str">"cliente é obrigatório"</span>)
-    <span class="kw">if not</span> <span class="fn">isinstance</span>(dados.<span class="fn">get</span>(<span class="str">"item_id"</span>), <span class="kw">int</span>):
-        <span class="kw">raise</span> <span class="fn">HTTPException</span>(<span class="num">400</span>, <span class="str">"item_id precisa ser número"</span>)
-    <span class="com"># ... e ainda faltam quantidade, observação, tipo do preço</span></pre>
+<span class="kw">def</span> <span class="fn">criar_pedido</span>(dados: <span class="kw">dict</span>):
+    <span class="kw">if</span> <span class="str">"cliente"</span> <span class="kw">not in</span> dados <span class="kw">or</span> dados[<span class="str">"cliente"</span>] == <span class="str">""</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">422</span>, detail=<span class="str">"cliente vazio"</span>)
+    <span class="kw">if not</span> <span class="fn">isinstance</span>(dados[<span class="str">"item_id"</span>], <span class="kw">int</span>):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">422</span>, detail=<span class="str">"item_id não é número"</span>)
+    <span class="com"># falta quantidade, falta observação, e tudo isso em cada rota</span></pre>
     </div>
-    <div class="destaque">Funciona, e é <b>insustentável</b>: doze linhas para três campos, repetidas em cada rota.</div>
+    <div class="destaque">Funciona, e cansa: seis linhas para dois campos. E ainda tem buraco: <b>se o <code>item_id</code> nem vier, a API devolve 500</b>.</div>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 4 · ANTES / DEPOIS -->
+<!-- 6 · ANTES / DEPOIS -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">A virada</p>
@@ -71,7 +110,7 @@
         <div class="rotulo">Conferindo campo a campo</div>
         <div class="codigo compacto"><pre><span class="kw">if</span> <span class="str">"cliente"</span> <span class="kw">not in</span> dados:
     <span class="kw">raise</span> ...
-<span class="kw">if not</span> dados[<span class="str">"cliente"</span>].<span class="fn">strip</span>():
+<span class="kw">if</span> dados[<span class="str">"cliente"</span>] == <span class="str">""</span>:
     <span class="kw">raise</span> ...
 <span class="kw">if not</span> <span class="fn">isinstance</span>(
     dados[<span class="str">"quantidade"</span>], <span class="kw">int</span>):
@@ -88,12 +127,12 @@
     observacao: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span></pre></div>
       </div>
     </div>
-    <p class="dica">Quatro linhas descrevem o que doze linhas conferiam, e a segunda versão ainda <b>aparece no /docs</b>.</p>
+    <p class="dica">Quatro linhas descrevem o que os <code>if</code> conferiam, e a segunda versão ainda <b>aparece no /docs</b>.</p>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 5 · CONCEITO -->
+<!-- 7 · CONCEITO -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Conceito</p>
@@ -104,127 +143,277 @@
       <div class="cartao"><div class="icone">2</div><span class="t">Valida</span><span class="d">Recusa o que não bate com a descrição, antes da sua função rodar.</span></div>
       <div class="cartao"><div class="icone">3</div><span class="t">Documenta</span><span class="d">Publica o formato exato no <code>/docs</code>, campo por campo.</span></div>
     </div>
-    <div class="destaque">Ideia central: <b>descreva o dado uma vez</b> e ganhe validação, conversão e documentação.</div>
+    <p class="dica"><b>Não precisa instalar nada:</b> o Pydantic veio junto com o <code>fastapi[standard]</code> da aula 1.</p>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 6 · A ROTA -->
+<!-- 8 · LENDO UM ESQUEMA -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
-    <h2>A rota que ficou honesta</h2>
+    <p class="eyebrow">Conceito · linha a linha</p>
+    <h2>Lendo um esquema</h2>
     <div class="codigo compacto">
-      <div class="arquivo">backend/rotas/pedidos.py</div>
-      <pre><span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>)
-<span class="kw">def</span> <span class="fn">criar_pedido</span>(pedido: PedidoCriar):
-    novo = {<span class="str">"id"</span>: <span class="fn">len</span>(pedidos) + <span class="num">1</span>, **pedido.<span class="fn">model_dump</span>()}
+      <div class="arquivo">backend/esquemas/pedido.py · from pydantic import BaseModel, Field</div>
+      <pre><span class="kw">class</span> <span class="fn">PedidoCriar</span>(BaseModel):          <span class="com"># herda os poderes do Pydantic</span>
+    cliente: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">2</span>)  <span class="com"># texto, 2 letras no mínimo</span>
+    item_id: <span class="kw">int</span>                        <span class="com"># inteiro, obrigatório</span>
+    quantidade: <span class="kw">int</span> = <span class="fn">Field</span>(gt=<span class="num">0</span>)       <span class="com"># inteiro maior que zero</span>
+    observacao: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span>       <span class="com"># opcional: se não vier, vale None</span></pre>
+    </div>
+    <div class="destaque">Cada linha é <b>nome: tipo</b>. Sem <code>=</code>, o campo é obrigatório. Com <code>= None</code>, ele é opcional.</div>
+    <p class="dica"><b>Repare no que falta:</b> não tem <code>__init__</code> nem <code>self</code>. O Pydantic monta isso sozinho a partir da lista de campos.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · RESTRIÇÕES DO FIELD -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>As restrições do Field</h2>
+    <table>
+      <thead><tr><th>Restrição</th><th>Quer dizer</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td><code>min_length</code></td><td>tamanho mínimo do texto</td><td class="neutro"><code>min_length=2</code>: "Al" passa, "A" não</td></tr>
+        <tr><td><code>max_length</code></td><td>tamanho máximo do texto</td><td class="neutro"><code>max_length=200</code></td></tr>
+        <tr><td><code>gt</code></td><td>maior que</td><td class="neutro"><code>gt=0</code>: 1 passa, 0 não</td></tr>
+        <tr><td><code>ge</code></td><td>maior ou igual</td><td class="neutro"><code>ge=0</code>: 0 passa, -1 não</td></tr>
+        <tr><td><code>le</code></td><td>menor ou igual</td><td class="neutro"><code>le=10</code>: 10 passa, 11 não</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>As siglas vêm do inglês:</b> <i>greater than</i>, <i>greater or equal</i>, <i>less or equal</i>. As duas primeiras linhas valem para texto, as outras para número.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · ESTRUTURA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>Onde o esquema mora</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/ ao fim desta aula</div>
+      <pre>backend/
+├── venv/            <span class="com"># ambiente virtual, fora do Git</span>
+├── main.py          <span class="com"># cria o app, liga as rotas e o CORS</span>
+├── rotas/
+│   ├── itens.py     <span class="com"># rotas de /itens e a lista em memória</span>
+│   └── pedidos.py   <span class="com"># rotas de /pedidos e a lista em memória</span>
+└── esquemas/        <span class="com"># nova hoje</span>
+    └── pedido.py    <span class="com"># PedidoCriar e PedidoSaida</span></pre>
+    </div>
+    <p class="dica"><b>A regra dos nomes:</b> arquivo de rota no plural, porque é o caminho (<code>/pedidos</code>). Arquivo de esquema no singular, porque descreve uma coisa (um pedido).</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · CALIBRAR A ESTRUTURA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes da mão na massa</p>
+    <h2>Se o seu backend está diferente</h2>
+    <p class="intro">A IA pode ter criado pasta com outro nome, ou deixado tudo no <code>main.py</code>. Alinhe agora.</p>
+    <ol class="passos curta">
+      <li>Copie o prompt pelo botão abaixo e cole no assistente, com o repositório aberto.</li>
+      <li>Leia a lista de diferenças que ela devolve. Até aqui ela não mexeu em nada.</li>
+      <li>Responda <code>pode seguir</code> só se concordar com cada movimento da lista.</li>
+      <li>No terminal, rode <code>fastapi dev main.py</code> e abra o <code>/docs</code>. As rotas de antes continuam lá.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-03-estrutura.md">copiar o prompt que alinha a estrutura</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · ESQUEMA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 6</p>
+    <h2>O esquema no lugar dele</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/esquemas/pedido.py</div>
+      <pre><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="kw">class</span> <span class="fn">PedidoCriar</span>(BaseModel):
+    cliente: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">2</span>)
+    item_id: <span class="kw">int</span>
+    quantidade: <span class="kw">int</span> = <span class="fn">Field</span>(gt=<span class="num">0</span>)
+    observacao: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Dentro de <code>backend/</code>, crie a pasta <code>esquemas/</code>.</li>
+      <li>Nela, crie o arquivo <code>pedido.py</code> com o código acima.</li>
+      <li>Salve e olhe o terminal do <code>fastapi dev</code>. Ele recarrega sozinho e não pode mostrar erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · A ROTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 6</p>
+    <h2>A rota recebe o esquema</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/pedidos.py · from esquemas.pedido import PedidoCriar</div>
+      <pre><span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>)        <span class="com"># 201: criei algo novo</span>
+<span class="kw">def</span> <span class="fn">criar_pedido</span>(pedido: PedidoCriar):   <span class="com"># valida antes de a função rodar</span>
+    novo = {<span class="str">"id"</span>: <span class="fn">len</span>(pedidos) + <span class="num">1</span>,
+            <span class="str">"cliente"</span>: pedido.cliente,
+            <span class="str">"item_id"</span>: pedido.item_id,
+            <span class="str">"quantidade"</span>: pedido.quantidade,
+            <span class="str">"observacao"</span>: pedido.observacao}
     pedidos.<span class="fn">append</span>(novo)
     <span class="kw">return</span> novo</pre>
     </div>
     <ol class="passos curta">
-      <li>Crie a pasta <code>backend/esquemas/</code> e escreva a classe <code>PedidoCriar</code> herdando de <code>BaseModel</code>.</li>
-      <li>Na rota, troque o <code>Request</code> pelo tipo do modelo: <code>pedido: PedidoCriar</code>. Toda a validação virou essa anotação.</li>
-      <li>Apague as doze linhas de <code>if</code>. Dentro da função, <code>pedido.quantidade</code> já é um inteiro maior que zero, garantido.</li>
-      <li>Acrescente <code>status_code=201</code> no decorador para comunicar que algo foi criado.</li>
+      <li>Troque <code>dados: dict</code> por <code>pedido: PedidoCriar</code>. Os <code>if</code> podem ir embora.</li>
+      <li>Abra o <code>/docs</code>. O <code>POST /pedidos</code> agora mostra os quatro campos do esquema.</li>
     </ol>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 7 · 422 -->
+<!-- 14 · MODEL_DUMP E ** -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
-    <h2>422, e com o motivo</h2>
+    <p class="eyebrow">Python que faltava · o atalho</p>
+    <h2>A mesma coisa em uma linha</h2>
     <div class="codigo compacto">
-      <div class="arquivo">resposta automática do FastAPI</div>
-      <pre>{
-  <span class="str">"detail"</span>: [
-    { <span class="str">"loc"</span>: [<span class="str">"body"</span>, <span class="str">"quantidade"</span>],
-      <span class="str">"msg"</span>: <span class="str">"Input should be greater than 0"</span> }
-  ]
-}</pre>
+      <div class="arquivo">o que cada parte devolve, com um pedido da Ana</div>
+      <pre>dados = pedido.<span class="fn">model_dump</span>()
+<span class="com"># {"cliente": "Ana", "item_id": 1, "quantidade": 2, "observacao": None}</span>
+novo = {<span class="str">"id"</span>: <span class="fn">len</span>(pedidos) + <span class="num">1</span>, **dados}
+<span class="com"># {"id": 1, "cliente": "Ana", "item_id": 1, "quantidade": 2, "observacao": None}</span></pre>
     </div>
     <ol class="passos curta">
-      <li>Abra o <code>/docs</code>, encontre o <code>POST /pedidos</code> e clique em <b>Try it out</b>.</li>
-      <li>Mande de propósito o pedido quebrado do começo da aula, com <code>quantidade: -3</code>.</li>
-      <li>Leia a resposta: status <code>422</code>, dizendo <b>qual campo</b> falhou e <b>por quê</b>. É disso que o React precisa para pintar de vermelho o campo certo.</li>
+      <li><code>model_dump()</code> existe em todo esquema: devolve os campos num dicionário comum.</li>
+      <li><code>**</code> antes de um dicionário despeja as chaves dele dentro do dicionário novo.</li>
+    </ol>
+    <div class="destaque">O resultado é o mesmo do passo 2, e não muda quando o esquema ganhar campo. <b>As duas versões funcionam: entregue a que você sabe explicar.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · 422 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 6</p>
+    <h2>422, e com o motivo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">resposta do FastAPI · resumida</div>
+      <pre>{<span class="str">"detail"</span>: [
+  {<span class="str">"loc"</span>: [<span class="str">"body"</span>, <span class="str">"cliente"</span>], <span class="str">"msg"</span>: <span class="str">"String should have at least 2 characters"</span>},
+  {<span class="str">"loc"</span>: [<span class="str">"body"</span>, <span class="str">"item_id"</span>], <span class="str">"msg"</span>: <span class="str">"Input should be a valid integer"</span>},
+  {<span class="str">"loc"</span>: [<span class="str">"body"</span>, <span class="str">"quantidade"</span>], <span class="str">"msg"</span>: <span class="str">"Input should be greater than 0"</span>}
+]}</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>/docs</code>, abra o <code>POST /pedidos</code> e clique em <b>Try it out</b>.</li>
+      <li>Cole o pedido quebrado do começo da aula e clique em <b>Execute</b>.</li>
+      <li>Confira o status <code>422</code> e os <b>três campos</b> que falharam, de uma vez. Os <code>if</code> paravam no primeiro.</li>
     </ol>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 8 · ENTRADA vs SAÍDA -->
+<!-- 16 · ENTRADA vs SAÍDA -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">Boa prática</p>
     <h2>O que entra não é o que sai</h2>
     <table>
-      <thead><tr><th>Campo</th><th>Entrada / Saída</th></tr></thead>
+      <thead><tr><th>Campo</th><th>Entrada e saída</th></tr></thead>
       <tbody>
         <tr><td><code>cliente</code>, <code>item_id</code>, <code>quantidade</code></td><td class="neutro">o cliente envia, e volta na resposta</td></tr>
         <tr><td><code>id</code></td><td>só sai, porque quem gera é o servidor</td></tr>
         <tr><td><code>criado_em</code>, <code>status</code></td><td>só sai, porque o cliente não escolhe</td></tr>
-        <tr><td><code>observacao_interna</code></td><td>nunca sai, é da cozinha</td></tr>
+        <tr><td><code>custo_do_prato</code></td><td>nunca sai, é conta do restaurante</td></tr>
       </tbody>
     </table>
-    <div class="alerta">Usar o <strong>mesmo modelo</strong> para entrada e saída é como deixar um cliente definir o próprio <code>id</code> ou ver dado interno do restaurante. Na aula 13 isso vira falha de segurança de verdade.</div>
+    <div class="alerta">Usar o <strong>mesmo esquema</strong> para entrada e saída é deixar o cliente escolher o próprio <code>id</code>, ou ver dado interno do restaurante. Na aula 13 isso vira falha de segurança de verdade.</div>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 9 · RESPONSE MODEL -->
+<!-- 17 · RESPONSE MODEL -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
-    <h2>Dois modelos, um por direção</h2>
+    <p class="eyebrow">Mão na massa · passo 4 de 6</p>
+    <h2>Dois esquemas, um por direção</h2>
     <div class="comparacao">
       <div class="lado">
         <div class="rotulo">O que o cliente manda</div>
         <div class="codigo compacto"><pre><span class="kw">class</span> <span class="fn">PedidoCriar</span>(BaseModel):
     cliente: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">2</span>)
     item_id: <span class="kw">int</span>
-    quantidade: <span class="kw">int</span> = <span class="fn">Field</span>(gt=<span class="num">0</span>)</pre></div>
+    quantidade: <span class="kw">int</span> = <span class="fn">Field</span>(gt=<span class="num">0</span>)
+    observacao: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span></pre></div>
       </div>
       <div class="lado">
         <div class="rotulo">O que a API devolve</div>
         <div class="codigo compacto"><pre><span class="kw">class</span> <span class="fn">PedidoSaida</span>(BaseModel):
     id: <span class="kw">int</span>
     cliente: <span class="kw">str</span>
-    total: <span class="kw">float</span></pre></div>
+    item_id: <span class="kw">int</span>
+    quantidade: <span class="kw">int</span>
+    observacao: <span class="kw">str</span> | <span class="kw">None</span></pre></div>
       </div>
     </div>
     <ol class="passos curta">
-      <li>Escreva as duas classes em <code>backend/esquemas/pedido.py</code>.</li>
-      <li>Repare no <code>id</code> e no <code>total</code>: quem gera os dois é o servidor, não o cliente.</li>
-      <li>Declare a saída no decorador, com <code>response_model=PedidoSaida</code>.</li>
-      <li>Confira o <code>/docs</code>: os dois formatos aparecem separados agora.</li>
+      <li>Em <code>esquemas/pedido.py</code>, escreva o <code>PedidoSaida</code> embaixo do <code>PedidoCriar</code>.</li>
+      <li>Na rota, importe os dois e acrescente <code>response_model=PedidoSaida</code> no decorador.</li>
+      <li>No <code>/docs</code>, mande um pedido com <code>"id": 999</code> no corpo. A resposta volta com o id que o servidor gerou.</li>
     </ol>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 10 · CORS -->
+<!-- 18 · O REACT PEDE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 6</p>
+    <h2>A tela pede para a API</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · dentro do componente · import { useEffect, useState } from "react"</div>
+      <pre><span class="kw">const</span> [itens, setItens] = <span class="fn">useState</span>([]);
+<span class="fn">useEffect</span>(() =&gt; {
+  <span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/itens"</span>)
+    .<span class="fn">then</span>((resposta) =&gt; resposta.<span class="fn">json</span>())
+    .<span class="fn">then</span>((dados) =&gt; <span class="fn">setItens</span>(dados));
+}, []);</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>frontend/</code>, abra o componente que importa os dados chumbados e apague esse import.</li>
+      <li>Dentro do componente, cole o <code>useState</code> e o <code>useEffect</code> acima.</li>
+      <li>Com a API e o React no ar, abra a tela com o F12 aberto. A lista não aparece, e o console mostra um erro vermelho.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · CORS -->
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">O obstáculo final</p>
     <h2>"Mas no /docs funcionava!"</h2>
-    <p class="intro">Você aponta o React para a sua API e o console mostra um erro que não fala de pedido nenhum:</p>
+    <p class="intro">O erro do passo anterior não fala de pedido nenhum:</p>
     <div class="codigo compacto">
       <div class="arquivo">console do navegador</div>
       <pre><span class="com">Access to fetch at 'http://127.0.0.1:8000/itens' from origin
 'http://localhost:5173' has been blocked by CORS policy</span></pre>
     </div>
-    <p class="intro">A API está certa. O navegador é que <strong>bloqueia por padrão</strong> uma página de um endereço pedindo dados de outro. É proteção, não defeito. O servidor precisa autorizar explicitamente.</p>
+    <p class="intro">A API está certa. Quem bloqueia é o navegador: por padrão, uma página de um endereço <strong>não pode ler dados de outro</strong>. O servidor precisa autorizar esse endereço.</p>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 11 · CORS CÓDIGO -->
+<!-- 20 · CORS CÓDIGO -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <p class="eyebrow">Mão na massa · passo 6 de 6</p>
     <h2>Autorizando o seu front</h2>
     <div class="codigo compacto">
       <div class="arquivo">backend/main.py · from fastapi.middleware.cors import CORSMiddleware</div>
@@ -236,7 +425,7 @@
     </div>
     <ol class="passos curta">
       <li>Descubra o endereço exato do seu front. O <code>npm run dev</code> imprime ele no terminal.</li>
-      <li>Registre o middleware no <code>main.py</code> com <b>só esse endereço</b> em <code>allow_origins</code>.</li>
+      <li>No <code>main.py</code>, logo depois de <code>app = FastAPI()</code>, registre o middleware com <b>só esse endereço</b>.</li>
       <li>Recarregue o React. O erro do console some e a lista aparece na tela.</li>
     </ol>
     <div class="alerta"><strong>Nunca</strong> <code>allow_origins=["*"]</code>: isso libera a sua API para o mundo inteiro.</div>
@@ -244,20 +433,20 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 12 · EXERCÍCIO -->
+<!-- 21 · EXERCÍCIO -->
 <section class="slide exercicio">
   <div class="corpo">
     <p class="eyebrow">Exercício 03</p>
     <h2>A primeira ponte de verdade</h2>
     <p class="intro">Ao final da atividade, a tela da sua persona estará exibindo dados vindos da sua API.</p>
     <div class="tarefas">
-      <div class="tarefa"><span class="n">1</span><span class="txt">Crie os modelos de <b>entrada e de saída</b> da ação principal da persona, com duas restrições no mínimo (<code>min_length</code>, <code>gt</code>, <code>le</code>).</span></div>
-      <div class="tarefa"><span class="n">2</span><span class="txt">Implemente o <code>POST</code> usando os dois modelos, devolvendo <code>201</code>.</span></div>
-      <div class="tarefa"><span class="n">3</span><span class="txt">Habilite o CORS <b>só para o endereço do seu front</b> e troque o array chumbado do React por um <code>fetch</code> na sua API.</span></div>
-      <div class="tarefa"><span class="n">4</span><span class="txt">Prove que funciona: mande um dado inválido pelo <code>/docs</code>, receba <code>422</code>, e mostre a tela renderizando dados do servidor.</span></div>
+      <div class="tarefa"><span class="n">1</span><span class="txt">Em <code>esquemas/</code>, crie os esquemas de <b>entrada e de saída</b> da ação principal da persona, com duas restrições no mínimo.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Implemente o <code>POST</code> usando os dois esquemas, devolvendo <code>201</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Libere o CORS <b>só para o seu front</b> e troque os dados chumbados do React por um <code>fetch</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Prove: um dado inválido no <code>/docs</code> recebe <code>422</code>, e a tela mostra dados do servidor.</span></div>
     </div>
     <div class="acoes">
-      <button class="btn" data-copiar="../prompts/aula-03-modelos.md">copiar o prompt que ataca os modelos</button>
+      <button class="btn" data-copiar="../prompts/aula-03-modelos.md">copiar o prompt que ataca os esquemas</button>
       <a class="btn" href="../prompts/aula-03-regras.md" download="REGRAS_AULA3.md">baixar o REGRAS_AULA3.md</a>
     </div>
     <p class="dica"><b>Entrega no repositório</b> até o fim da aula. Na aula 4 a gente quebra essa rota em camadas.</p>
@@ -265,16 +454,16 @@
   <div class="rodape"></div>
 </section>
 
-<!-- 13 · RECAP -->
+<!-- 22 · RECAP -->
 <section class="slide escuro">
   <div class="corpo">
     <p class="eyebrow">Recapitulando</p>
     <h2>O que fica da aula 3</h2>
     <ul class="recap">
-      <li>Validar na mão funciona e <b>não escala</b>. Fora que nem aparece na documentação.</li>
-      <li>Um <b>BaseModel</b> descreve o dado uma vez e entrega conversão, validação e documentação juntas.</li>
-      <li>O <b>422</b> diz qual campo falhou e por quê. É o que o formulário precisa.</li>
-      <li><b>Entrada e saída são modelos diferentes.</b> O cliente não define <code>id</code> nem vê dado interno.</li>
+      <li>Validar na mão com <code>if</code> e <code>isinstance</code> funciona, e <b>não escala</b>.</li>
+      <li>Um <b>esquema Pydantic</b> descreve o dado uma vez e entrega conversão, validação e documentação.</li>
+      <li>O <b>422</b> diz qual campo falhou e por quê, todos de uma vez.</li>
+      <li><b>Entrada e saída são esquemas diferentes.</b> O cliente não define <code>id</code> nem vê dado interno.</li>
       <li>O CORS é <b>proteção do navegador</b>. Autorize o seu front, nunca o mundo inteiro.</li>
     </ul>
     <p class="proximo"><b>Próxima aula:</b> a sua rota já faz validação, regra e acesso a dado ao mesmo tempo. Vamos ver ela chegar a oitenta linhas e então separar em camadas.</p>
