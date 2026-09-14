@@ -250,12 +250,23 @@ Os prompts que a turma usa saem daqui, prontos e com limites escritos. Como mont
 index.html              índice, montado em JS a partir do manifesto
 .nojekyll               necessário para o GitHub Pages
 assets/css/slides.css   o sistema visual inteiro
+assets/css/navegacao.css  barra do topo, capa e tema claro/escuro do índice e do cronograma
 assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 18 aulas
 assets/js/slides.js     navegação por teclado, escala, barra inferior, rodapé dos slides
+assets/js/tema.js       troca de tema do índice e do cronograma, com a escolha guardada no navegador
 aulas/aula-NN.html      uma página por aula
 prompts/aula-NN-*.md    prompts e regras que a turma copia ou baixa do slide
 cronograma/             o calendário do ano inteiro, das seis UCs, página à parte
 ```
+
+**O índice e o cronograma são as duas páginas de navegação** e dividem o mesmo cabeçalho: a barra
+do topo (marca, as abas `Slides da UC4` e `Cronograma do ano`, botão de tema), a capa e o rodapé
+vêm de `navegacao.css`, e o tema claro/escuro de `tema.js`. A linha de cima da barra é o mesmo HTML
+nas duas páginas: mexeu numa, mexa na outra. O que é só do cronograma (filtros, calendário) fica em
+`cronograma/estilos.css`; o que é só do índice fica no `<style>` do `index.html`.
+
+Essas duas páginas seguem o visual do cronograma (Space Grotesk, IBM Plex Sans), não o dos slides.
+**Os slides não têm tema e não usam `navegacao.css`:** o visual deles é o do template (seção 10).
 
 **As datas da UC4 vivem só em `assets/js/aulas.js`**, em formato ISO (`"2026-09-09"`). Índice e
 navegação leem dali e formatam para `09/09` na tela. Nunca escreva data dentro de um slide.

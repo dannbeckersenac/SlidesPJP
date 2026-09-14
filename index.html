@@ -3,112 +3,179 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
 <title>UC4 · Back-end de Projetos Web · Aulas</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="assets/js/tema.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/navegacao.css">
 <style>
-  :root {
-    --escuro: #0F172A; --azul: #2563EB; --azul-claro: #E6EDFD;
-    --cinza-texto: #334155; --roxo: #4F46E5; --vermelho: #DC2626;
-    --papel: #FFFFFF; --fundo: #F4F6FA; --borda: #DCE3ED;
-    --sans: "Carlito", Calibri, "Segoe UI", system-ui, sans-serif;
-    --mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--fundo); color: var(--cinza-texto); font-family: var(--sans); font-size: 16px; line-height: 1.55; }
-  .capa { background: var(--escuro); color: #FFFFFF; padding: 56px 24px 48px; }
-  .dentro { max-width: 900px; margin: 0 auto; }
-  .eyebrow { font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: #7FA9FF; margin: 0 0 14px; }
-  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; font-weight: 700; letter-spacing: -.02em; margin: 0 0 12px; text-wrap: balance; }
-  .capa p { font-size: 18px; color: #A9BAD6; max-width: 62ch; margin: 0; }
-  main { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
-  .ciclo { margin-bottom: 40px; }
-  .ciclo-cab { border-left: 3px solid var(--roxo); padding-left: 16px; margin-bottom: 16px; }
-  .ciclo-tag { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--roxo); display: block; margin-bottom: 5px; }
-  .ciclo-cab h2 { font-size: 24px; font-weight: 700; margin: 0 0 5px; color: var(--escuro); }
-  .ciclo-cab .guia { font-style: italic; color: #64748B; margin: 0; font-size: 16px; }
-  ul.aulas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  .aula { display: grid; grid-template-columns: 54px 62px 1fr auto; gap: 16px; align-items: center;
-          background: var(--papel); border: 1px solid var(--borda); border-radius: 10px; padding: 14px 18px;
-          text-decoration: none; color: inherit; }
-  a.aula:hover { border-color: var(--azul); box-shadow: 0 2px 12px rgba(37,99,235,.13); }
-  a.aula:focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; }
-  .aula .n { font-family: var(--mono); font-size: 14px; font-weight: 600; color: #FFFFFF; background: var(--azul);
-             border-radius: 7px; padding: 7px 0; text-align: center; }
-  .aula.indisponivel { opacity: .62; }
-  .aula.indisponivel .n { background: #C3CDDC; }
-  .aula.aval .n { background: var(--vermelho); }
-  .aula .data { font-family: var(--mono); font-size: 14px; color: #78849E; font-variant-numeric: tabular-nums; }
-  .aula .t { font-size: 17px; font-weight: 700; color: var(--escuro); }
-  .aula .estado { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #A0AEC4; }
-  .aula .estado.ok { color: var(--azul); }
-  .acoes-capa { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
-  .btn-cron { display: inline-flex; align-items: center; gap: 9px; text-decoration: none;
-              font-size: 15px; font-weight: 700; color: var(--escuro); background: #FFFFFF;
-              border: 1px solid #FFFFFF; border-radius: 10px; padding: 11px 18px; }
-  .btn-cron:hover { background: #E6EDFD; border-color: #E6EDFD; }
-  .btn-cron:focus-visible { outline: 2px solid #7FA9FF; outline-offset: 3px; }
-  .btn-cron svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; }
-  .docente { background: var(--roxo); color: #FFFFFF; font-family: var(--mono); font-size: 13px; }
-  .docente .dentro { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-                     justify-content: space-between; padding: 10px 24px; }
+  /* só o que é do índice; barra, capa e tema vêm de navegacao.css */
+  .docente { background: #4F46E5; color: #FFFFFF; font: 400 13px/1.4 var(--mono); }
+  .docente .wrap { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+                   justify-content: space-between; padding-top: 10px; padding-bottom: 10px; }
   .docente a { color: #FFFFFF; }
-  .aula .estado.trancado { color: var(--roxo); }
-  .rodape { max-width: 900px; margin: 0 auto; padding: 0 24px 60px; font-size: 14px; color: #78849E; }
-  .rodape code { font-family: var(--mono); background: #E8EDF5; padding: 2px 6px; border-radius: 4px; }
+
+  .aulas-sec { padding: 44px 0 0; }
+  .ciclos { max-width: 900px; }
+  .ciclo { margin-top: 28px; }
+  .ciclo-cab { border-left: 3px solid var(--roxo); padding-left: 14px; margin-bottom: 14px; }
+  .ciclo-tag { display: block; margin-bottom: 8px; font: 700 10.5px/1 var(--mono);
+               letter-spacing: .12em; text-transform: uppercase; color: var(--roxo); }
+  .ciclo-cab .guia { margin: 4px 0 0; color: var(--suave); font-size: 14px; font-style: italic; }
+
+  ul.aulas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .aula { display: grid; grid-template-columns: 48px 56px 1fr auto; gap: 16px; align-items: center;
+          background: var(--painel); border: 1px solid var(--linha); border-radius: var(--r);
+          padding: 12px 16px; text-decoration: none; color: inherit;
+          transition: border-color .15s, background .15s, transform .15s; }
+  a.aula:hover { border-color: var(--acento); background: var(--painel-2); transform: translateY(-1px); }
+  .aula .n { font: 700 13px/1 var(--mono); color: var(--sobre-acento); background: var(--acento);
+             border-radius: 8px; padding: 9px 0; text-align: center; }
+  .aula.aval .n { background: var(--vermelho); color: #FFFFFF; }
+  .aula.indisponivel { opacity: .62; }
+  .aula.indisponivel .n { background: var(--painel-2); color: var(--suave); }
+  .aula .data { font: 400 13px/1 var(--mono); color: var(--suave-2); font-variant-numeric: tabular-nums; }
+  .aula .t { font-family: var(--display); font-weight: 500; font-size: 16.5px; letter-spacing: -.01em; line-height: 1.3; }
+  .aula .estado { font: 400 10.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--suave-2); }
+  .aula .estado.ok { color: var(--acento); font-weight: 700; }
+  .aula .estado.trancado { color: var(--roxo); font-weight: 700; }
+
   @media (max-width: 620px) {
-    .aula { grid-template-columns: 48px 1fr; }
-    .aula .data, .aula .estado { grid-column: 2; font-size: 12px; }
+    .aula { grid-template-columns: 44px 1fr auto; grid-template-areas: "n t t" "n data estado";
+            row-gap: 6px; column-gap: 14px; }
+    .aula .n { grid-area: n; align-self: start; }
+    .aula .t { grid-area: t; }
+    .aula .data { grid-area: data; font-size: 11.5px; }
+    .aula .estado { grid-area: estado; font-size: 10px; }
   }
 </style>
 </head>
 <body>
 
-<header class="capa">
-  <div class="dentro">
-    <p class="eyebrow">Senac Blumenau · Desenvolvimento Web com IA · Turma 2026.10.78</p>
-    <h1>UC4 · Back-end de Projetos Web</h1>
-    <p>18 encontros de 4 horas, organizados em cinco ciclos. O sistema de exemplo das aulas é um cardápio digital que emite pedidos, e cada aluno desenvolve o back-end da persona que sorteou.</p>
+<!-- ============ barra fixa do topo, igual à do cronograma ============ -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-linha">
+      <div class="brand"><span class="dot"></span><span class="brand-nome"><span class="brand-longo">Desenvolvimento </span>Web com IA</span></div>
 
-    <div class="acoes-capa">
-      <a class="btn-cron" href="cronograma/index.html">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-        Cronograma do ano
-      </a>
+      <nav class="abas" aria-label="Páginas do curso">
+        <a href="index.html" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4"/></svg>
+          <span>Slides<span class="aba-longo"> da UC4</span></span>
+        </a>
+        <a href="cronograma/index.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span>Cronograma<span class="aba-longo"> do ano</span></span>
+        </a>
+      </nav>
+
+      <button class="btn-tema" id="btnTema" type="button" aria-label="Mudar tema" title="Mudar tema">
+        <svg class="ico-lua" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+        <svg class="ico-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+      </button>
     </div>
   </div>
-</header>
+</div>
 
 <div class="docente" id="avisoDocente" hidden>
-  <div class="dentro">
+  <div class="wrap">
     <span>Modo docente: todas as aulas visíveis, sem esperar a data.</span>
     <a href="index.html?docente=0">sair do modo docente</a>
   </div>
 </div>
 
-<main id="lista"></main>
+<!-- ============ capa ============ -->
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">UC4 · Senac Blumenau · Turma 2026.10.78</p>
+    <h1>Back-end de<br><em>Projetos Web</em></h1>
+    <p class="lede">18 encontros de 4 horas, organizados em cinco ciclos. O sistema de exemplo das aulas é um cardápio digital que emite pedidos, e cada aluno desenvolve o back-end da persona que sorteou.</p>
 
-<p class="rodape">
-  Slides em HTML, navegáveis com as setas do teclado. Cada aula abre aqui às 18h do dia do
-  encontro. As datas e essa regra ficam em <code>assets/js/aulas.js</code>. Ajuste ali e o
-  índice inteiro acompanha.
-</p>
+    <div class="acoes">
+      <a class="btn-principal" id="btnAula" href="#" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
+        <span id="rotuloAula">Abrir a última aula liberada</span>
+      </a>
+      <p class="acoes-nota" id="notaAula"></p>
+    </div>
+
+    <ul class="stats">
+      <li><b>72 h</b><span>Carga horária</span></li>
+      <li><b>18</b><span>Encontros</span></li>
+      <li><b>5</b><span>Ciclos</span></li>
+      <li><b id="stLiberadas">0/18</b><span>Aulas liberadas</span></li>
+      <li><b id="stProxima">fim</b><span>Próxima aula</span></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============ aulas, por ciclo ============ -->
+<section class="aulas-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>As aulas</h2>
+        <p>Cada aula abre às 18h do dia do encontro. Os slides navegam com as setas do teclado.</p>
+      </div>
+    </div>
+    <div class="ciclos" id="lista"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>As datas e a regra de liberação ficam em <code>assets/js/aulas.js</code>. Ajuste ali e o índice inteiro acompanha.</span>
+    <span>72 horas · Docente: Daniel Becker Bortoluzzi</span>
+  </div>
+</footer>
 
 <script src="assets/js/aulas.js"></script>
 <script>
   (function () {
     var pad = function (n) { return String(n).padStart(2, "0"); };
+    var agora = new Date();
+    var endereco = function (a) { return "aulas/aula-" + pad(a.n) + ".html"; };
+    var ehHoje = function (a) { return window.aberturaDaAula(a).toDateString() === agora.toDateString(); };
 
     if (window.MODO_DOCENTE) document.getElementById("avisoDocente").hidden = false;
+
+    /* ---------- capa: botão da aula e números ---------- */
+
+    var liberadas = window.AULAS.filter(window.liberada);
+    var ultima = liberadas[liberadas.length - 1];
+    /* no modo docente uma aula futura já pode estar liberada: a próxima é a primeira que ainda não está */
+    var proxima = window.AULAS.find(function (a) { return !window.liberada(a) && window.aberturaDaAula(a) > agora; });
+
+    document.getElementById("stLiberadas").textContent = liberadas.length + "/" + window.AULAS.length;
+    if (proxima) document.getElementById("stProxima").textContent = window.dataCurta(proxima.data);
+
+    var quandoProxima = !proxima ? ""
+      : ehHoje(proxima)
+        ? "A aula " + pad(proxima.n) + " abre hoje, às " + window.LIBERA_HORA + "h."
+        : "A próxima abre em " + window.dataCurta(proxima.data) + ", às " + window.LIBERA_HORA + "h.";
+
+    var btnAula = document.getElementById("btnAula");
+    var notaAula = document.getElementById("notaAula");
+    if (ultima) {
+      btnAula.href = endereco(ultima);
+      btnAula.hidden = false;
+      document.getElementById("rotuloAula").textContent =
+        ehHoje(ultima) ? "Abrir a aula de hoje" : "Abrir a última aula liberada";
+      notaAula.textContent = "Aula " + pad(ultima.n) + ", " + ultima.titulo + ". " + quandoProxima;
+    } else {
+      notaAula.textContent = quandoProxima;
+    }
+
+    /* ---------- lista das aulas ---------- */
 
     /* o índice mostra duas coisas: a aula está no ar, ou ainda não.
        O que falta montar não se anuncia como falta, aparece como
        "a liberar" igual às demais. */
     function estado(a) {
       if (window.liberada(a)) return { cls: " ok", txt: "slides" };
-      var abre = window.aberturaDaAula(a);
-      if (abre.toDateString() === new Date().toDateString()) {
-        return { cls: " trancado", txt: "abre às " + window.LIBERA_HORA + "h" };
-      }
+      if (ehHoje(a)) return { cls: " trancado", txt: "abre às " + window.LIBERA_HORA + "h" };
       return { cls: "", txt: "a liberar" };
     }
 
@@ -123,7 +190,7 @@
           '<span class="t">' + a.titulo + '</span>' +
           '<span class="estado' + e.cls + '">' + e.txt + '</span>';
         return aberta
-          ? '<li><a class="' + cls + '" href="aulas/aula-' + pad(a.n) + '.html">' + conteudo + '</a></li>'
+          ? '<li><a class="' + cls + '" href="' + endereco(a) + '">' + conteudo + '</a></li>'
           : '<li><div class="' + cls + '">' + conteudo + '</div></li>';
       }).join("");
       return '<section class="ciclo"><div class="ciclo-cab"><span class="ciclo-tag">Ciclo ' + c.n +

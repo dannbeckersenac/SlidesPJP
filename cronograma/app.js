@@ -84,39 +84,8 @@ const diaMes = iso => `${iso.slice(8)}/${iso.slice(5, 7)}`;
 
 /* ---------- 2. Tema claro e escuro ---------- */
 
-const CHAVE_TEMA = "cronograma2026:tema";
-const btnTema = document.getElementById("btnTema");
-
-/* localStorage pode estar bloqueado; nesse caso o tema vale só para a sessão */
-function lerTemaSalvo() {
-  try { return localStorage.getItem(CHAVE_TEMA); } catch { return null; }
-}
-function salvarTema(tema) {
-  try { localStorage.setItem(CHAVE_TEMA, tema); } catch { /* segue sem salvar */ }
-}
-
-function aplicarTema(tema) {
-  document.documentElement.dataset.tema = tema;
-  const proximo = tema === "escuro" ? "claro" : "escuro";
-  btnTema.setAttribute("aria-label", `Mudar para tema ${proximo}`);
-  btnTema.title = `Mudar para tema ${proximo}`;
-}
-
-const preferenciaSistema =
-  window.matchMedia("(prefers-color-scheme: light)").matches ? "claro" : "escuro";
-
-aplicarTema(lerTemaSalvo() || preferenciaSistema);
-
-btnTema.addEventListener("click", () => {
-  const novo = document.documentElement.dataset.tema === "escuro" ? "claro" : "escuro";
-  aplicarTema(novo);
-  salvarTema(novo);
-});
-
-/* se a pessoa nunca escolheu, acompanha a troca no sistema operacional */
-window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", e => {
-  if (!lerTemaSalvo()) aplicarTema(e.matches ? "claro" : "escuro");
-});
+/* mudou para ../assets/js/tema.js, que o índice das aulas também usa:
+   a escolha feita numa página vale na outra */
 
 /* ---------- 3. Números do topo e botão "ver hoje" ---------- */
 
