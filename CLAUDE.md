@@ -27,7 +27,7 @@ O docente precisa conseguir abrir um arquivo e editar um slide no meio de uma au
 | Curso | Desenvolvimento Web com IA — Senac Blumenau |
 | Turma | 2026.10.78 (noturna, 18h–22h) |
 | Unidade | UC4 — Back-end de Projetos Web |
-| Carga | 72h · 18 encontros de 4h |
+| Carga | 72h · 18 encontros de 4h · 16 aulas com conteúdo (ver "Remanejamento", abaixo) |
 | Docente | Daniel Becker Bortoluzzi |
 | Idioma | **Português do Brasil, sempre.** Código, comentários, nomes de variáveis, tudo. |
 
@@ -51,13 +51,36 @@ trate como não visto.
 
 ### Enquadramento formal (PTD)
 
-O plano de trabalho docente está aprovado e **não deve ser alterado**. O material tem que caber nele:
+O plano de trabalho docente está aprovado e **não deve ser alterado**. O material tem que caber nele.
+Os números abaixo já são os das aulas depois do remanejamento:
 
-- **SA1** — aulas 1 a 12 — indicadores 1 e 2 (camada de acesso a dados com ORM; estruturas
+- **SA1** — aulas 1 a 11 — indicadores 1 e 2 (camada de acesso a dados com ORM; estruturas
   back-end integradas à camada visual).
-- **SA2** — aulas 13 a 18 — indicador 3 (autenticação, protocolos de segurança, privacidade)
+- **SA2** — aulas 12 a 16 — indicador 3 (autenticação, protocolos de segurança, privacidade)
   e a habilidade de usar IA para acelerar o desenvolvimento.
-- **Avaliações nas aulas 5, 10 e 16.** Não invente avaliação em outra aula.
+- **Avaliações nas aulas 5, 10 e 14** (21/09, 01/10 e 19/10). Não invente avaliação em outra aula.
+
+### Remanejamento de setembro de 2026
+
+O PTD previa 18 aulas em 18 encontros. Dois encontros da UC4 ficaram sem conteúdo de back-end:
+
+- **09/09:** a turma terminou a landing page da persona, que tinha ficado pendente na UC5.
+  A aula 1 foi dada em 10/09.
+- **15/09:** visita à Senior Sistemas, no horário de aula.
+
+Os dois contam como encontro no diário, mas não têm slides. Ficam em `ENCONTROS_SEM_AULA`, no
+`aulas.js`, e o índice os mostra na lista do Ciclo 1 sem número e sem link.
+
+Sobraram 16 aulas. O docente decidiu:
+
+- As aulas 1, 2 e 3 só mudaram de data. Os slides delas não mudam por causa disto.
+- As antigas aulas 11 (regras de negócio) e 12 (consolidação e documentação) viraram a aula 11.
+- O Docker saiu da UC4 e vai para a UC2 (DevOps). O README de entrega foi para a aula 15, junto
+  com a integração com IA, que passou para depois da avaliação final.
+- A avaliação final continua em 19/10. As duas parciais andaram: 16/09 → 21/09 e 28/09 → 01/10.
+
+Numa referência a aula futura dentro de um slide, prefira o ciclo ("no ciclo 4") ao número da
+aula. O ciclo não muda se a numeração mudar de novo.
 
 ---
 
@@ -76,7 +99,7 @@ Exemplos de como isso já está montado, para você seguir o mesmo padrão:
 | 3 | a rota com `dados: dict` aceita quantidade negativa; validar no `if` cansa e ainda deixa um 500 | Pydantic |
 | 4 | uma função de rota com 80 linhas fazendo tudo | as camadas |
 | 6 | derrubar o `uvicorn` ao vivo e ver os dados sumirem | o banco e o ORM |
-| 13 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
+| 12 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
 
 Corolários:
 
@@ -134,7 +157,7 @@ mande o aluno achar o equivalente no projeto dele. "A sua tela tem um arquivo as
 ### De quem é o trabalho
 
 A **persona é sorteada individualmente** na aula 1: cada aluno recebe a sua, identifica a dor dela
-e constrói front mais back para resolvê-la. **O trabalho é individual da aula 1 à 18**: cada aluno
+e constrói front mais back para resolvê-la. **O trabalho é individual da aula 1 à 16**: cada aluno
 tem o seu repositório e entrega sozinho. Não escreva "em equipe", "repositório da equipe" nem
 "outra equipe" em slide algum. Os slides mostram o cardápio; o exercício manda aplicar na persona.
 
@@ -197,19 +220,19 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 8 | sessão por requisição via `Depends`, CRUD completo, transação, `commit`/`rollback` |
 | 9 | chave estrangeira, `relationship`, junção, filtro, ordenação, paginação, migrations |
 | 10 | — *(avaliação: indicadores 1 e 2)* |
-| 11 | regras de domínio na camada de serviço, exceções de domínio → HTTP |
-| 12 | consolidação, README, documentação do contrato |
-| 13 | entidade usuário, hash de senha, segredo fora do código |
-| 14 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
-| 15 | chamada a API de LLM, higienização de input, timeout, falha, custo |
-| 16 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |
-| 17 | README de entrega, empacotamento com Docker |
-| 18 | arguição individual, retrospectiva |
+| 11 | regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto) |
+| 12 | entidade usuário, hash de senha, segredo fora do código |
+| 13 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
+| 14 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |
+| 15 | chamada a API de LLM, higienização de input, timeout, falha, custo; README de entrega |
+| 16 | arguição individual, retrospectiva |
+
+Docker não entra na UC4: vai para a UC2. Não use em slide nem em `regras`.
 
 **Armadilhas frequentes:**
 - Usar `async def` antes da aula 15 sem necessidade. Até lá, `def` normal — o FastAPI resolve.
 - Usar ORM ou banco antes da aula 6. Antes disso é **lista em memória**, e isso é proposital.
-- Proteger rota antes da aula 14.
+- Proteger rota antes da aula 13.
 - Usar `allow_origins=["*"]` em qualquer slide. Isso é apresentado explicitamente como erro na aula 3.
 
 ---
@@ -220,11 +243,11 @@ Agrupamento pedagógico, alinhado com as avaliações do PTD. Cada ciclo fecha c
 
 | Ciclo | Aulas | Nome | Pergunta que responde |
 |---|---|---|---|
-| 1 | 1–5 | O contrato | A tela que eu já fiz precisa de quais dados? |
-| 2 | 6–10 | A persistência | Por que meus dados somem quando eu reinicio o servidor? |
-| 3 | 11–12 | As regras | O que o meu sistema não pode deixar acontecer? |
-| 4 | 13–16 | O acesso | Quem pode fazer isso com os dados da minha persona? |
-| 5 | 17–18 | A entrega | Você consegue explicar o que a IA escreveu? |
+| 1 | 1 a 5 | O contrato | A tela que eu já fiz precisa de quais dados? |
+| 2 | 6 a 10 | A persistência | Por que meus dados somem quando eu reinicio o servidor? |
+| 3 | 11 | As regras | O que o meu sistema não pode deixar acontecer? |
+| 4 | 12 a 14 | O acesso | Quem pode fazer isso com os dados da minha persona? |
+| 5 | 15 e 16 | A entrega | Você consegue explicar o que a IA escreveu? |
 
 ---
 
@@ -251,7 +274,7 @@ index.html              índice, montado em JS a partir do manifesto
 .nojekyll               necessário para o GitHub Pages
 assets/css/slides.css   o sistema visual inteiro
 assets/css/navegacao.css  barra do topo, capa e tema claro/escuro do índice e do cronograma
-assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 18 aulas
+assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 16 aulas e os encontros sem aula
 assets/js/slides.js     navegação por teclado, escala, barra inferior, rodapé dos slides
 assets/js/tema.js       troca de tema do índice e do cronograma, com a escolha guardada no navegador
 aulas/aula-NN.html      uma página por aula

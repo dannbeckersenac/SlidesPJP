@@ -11,6 +11,9 @@
    VISITAS -> "MM-DD local|instrução"
               encontro que conta como aula, no horário de sempre,
               mas acontece fora do Senac
+   NOTAS   -> "MM-DD texto"
+              encontro que aconteceu diferente do previsto;
+              o texto aparece no detalhe do dia
    ========================================================= */
 
 const ANO = 2026;
@@ -159,6 +162,10 @@ const PAUSAS = `
 
 const VISITAS = `
 09-15 Visita à Sênior Sistemas|horário de aula normal, vá direto para a Sênior e não ao Senac
+`;
+
+const NOTAS = `
+09-09 encontro usado para terminar a landing page da persona, pendência da UC5; as aulas de back-end começaram em 10/09
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

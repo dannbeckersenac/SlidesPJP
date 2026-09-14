@@ -4,35 +4,43 @@
    o índice e a navegação de todas as páginas acompanham.
    As datas são as do cronograma da turma 2026.10.78, em
    cronograma/dados.js. Se mudar lá, mude aqui também.
+
+   São 18 encontros e 16 aulas. Dois encontros ficaram sem
+   conteúdo da UC4 e estão em ENCONTROS_SEM_AULA, abaixo.
    ============================================================ */
 
 window.AULAS = [
-  { n:  1, data: "2026-09-09", ciclo: 1, titulo: "Primeira API com FastAPI", pronto: true  },
-  { n:  2, data: "2026-09-10", ciclo: 1, titulo: "Métodos HTTP, status e rotas", pronto: true  },
-  { n:  3, data: "2026-09-14", ciclo: 1, titulo: "Validação de dados com Pydantic", pronto: true  },
-  { n:  4, data: "2026-09-15", ciclo: 1, titulo: "Organização do código em camadas", pronto: false },
-  { n:  5, data: "2026-09-16", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: false, avaliacao: true },
-  { n:  6, data: "2026-09-17", ciclo: 2, titulo: "Modelagem de dados e conexão com MySQL", pronto: false },
-  { n:  7, data: "2026-09-21", ciclo: 2, titulo: "Introdução ao SQLAlchemy", pronto: false },
-  { n:  8, data: "2026-09-23", ciclo: 2, titulo: "CRUD e transações com ORM", pronto: false },
-  { n:  9, data: "2026-09-24", ciclo: 2, titulo: "Relacionamentos, consultas e migrations", pronto: false },
-  { n: 10, data: "2026-09-28", ciclo: 2, titulo: "Avaliação · Ciclo 2", pronto: false, avaliacao: true },
-  { n: 11, data: "2026-09-30", ciclo: 3, titulo: "Regras de negócio e tratamento de exceções", pronto: false },
-  { n: 12, data: "2026-10-01", ciclo: 3, titulo: "Consolidação e documentação da API", pronto: false },
-  { n: 13, data: "2026-10-05", ciclo: 4, titulo: "Cadastro de usuários e proteção de senhas", pronto: false },
-  { n: 14, data: "2026-10-07", ciclo: 4, titulo: "Autenticação e autorização com JWT", pronto: false },
-  { n: 15, data: "2026-10-08", ciclo: 4, titulo: "Integração com API de IA", pronto: false },
-  { n: 16, data: "2026-10-19", ciclo: 4, titulo: "Segurança da aplicação · Avaliação final", pronto: false, avaliacao: true },
-  { n: 17, data: "2026-10-20", ciclo: 5, titulo: "Empacotamento e entrega com Docker", pronto: false },
-  { n: 18, data: "2026-10-21", ciclo: 5, titulo: "Arguição individual e retrospectiva", pronto: false }
+  { n:  1, data: "2026-09-10", ciclo: 1, titulo: "Primeira API com FastAPI", pronto: true  },
+  { n:  2, data: "2026-09-14", ciclo: 1, titulo: "Métodos HTTP, status e rotas", pronto: true  },
+  { n:  3, data: "2026-09-16", ciclo: 1, titulo: "Validação de dados com Pydantic", pronto: true  },
+  { n:  4, data: "2026-09-17", ciclo: 1, titulo: "Organização do código em camadas", pronto: false },
+  { n:  5, data: "2026-09-21", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: false, avaliacao: true },
+  { n:  6, data: "2026-09-23", ciclo: 2, titulo: "Modelagem de dados e conexão com MySQL", pronto: false },
+  { n:  7, data: "2026-09-24", ciclo: 2, titulo: "Introdução ao SQLAlchemy", pronto: false },
+  { n:  8, data: "2026-09-28", ciclo: 2, titulo: "CRUD e transações com ORM", pronto: false },
+  { n:  9, data: "2026-09-30", ciclo: 2, titulo: "Relacionamentos, consultas e migrations", pronto: false },
+  { n: 10, data: "2026-10-01", ciclo: 2, titulo: "Avaliação · Ciclo 2", pronto: false, avaliacao: true },
+  { n: 11, data: "2026-10-05", ciclo: 3, titulo: "Regras de negócio, exceções e documentação da API", pronto: false },
+  { n: 12, data: "2026-10-07", ciclo: 4, titulo: "Cadastro de usuários e proteção de senhas", pronto: false },
+  { n: 13, data: "2026-10-08", ciclo: 4, titulo: "Autenticação e autorização com JWT", pronto: false },
+  { n: 14, data: "2026-10-19", ciclo: 4, titulo: "Segurança da aplicação · Avaliação final", pronto: false, avaliacao: true },
+  { n: 15, data: "2026-10-20", ciclo: 5, titulo: "Integração com API de IA e README de entrega", pronto: false },
+  { n: 16, data: "2026-10-21", ciclo: 5, titulo: "Arguição individual e retrospectiva", pronto: false }
+];
+
+/* encontros da UC4 que contam como aula no diário, mas sem slides:
+   o índice mostra na lista do ciclo, sem número e sem link */
+window.ENCONTROS_SEM_AULA = [
+  { data: "2026-09-09", ciclo: 1, titulo: "Landing page da persona, pendência da UC5" },
+  { data: "2026-09-15", ciclo: 1, titulo: "Visita à Senior Sistemas" }
 ];
 
 window.CICLOS = [
-  { n: 1, nome: "O contrato",     aulas: "1 a 5",   guia: "A tela que eu já fiz precisa de quais dados?" },
-  { n: 2, nome: "A persistência", aulas: "6 a 10",  guia: "Por que meus dados somem quando eu reinicio o servidor?" },
-  { n: 3, nome: "As regras",      aulas: "11 a 12", guia: "O que o meu sistema não pode deixar acontecer?" },
-  { n: 4, nome: "O acesso",       aulas: "13 a 16", guia: "Quem pode fazer isso com os dados da minha persona?" },
-  { n: 5, nome: "A entrega",      aulas: "17 a 18", guia: "Você consegue explicar o que a IA escreveu?" }
+  { n: 1, nome: "O contrato",     aulas: "aulas 1 a 5",   guia: "A tela que eu já fiz precisa de quais dados?" },
+  { n: 2, nome: "A persistência", aulas: "aulas 6 a 10",  guia: "Por que meus dados somem quando eu reinicio o servidor?" },
+  { n: 3, nome: "As regras",      aulas: "aula 11",       guia: "O que o meu sistema não pode deixar acontecer?" },
+  { n: 4, nome: "O acesso",       aulas: "aulas 12 a 14", guia: "Quem pode fazer isso com os dados da minha persona?" },
+  { n: 5, nome: "A entrega",      aulas: "aulas 15 e 16", guia: "Você consegue explicar o que a IA escreveu?" }
 ];
 
 /* ============================================================

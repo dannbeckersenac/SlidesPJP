@@ -41,6 +41,10 @@
   .aula .estado { font: 400 10.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--suave-2); }
   .aula .estado.ok { color: var(--acento); font-weight: 700; }
   .aula .estado.trancado { color: var(--roxo); font-weight: 700; }
+  /* encontro sem slides: fica na lista para a data não parecer um buraco */
+  .aula.sem-aula { background: transparent; border-style: dashed; }
+  .aula.sem-aula .n { background: transparent; color: var(--suave-2); border: 1px dashed var(--linha); padding: 8px 0; }
+  .aula.sem-aula .t { font-family: inherit; font-weight: 400; font-size: 15px; font-style: italic; color: var(--suave); }
 
   @media (max-width: 620px) {
     .aula { grid-template-columns: 44px 1fr auto; grid-template-areas: "n t t" "n data estado";
@@ -91,7 +95,7 @@
   <div class="wrap">
     <p class="eyebrow">UC4 · Senac Blumenau · Turma 2026.10.78</p>
     <h1>Back-end de<br><em>Projetos Web</em></h1>
-    <p class="lede">18 encontros de 4 horas, organizados em cinco ciclos. O sistema de exemplo das aulas é um cardápio digital que emite pedidos, e cada aluno desenvolve o back-end da persona que sorteou.</p>
+    <p class="lede">18 encontros de 4 horas e 16 aulas, organizadas em cinco ciclos. Dois encontros ficaram sem conteúdo de back-end: a landing page da persona, que faltou na UC5, e a visita à Senior Sistemas. O sistema de exemplo das aulas é um cardápio digital que emite pedidos, e cada aluno desenvolve o back-end da persona que sorteou.</p>
 
     <div class="acoes">
       <a class="btn-principal" id="btnAula" href="#" hidden>
@@ -105,7 +109,7 @@
       <li><b>72 h</b><span>Carga horária</span></li>
       <li><b>18</b><span>Encontros</span></li>
       <li><b>5</b><span>Ciclos</span></li>
-      <li><b id="stLiberadas">0/18</b><span>Aulas liberadas</span></li>
+      <li><b id="stLiberadas">0/16</b><span>Aulas liberadas</span></li>
       <li><b id="stProxima">fim</b><span>Próxima aula</span></li>
     </ul>
   </div>
@@ -179,8 +183,22 @@
       return { cls: "", txt: "a liberar" };
     }
 
+    /* encontro sem slides: sem número, sem link, só a data e o que aconteceu */
+    function semAula(s) {
+      return '<li><div class="aula sem-aula">' +
+        '<span class="n">·</span>' +
+        '<span class="data">' + window.dataCurta(s.data) + '</span>' +
+        '<span class="t">' + s.titulo + '</span>' +
+        '<span class="estado">sem slides</span></div></li>';
+    }
+
     var html = window.CICLOS.map(function (c) {
-      var itens = window.AULAS.filter(function (a) { return a.ciclo === c.n; }).map(function (a) {
+      var doCiclo = function (a) { return a.ciclo === c.n; };
+      var linhas = window.AULAS.filter(doCiclo)
+        .concat((window.ENCONTROS_SEM_AULA || []).filter(doCiclo))
+        .sort(function (x, y) { return x.data < y.data ? -1 : 1; });
+      var itens = linhas.map(function (a) {
+        if (!("n" in a)) return semAula(a);
         var e = estado(a);
         var aberta = window.liberada(a);
         var cls = "aula" + (aberta ? "" : " indisponivel") + (a.avaliacao ? " aval" : "");
@@ -194,7 +212,7 @@
           : '<li><div class="' + cls + '">' + conteudo + '</div></li>';
       }).join("");
       return '<section class="ciclo"><div class="ciclo-cab"><span class="ciclo-tag">Ciclo ' + c.n +
-             ' · aulas ' + c.aulas + '</span><h2>' + c.nome + '</h2><p class="guia">“' + c.guia +
+             ' · ' + c.aulas + '</span><h2>' + c.nome + '</h2><p class="guia">“' + c.guia +
              '”</p></div><ul class="aulas">' + itens + '</ul></section>';
     }).join("");
     document.getElementById("lista").innerHTML = html;

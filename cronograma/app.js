@@ -49,6 +49,14 @@ const visitas = VISITAS.trim().split("\n").filter(Boolean).map(linha => {
 });
 const visitaPorData = Object.fromEntries(visitas.map(v => [v.data, v]));
 
+/* notas: encontros que aconteceram diferente do previsto */
+const notaPorData = Object.fromEntries(
+  (typeof NOTAS === "string" ? NOTAS : "").trim().split("\n").filter(Boolean).map(linha => {
+    const [, dia, texto] = linha.trim().match(/^(\S+)\s+(.*)$/);
+    return [`${ANO}-${dia}`, texto];
+  })
+);
+
 /* data de hoje no fuso local, sem passar por UTC */
 const agora = new Date();
 const hojeISO = [
@@ -264,7 +272,8 @@ for (let m = MES_INICIAL; m <= MES_FINAL; m++) {
       cel.style.setProperty("--c", `var(--${aula.uc})`);
       cel.setAttribute("aria-label",
         `${d} de ${MESES[m - 1]}: ${UC[aula.uc].sigla}, encontro ${aula.n} de ${UC[aula.uc].total}`
-        + (visita ? `, ${visita.local}, ${visita.nota}` : ""));
+        + (visita ? `, ${visita.local}, ${visita.nota}` : "")
+        + (notaPorData[iso] ? `, ${notaPorData[iso]}` : ""));
       if (visita) cel.classList.add("visita");
     } else if (pausa) {
       cel.classList.add("pausa");
@@ -361,7 +370,8 @@ function selecionar(iso, opcoes = {}) {
     dTitulo.textContent = UC[aula.uc].nome;
     dSub.textContent =
       `Encontro ${aula.n} de ${UC[aula.uc].total} · 4 horas` +
-      (aula.aval ? " · avaliação de fechamento" : "");
+      (aula.aval ? " · avaliação de fechamento" : "") +
+      (notaPorData[iso] ? ` · ${notaPorData[iso]}` : "");
   } else if (pausa) {
     detalhe.style.setProperty("--c", "var(--suave)");
     dTitulo.textContent = pausa.nome;
