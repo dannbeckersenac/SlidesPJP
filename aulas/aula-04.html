@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 04 · Organização do código em camadas · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="4">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 04</p>
+    <h1>Organização do código em camadas</h1>
+    <p class="sub">Hoje a sua rota para de fazer tudo sozinha.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 1 · O contrato</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Uma função, cinco tarefas</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/pedidos.py, duas semanas depois</div>
+      <pre><span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>, response_model=PedidoSaida)
+<span class="kw">def</span> <span class="fn">criar_pedido</span>(pedido: PedidoCriar):
+    item = <span class="kw">None</span>
+    <span class="kw">for</span> linha <span class="kw">in</span> cardapio:                       <span class="com"># 1. procura o item</span>
+        <span class="kw">if</span> linha[<span class="str">"id"</span>] == pedido.item_id:
+            item = linha
+    <span class="kw">if</span> item <span class="kw">is None</span>:                             <span class="com"># 2. escolhe o status</span>
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">404</span>, detail=<span class="str">"Item não existe"</span>)
+    total = item[<span class="str">"preco"</span>] * pedido.quantidade    <span class="com"># 3. faz a conta</span>
+    novo = {<span class="str">"id"</span>: <span class="fn">len</span>(pedidos) + <span class="num">1</span>, <span class="str">"total"</span>: total, **pedido.<span class="fn">model_dump</span>()}
+    pedidos.<span class="fn">append</span>(novo)                          <span class="com"># 4. guarda o dado</span>
+    <span class="kw">return</span> novo                                  <span class="com"># 5. devolve o JSON</span></pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR, PARTE 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Uma rota importando outra rota</h2>
+    <p class="intro">Para calcular o total, a rota de pedidos precisava do preço. O preço está no cardápio, e o cardápio mora dentro da rota de itens.</p>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/pedidos.py, primeiras linhas</div>
+      <pre><span class="kw">from</span> fastapi <span class="kw">import</span> APIRouter, HTTPException
+<span class="kw">from</span> esquemas.pedido <span class="kw">import</span> PedidoCriar, PedidoSaida
+<span class="kw">from</span> rotas.itens <span class="kw">import</span> cardapio   <span class="com"># o cardápio mora lá dentro</span></pre>
+    </div>
+    <div class="alerta">No ciclo 2 esse cardápio vem do banco. Quando isso acontecer, <strong>as duas rotas mudam</strong>, e toda rota que tiver importado a lista muda junto.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · ANALOGIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Analogia</p>
+    <h2>Ninguém pede pizza para o estoquista</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">O salão</span><span class="d">O garçom anota o pedido e leva a resposta de volta. Ele não cozinha.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">A cozinha</span><span class="d">Decide como o prato é montado e faz a conta do que vai sair.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">A despensa</span><span class="d">Guarda o que tem e entrega quando pedem. Não decide nada.</span></div>
+    </div>
+    <div class="destaque">O garçom não sabe onde fica o saco de farinha, e a despensa não sabe o nome do cliente. <b>É isso que a gente vai fazer com o código de hoje.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · AS TRÊS CAMADAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>As três camadas</h2>
+    <p class="intro">Cada camada é uma pasta, e cada pasta faz uma coisa só.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Rota</span><span class="d"><code>rotas/</code> fala HTTP: lê o caminho, chama o serviço, escolhe o status e devolve JSON.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Serviço</span><span class="d"><code>servicos/</code> decide: junta os dados, faz as contas e monta o que vai ser guardado.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Repositório</span><span class="d"><code>repositorios/</code> guarda: entrega e grava o dado, sem saber para que serve.</span></div>
+    </div>
+    <p class="dica"><b>A direção é sempre a mesma:</b> a rota chama o serviço, o serviço chama o repositório. Nunca ao contrário.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · QUEM TOCA O QUÊ -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>O que pode aparecer em cada pasta</h2>
+    <table>
+      <thead><tr><th>Pasta</th><th>Pode usar</th><th>Nunca aparece nela</th></tr></thead>
+      <tbody>
+        <tr><td><code>rotas/</code></td><td class="neutro">APIRouter, HTTPException, status, esquemas</td><td>a lista de dados, a conta do total</td></tr>
+        <tr><td><code>servicos/</code></td><td class="neutro">os repositórios, os esquemas, as contas</td><td>HTTPException, status, APIRouter</td></tr>
+        <tr><td><code>repositorios/</code></td><td class="neutro">a lista em memória, o <code>for</code> que procura</td><td>conta, regra, HTTPException</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">A regra em uma frase: <b>a rota não toca no dado, e o serviço não sabe o que é 404.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · A ÁRVORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>O backend ao fim de hoje</h2>
+    <div class="codigo compacto">
+      <pre>backend/            <span class="com"># sem o venv/ e sem o __pycache__</span>
+├── .env                 <span class="com"># o endereço do front. fica fora do Git</span>
+├── .env.exemplo         <span class="com"># as mesmas chaves, sem valores. essa vai para o Git</span>
+├── configuracao.py      <span class="com"># lê o .env e entrega os valores</span>
+├── main.py              <span class="com"># cria o app, liga o CORS e os routers</span>
+├── esquemas/pedido.py   <span class="com"># o formato do dado, desde a aula 3</span>
+├── rotas/               <span class="com"># fala HTTP</span>
+│   ├── itens.py
+│   └── pedidos.py
+├── servicos/pedido.py   <span class="com"># decide. pasta nova</span>
+└── repositorios/        <span class="com"># guarda. pasta nova</span>
+    ├── item.py
+    └── pedido.py</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · PYTHON QUE FALTAVA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>O import quando o projeto tem pastas</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">as duas novidades da linha de import</div>
+      <pre><span class="com"># um arquivo vazio chamado __init__.py dentro de cada pasta</span>
+<span class="com"># marca aquela pasta como um pacote do seu projeto</span>
+
+<span class="kw">from</span> repositorios <span class="kw">import</span> pedido <span class="kw">as</span> repositorio  <span class="com"># as: dá um apelido</span>
+
+repositorio.<span class="fn">salvar</span>(novo)   <span class="com"># o apelido é o nome que você usa daqui para baixo</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie um arquivo vazio <code>__init__.py</code> dentro de <code>rotas/</code> e de <code>esquemas/</code>.</li>
+      <li>No terminal, rode <code>ls rotas</code> e confira que ele está lá, do lado dos seus arquivos.</li>
+    </ol>
+    <p class="dica"><b>Sem ele o import também funciona.</b> Com ele, a pasta é um pacote de propósito, e não por acidente.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · CALIBRAGEM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes da mão na massa</p>
+    <h2>Se o seu backend está diferente</h2>
+    <p class="intro">Duas pastas novas entram hoje. Antes de criar qualquer coisa, alinhe o que já existe.</p>
+    <ol class="passos curta">
+      <li>Copie o prompt pelo botão abaixo e cole no assistente, com o repositório aberto.</li>
+      <li>Leia a lista de diferenças que ele devolve. Até aqui ele não mexeu em nada.</li>
+      <li>Responda <code>pode seguir</code> só se concordar com cada movimento da lista.</li>
+      <li>Rode <code>fastapi dev main.py</code> e abra o <code>/docs</code>. As rotas de antes continuam lá.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-04-estrutura.md">copiar o prompt que alinha a estrutura</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 7</p>
+    <h2>A despensa guarda o cardápio</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/item.py</div>
+      <pre>cardapio = [                      <span class="com"># a lista que estava em rotas/itens.py</span>
+    {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"nome"</span>: <span class="str">"Pizza Marguerita"</span>, <span class="str">"preco"</span>: <span class="num">39.90</span>, <span class="str">"categoria"</span>: <span class="str">"prato"</span>},
+]
+
+<span class="kw">def</span> <span class="fn">buscar_por_id</span>(item_id: <span class="kw">int</span>):  <span class="com"># o mesmo for da aula 2, agora aqui</span>
+    <span class="kw">for</span> item <span class="kw">in</span> cardapio:
+        <span class="kw">if</span> item[<span class="str">"id"</span>] == item_id:
+            <span class="kw">return</span> item
+    <span class="kw">return</span> <span class="kw">None</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie <code>repositorios/</code> com o <code>__init__.py</code> vazio e mova o <code>cardapio</code> inteiro para o <code>item.py</code>.</li>
+      <li>Escreva também um <code>listar()</code> de duas linhas, que só devolve o <code>cardapio</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 7</p>
+    <h2>E guarda os pedidos também</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/pedido.py</div>
+      <pre>pedidos = []                  <span class="com"># a lista saiu de rotas/pedidos.py</span>
+
+<span class="kw">def</span> <span class="fn">salvar</span>(pedido: <span class="kw">dict</span>):     <span class="com"># gera o id, guarda e devolve</span>
+    pedido[<span class="str">"id"</span>] = <span class="fn">len</span>(pedidos) + <span class="num">1</span>
+    pedidos.<span class="fn">append</span>(pedido)
+    <span class="kw">return</span> pedido</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>repositorios/pedido.py</code> com o código acima.</li>
+      <li>Escreva também <code>listar()</code> e <code>buscar_por_id()</code>, iguais aos de <code>item.py</code>, trocando <code>cardapio</code> por <code>pedidos</code>.</li>
+      <li>Releia as três funções: nenhuma delas sabe o que é HTTP. É esse o teste da camada.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 7</p>
+    <h2>A cozinha decide, e não fala HTTP</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/servicos/pedido.py · from esquemas.pedido import PedidoCriar</div>
+      <pre><span class="kw">from</span> repositorios <span class="kw">import</span> item <span class="kw">as</span> repositorio_item, pedido <span class="kw">as</span> repositorio_pedido
+
+<span class="kw">def</span> <span class="fn">criar</span>(pedido: PedidoCriar):
+    escolhido = repositorio_item.<span class="fn">buscar_por_id</span>(pedido.item_id)
+    <span class="kw">if</span> escolhido <span class="kw">is None</span>:                      <span class="com"># item que não existe</span>
+        <span class="kw">return</span> <span class="kw">None</span>
+    total = escolhido[<span class="str">"preco"</span>] * pedido.quantidade  <span class="com"># a conta mora aqui</span>
+    <span class="kw">return</span> repositorio_pedido.<span class="fn">salvar</span>({<span class="str">"total"</span>: total, **pedido.<span class="fn">model_dump</span>()})</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie <code>servicos/</code> com o <code>__init__.py</code> vazio e o arquivo acima.</li>
+      <li>Escreva também um <code>buscar_por_id</code> de uma linha, que só repassa para o repositório.</li>
+      <li>Salve e confira o terminal do <code>fastapi dev</code>: ele recarrega sem erro de import.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · MÃO NA MASSA 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 7</p>
+    <h2>O salão só conversa</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/pedidos.py · from servicos import pedido as servico</div>
+      <pre><span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>, response_model=PedidoSaida)
+<span class="kw">def</span> <span class="fn">criar_pedido</span>(pedido: PedidoCriar):
+    novo = servico.<span class="fn">criar</span>(pedido)              <span class="com"># pede para a cozinha</span>
+    <span class="kw">if</span> novo <span class="kw">is None</span>:                       <span class="com"># traduz o None para HTTP</span>
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">404</span>, detail=<span class="str">"Item não existe"</span>)
+    <span class="kw">return</span> novo</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Apague da rota o <code>for</code>, a conta, o <code>append</code> e o <code>from rotas.itens import cardapio</code>.</li>
+      <li>Acrescente <code>total: float</code> ao <code>PedidoSaida</code>, senão o <code>response_model</code> corta o campo na saída.</li>
+      <li>Em <code>rotas/itens.py</code>, troque o acesso à lista por <code>repositorio.listar()</code> e <code>repositorio.buscar_por_id()</code>.</li>
+      <li>No <code>/docs</code>, mande um <code>item_id</code> que não existe e confira o <code>404</code>. Com um válido, confira o <code>total</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · PARA ONDE FOI CADA PEDAÇO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O que acabou de acontecer</p>
+    <h2>Para onde foi cada pedaço</h2>
+    <table>
+      <thead><tr><th>O que a rota fazia</th><th>Onde mora agora</th></tr></thead>
+      <tbody>
+        <tr><td>procurar o item no cardápio</td><td><code>repositorios/item.py</code></td></tr>
+        <tr><td>multiplicar preço por quantidade</td><td><code>servicos/pedido.py</code></td></tr>
+        <tr><td>gerar o id e guardar na lista</td><td><code>repositorios/pedido.py</code></td></tr>
+        <tr><td>escolher entre 201 e 404</td><td><code>rotas/pedidos.py</code></td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">Nada sumiu e nada ficou mais curto no total. <b>O que mudou é que agora existe um lugar certo para cada linha nova.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · A DOR DO ENDEREÇO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A segunda dor de hoje</p>
+    <h2>O endereço do front está escrito no código</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/main.py, como ficou na aula 3</div>
+      <pre>app.<span class="fn">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=[<span class="str">"http://localhost:5173"</span>],   <span class="com"># chumbado</span>
+)</pre>
+    </div>
+    <p class="intro">O seu front roda em <code>5173</code>. O da máquina do laboratório pode subir em outra porta, e o endereço de produção não é nenhum dos dois.</p>
+    <div class="alerta">É o mesmo problema dos preços chumbados no React da aula 1, agora do lado do servidor. E no ciclo 4 o que entra aqui é <strong>segredo</strong>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · MÃO NA MASSA 5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 7</p>
+    <h2>O que muda de máquina sai do código</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/.env</div>
+      <pre>ORIGEM_DO_FRONT=http://localhost:5173</pre>
+    </div>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/.gitignore</div>
+      <pre>venv/
+.env</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>.env</code> dentro de <code>backend/</code>, com o endereço exato do seu front.</li>
+      <li>Garanta que o <code>.gitignore</code> tem o <code>.env</code>. Arquivo de configuração não vai para o GitHub.</li>
+      <li>Crie o <code>.env.exemplo</code> com as mesmas chaves e sem os valores. <b>Esse vai</b>, para quem clonar saber o que preencher.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · MÃO NA MASSA 6 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 6 de 7</p>
+    <h2>Um lugar só para ler configuração</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/configuracao.py</div>
+      <pre><span class="kw">import</span> os
+<span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv   <span class="com"># já veio com o fastapi[standard]</span>
+
+<span class="fn">load_dotenv</span>()              <span class="com"># lê o .env e joga tudo no ambiente do processo</span>
+
+<span class="kw">def</span> <span class="fn">obter_configuracao</span>():  <span class="com"># os.getenv pega uma chave do ambiente</span>
+    <span class="kw">return</span> {<span class="str">"origem_do_front"</span>: os.<span class="fn">getenv</span>(<span class="str">"ORIGEM_DO_FRONT"</span>)}</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>configuracao.py</code> do lado do <code>main.py</code>.</li>
+      <li>No <code>main.py</code>, guarde <code>configuracao = obter_configuracao()</code> antes de criar o <code>app</code>.</li>
+      <li>Troque o endereço escrito à mão por <code>configuracao["origem_do_front"]</code>. A tela do React continua igual.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · A DOR DO 404 REPETIDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A terceira dor de hoje</p>
+    <h2>O mesmo 404, em toda rota que tem id</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Ver um pedido</div>
+        <div class="codigo compacto"><pre><span class="fn">@router.get</span>(<span class="str">"/{pedido_id}"</span>)
+<span class="kw">def</span> <span class="fn">obter_pedido</span>(pedido_id: <span class="kw">int</span>):
+    p = servico.<span class="fn">buscar_por_id</span>(pedido_id)
+    <span class="kw">if</span> p <span class="kw">is None</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(
+            status_code=<span class="num">404</span>,
+            detail=<span class="str">"Pedido não encontrado"</span>)
+    <span class="kw">return</span> p</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">Cancelar um pedido</div>
+        <div class="codigo compacto"><pre><span class="fn">@router.delete</span>(<span class="str">"/{pedido_id}"</span>)
+<span class="kw">def</span> <span class="fn">apagar_pedido</span>(pedido_id: <span class="kw">int</span>):
+    p = servico.<span class="fn">buscar_por_id</span>(pedido_id)
+    <span class="kw">if</span> p <span class="kw">is None</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(
+            status_code=<span class="num">404</span>,
+            detail=<span class="str">"Pedido não encontrado"</span>)
+    servico.<span class="fn">apagar</span>(p)
+    <span class="kw">return</span> {<span class="str">"apagado"</span>: pedido_id}</pre></div>
+      </div>
+    </div>
+    <p class="dica">O miolo das duas é igual, e vai se repetir no <code>PUT</code>. <b>Cada rota nova com id copia o mesmo bloco.</b></p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · CONCEITO DEPENDS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Depends: a rota pede, o FastAPI entrega</h2>
+    <p class="intro">Em vez de a rota buscar o pedido, ela declara que só roda se um pedido existente chegar pronto. Quem providencia é o FastAPI.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Você escreve</span><span class="d">Uma função comum que faz o trabalho e devolve o que a rota vai usar.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">A rota declara</span><span class="d">Um parâmetro com <code>Depends(funcao)</code> no lugar do valor.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">O FastAPI resolve</span><span class="d">Chama a função antes da rota e entrega o resultado no parâmetro.</span></div>
+    </div>
+    <p class="dica"><b>Guarde esta peça:</b> no ciclo 2 é ela que vai entregar a conexão com o banco a cada requisição.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · MÃO NA MASSA 7 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 7 de 7</p>
+    <h2>A busca vira uma dependência</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/pedidos.py · from fastapi import Depends</div>
+      <pre><span class="kw">def</span> <span class="fn">pedido_existente</span>(pedido_id: <span class="kw">int</span>):     <span class="com"># função comum, fora de rota</span>
+    pedido = servico.<span class="fn">buscar_por_id</span>(pedido_id)
+    <span class="kw">if</span> pedido <span class="kw">is None</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">404</span>, detail=<span class="str">"Pedido não encontrado"</span>)
+    <span class="kw">return</span> pedido
+<span class="fn">@router.get</span>(<span class="str">"/{pedido_id}"</span>, response_model=PedidoSaida)
+<span class="kw">def</span> <span class="fn">obter_pedido</span>(pedido=<span class="fn">Depends</span>(pedido_existente)):
+    <span class="kw">return</span> pedido</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Escreva a função no arquivo de rotas, logo depois do <code>router</code>.</li>
+      <li>Nas rotas com id, troque o parâmetro por <code>pedido=Depends(pedido_existente)</code>.</li>
+      <li>Teste <code>/pedidos/1</code> e <code>/pedidos/99</code>. O 404 continua, escrito uma vez só.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 04</p>
+    <h2>Três pastas, um caminho só</h2>
+    <p class="intro">Ao final da atividade, nenhuma rota do seu projeto toca na lista de dados.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Quebre o recurso principal da sua persona em <code>rotas/</code>, <code>servicos/</code> e <code>repositorios/</code>.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Tire o endereço do front do código: <code>.env</code>, <code>.env.exemplo</code> e <code>configuracao.py</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Use <code>Depends</code> em pelo menos duas rotas que recebem um id.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Escreva no README <b>por que</b> uma das suas linhas ficou no serviço, e não na rota.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-04-camadas.md">copiar o prompt que audita as camadas</button>
+      <a class="btn" href="../prompts/aula-04-regras.md" download="REGRAS_AULA4.md">baixar o REGRAS_AULA4.md</a>
+    </div>
+    <p class="dica"><b>Entrega no repositório</b> até o fim da aula. Na aula 5 o seu React consome tudo isso.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 4</h2>
+    <ul class="recap">
+      <li>Rota <b>fala HTTP</b>, serviço <b>decide</b>, repositório <b>guarda</b>. Uma responsabilidade por pasta.</li>
+      <li>A chamada vai sempre em uma direção: <b>rota, serviço, repositório</b>.</li>
+      <li>O serviço devolve <code>None</code>. Quem transforma isso em <b>404</b> é a rota.</li>
+      <li>O que muda de máquina vive no <code>.env</code>, e o <code>.env</code> <b>não vai para o Git</b>.</li>
+      <li><code>Depends</code> escreve uma vez só o que várias rotas repetiam.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> a entrega do ciclo 1. O React da sua persona vai consumir a API inteira, com tela de carregando e tela de erro.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

@@ -188,6 +188,16 @@ repo-do-aluno/
 **Estrutura interna do backend, ensinada a partir da aula 4:** `router` → `service` → `repository`.
 A rota não acessa banco; o service não sabe que existe SQL.
 
+**Fatiar por camada é escolha, não consenso, e a aula 15 diz isso em voz alta.** O FastAPI não
+prescreve estrutura. A documentação oficial para em `routers/` e não tem serviço nem repositório; o
+template do próprio Tiangolo vai da rota direto para um `crud.py`, sem camada de serviço; e o
+`fastapi-best-practices`, o mais citado da comunidade, recomenda fatiar por domínio
+(`src/pedidos/router.py`, `src/pedidos/service.py`). Aqui a camada venceu porque ela é a unidade
+pedagógica do curso e porque cada aluno tem um ou dois recursos, onde fatiar por domínio só cria
+pasta vazia. A turma precisa ouvir isso uma vez, no ciclo 5: quando ela pedir um back-end pronto
+para a IA, a versão por domínio vai aparecer, e o aluno tem que reconhecer outra convenção em vez
+de achar que errou.
+
 **A estrutura de pastas do backend, aula a aula.** Nomes em português. Toda aula que cria pasta ou
 arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de calibragem (seção 11).
 
@@ -196,10 +206,26 @@ arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de ca
 | 1 | `venv/`, `main.py` com a rota `/health` |
 | 2 | `rotas/<recurso>.py` no plural, com `APIRouter` e a lista em memória; o `main.py` só liga os routers |
 | 3 | `esquemas/<recurso>.py` no singular, com os esquemas Pydantic de entrada e de saída |
-| 4 em diante | definir ao criar a aula 4, no mesmo padrão (os `regras` da aula 3 já proíbem `servicos/` e `repositorios/`, que são os nomes naturais) |
+| 4 | `servicos/<recurso>.py` e `repositorios/<recurso>.py`, no singular, mais o `__init__.py` vazio em cada pasta; `.env`, `.env.exemplo` e `configuracao.py` na raiz do `backend/` |
+| 5 em diante | definir ao criar a aula, no mesmo padrão |
 
 **Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
 A palavra **modelo** fica para a classe do SQLAlchemy, na aula 7. Não misture nos slides.
+
+**O que a chegada do ORM muda nas camadas.** A estrutura da aula 4 foi testada contra uma versão
+com SQLAlchemy antes de virar slide. O `main.py` e o `configuracao.py` não mudam uma linha, e os
+nomes das funções do repositório continuam os mesmos: só o corpo delas é reescrito. Três coisas
+mudam para cima, e elas são conteúdo das aulas 7 e 8, não conserto de aula 4:
+
+- **A sessão atravessa as camadas.** Toda função de serviço e de repositório ganha `sessao` como
+  primeiro parâmetro, e a rota recebe a sessão por `Depends`. É o item "sessão por requisição" do
+  ledger da aula 8, e ele sai barato porque o `Depends` já entrou na aula 4.
+- **O repositório para de devolver dicionário e passa a devolver objeto.** O serviço que escrevia
+  `item["preco"]` passa a escrever `item.preco`. É uma linha no projeto inteiro, e vale um slide na
+  aula 7, porque sem ela o erro aparece como 500 em tempo de execução, não como aviso.
+- **O esquema de saída precisa ler de objeto.** O `PedidoSaida` ganha
+  `model_config = ConfigDict(from_attributes=True)`, senão o `response_model` não monta a resposta
+  a partir do modelo.
 
 ---
 
@@ -224,7 +250,7 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 12 | entidade usuário, hash de senha, segredo fora do código |
 | 13 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
 | 14 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |
-| 15 | chamada a API de LLM, higienização de input, timeout, falha, custo; README de entrega |
+| 15 | chamada a API de LLM, higienização de input, timeout, falha, custo; README de entrega; convenções de estrutura de projeto, para reconhecer o que a IA gera |
 | 16 | arguição individual, retrospectiva |
 
 Docker não entra na UC4: vai para a UC2. Não use em slide nem em `regras`.

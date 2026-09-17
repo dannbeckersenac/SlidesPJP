@@ -13,7 +13,7 @@ window.AULAS = [
   { n:  1, data: "2026-09-10", ciclo: 1, titulo: "Primeira API com FastAPI", pronto: true  },
   { n:  2, data: "2026-09-14", ciclo: 1, titulo: "Métodos HTTP, status e rotas", pronto: true  },
   { n:  3, data: "2026-09-16", ciclo: 1, titulo: "Validação de dados com Pydantic", pronto: true  },
-  { n:  4, data: "2026-09-17", ciclo: 1, titulo: "Organização do código em camadas", pronto: false },
+  { n:  4, data: "2026-09-17", ciclo: 1, titulo: "Organização do código em camadas", pronto: true  },
   { n:  5, data: "2026-09-21", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: false, avaliacao: true },
   { n:  6, data: "2026-09-23", ciclo: 2, titulo: "Modelagem de dados e conexão com MySQL", pronto: false },
   { n:  7, data: "2026-09-24", ciclo: 2, titulo: "Introdução ao SQLAlchemy", pronto: false },
