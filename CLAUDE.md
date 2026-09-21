@@ -160,16 +160,16 @@ Houve **dois sorteios**, e o segundo manda:
 
 - **Aulas 1 a 4, a persona de treino.** Sorteada na aula 1, em sala e sem arquivo no repositório.
   O projeto dela foi o treino do ciclo 1 e fica no repositório antigo do aluno, como referência.
-- **Aula 5 em diante, a cartilha.** Seis cartilhas, cada uma sorteada para **dois** alunos, que
+- **Aula 5 em diante, a cartilha.** Cinco cartilhas para dez alunos, cada uma sorteada para **dois** alunos, que
   resolvem o mesmo problema separados. A cartilha vira o projeto do aluno, num repositório novo, até
   a aula 16. A ideia é comparar como os dois pensaram, e a apresentação pergunta isso.
 
 **As cartilhas são exclusivas do professor.** Elas moram em `docente/cartilhas/`, pasta que está no
 `.gitignore`: nunca vão para o repositório nem para o GitHub Pages, e quem clona este repositório não
 as tem. O sorteio é feito pela página `docente/sorteio.html`, aberta direto do disco, que embute as
-seis e permite baixar ou imprimir cada uma para entregar ao aluno. Editou uma cartilha, rode
-`python3 docente/gerar-sorteio.py` para regenerar a página. O `docente/cartilhas/README.md` explica
-o esqueleto que deixa as seis do mesmo tamanho. Nenhum slide, prompt ou arquivo versionado pode
+cinco e permite baixar ou imprimir cada uma para entregar ao aluno. Editou uma cartilha, rode
+`python3 docente/gerador/gerar.py` para regenerar a página. O `docente/cartilhas/README.md` explica
+o esqueleto que deixa as cinco do mesmo tamanho. Nenhum slide, prompt ou arquivo versionado pode
 citar nome, negócio ou regra de cartilha.
 
 **O trabalho é individual da aula 1 à 16**: cada aluno tem o seu repositório e entrega sozinho. Os
