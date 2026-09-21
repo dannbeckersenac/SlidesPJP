@@ -32,6 +32,11 @@ Object.keys(UC).forEach(k => (UC[k].total = contagem[k] || 0));
 
 const porData = Object.fromEntries(aulas.map(a => [a.data, a]));
 
+/* a última avaliação de cada unidade é a de fechamento; as anteriores são parciais */
+const ultimaAval = {};
+aulas.filter(a => a.aval).forEach(a => (ultimaAval[a.uc] = a.data));
+aulas.forEach(a => (a.fechamento = a.aval && ultimaAval[a.uc] === a.data));
+
 const pausas = PAUSAS.trim().split("\n").map(linha => {
   /* o limite do split corta o resto da linha em vez de parar de dividir,
      então o dia sai por captura e o nome fica inteiro */
@@ -315,7 +320,7 @@ function cartaoMarcos(titulo, itens) {
 }
 
 cartaoMarcos("Encontros de avaliação", aulas.filter(a => a.aval).map(a => ({
-  data: diaMes(a.data), uc: a.uc, titulo: UC[a.uc].sigla, sub: "fechamento da unidade"
+  data: diaMes(a.data), uc: a.uc, titulo: UC[a.uc].sigla, sub: a.fechamento ? "fechamento da unidade" : "avaliação parcial"
 })));
 
 cartaoMarcos("Encontros fora do Senac", visitas.map(v => ({
@@ -370,7 +375,7 @@ function selecionar(iso, opcoes = {}) {
     dTitulo.textContent = UC[aula.uc].nome;
     dSub.textContent =
       `Encontro ${aula.n} de ${UC[aula.uc].total} · 4 horas` +
-      (aula.aval ? " · avaliação de fechamento" : "") +
+      (aula.fechamento ? " · avaliação de fechamento" : aula.aval ? " · avaliação parcial" : "") +
       (notaPorData[iso] ? ` · ${notaPorData[iso]}` : "");
   } else if (pausa) {
     detalhe.style.setProperty("--c", "var(--suave)");

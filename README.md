@@ -18,7 +18,7 @@ O arquivo `.nojekyll` já está incluído. Sem ele o GitHub Pages ignora pastas 
 index.html              índice navegável, montado a partir do manifesto
 assets/css/slides.css   o sistema visual inteiro (porte do template_aulas.pptx)
 assets/css/navegacao.css  cabeçalho e tema claro/escuro comuns ao índice e ao cronograma
-assets/js/aulas.js      MANIFESTO: datas, títulos e ciclos das 16 aulas, mais os encontros sem aula
+assets/js/aulas.js      MANIFESTO: datas, títulos e ciclos das 15 aulas, mais os encontros sem aula
 assets/js/slides.js     navegação, escala e barra inferior
 assets/js/tema.js       troca de tema do índice e do cronograma (os slides não têm tema)
 cronograma/             o calendário do ano, com as seis UCs

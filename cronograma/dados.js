@@ -6,7 +6,8 @@
    cronograma, mexa aqui e nada mais.
 
    AULAS   -> uma linha por encontro: "MM-DD chave [*]"
-              o asterisco marca encontro de avaliação
+              o asterisco marca encontro de avaliação; o último
+              marcado de cada unidade é o de fechamento
    PAUSAS  -> "MM-DD tipo|nome" (tipo: feriado, pausa, evento)
    VISITAS -> "MM-DD local|instrução"
               encontro que conta como aula, no horário de sempre,
@@ -110,12 +111,12 @@ const AULAS = `
 09-15 back
 09-16 back
 09-17 back
-09-21 back
-09-23 back
+09-21 back *
+09-23 back *
 09-24 back
 09-28 back
 09-30 back
-10-01 back
+10-01 back *
 10-05 back
 10-07 back
 10-08 back
@@ -166,6 +167,7 @@ const VISITAS = `
 
 const NOTAS = `
 09-09 encontro usado para terminar a landing page da persona, pendência da UC5; as aulas de back-end começaram em 10/09
+09-23 segundo dia da avaliação do Ciclo 1, que começou em 21/09
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

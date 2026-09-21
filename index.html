@@ -45,6 +45,7 @@
   .aula.sem-aula { background: transparent; border-style: dashed; }
   .aula.sem-aula .n { background: transparent; color: var(--suave-2); border: 1px dashed var(--linha); padding: 8px 0; }
   .aula.sem-aula .t { font-family: inherit; font-weight: 400; font-size: 15px; font-style: italic; color: var(--suave); }
+  .aula.sem-aula.aval .n { color: var(--vermelho); border-color: var(--vermelho); }
 
   @media (max-width: 620px) {
     .aula { grid-template-columns: 44px 1fr auto; grid-template-areas: "n t t" "n data estado";
@@ -95,7 +96,7 @@
   <div class="wrap">
     <p class="eyebrow">UC4 · Senac Blumenau · Turma 2026.10.78</p>
     <h1>Back-end de<br><em>Projetos Web</em></h1>
-    <p class="lede">18 encontros de 4 horas e 16 aulas, organizadas em cinco ciclos. Dois encontros ficaram sem conteúdo de back-end: a landing page da persona, que faltou na UC5, e a visita à Senior Sistemas. O sistema de exemplo das aulas é um cardápio digital que emite pedidos, e cada aluno desenvolve o back-end da persona que sorteou.</p>
+    <p class="lede">18 encontros de 4 horas e 15 aulas, organizadas em cinco ciclos. Três encontros não têm slides: a landing page da persona, que faltou na UC5, a visita à Senior Sistemas e o segundo dia da avaliação do Ciclo 1. O sistema de exemplo das aulas é um cardápio digital que emite pedidos, e cada aluno desenvolve o back-end da persona que sorteou.</p>
 
     <div class="acoes">
       <a class="btn-principal" id="btnAula" href="#" hidden>
@@ -109,7 +110,7 @@
       <li><b>72 h</b><span>Carga horária</span></li>
       <li><b>18</b><span>Encontros</span></li>
       <li><b>5</b><span>Ciclos</span></li>
-      <li><b id="stLiberadas">0/16</b><span>Aulas liberadas</span></li>
+      <li><b id="stLiberadas">0/15</b><span>Aulas liberadas</span></li>
       <li><b id="stProxima">fim</b><span>Próxima aula</span></li>
     </ul>
   </div>
@@ -185,7 +186,7 @@
 
     /* encontro sem slides: sem número, sem link, só a data e o que aconteceu */
     function semAula(s) {
-      return '<li><div class="aula sem-aula">' +
+      return '<li><div class="aula sem-aula' + (s.avaliacao ? ' aval' : '') + '">' +
         '<span class="n">·</span>' +
         '<span class="data">' + window.dataCurta(s.data) + '</span>' +
         '<span class="t">' + s.titulo + '</span>' +
