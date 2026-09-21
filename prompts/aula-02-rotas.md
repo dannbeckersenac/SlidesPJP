@@ -15,7 +15,7 @@ Para cada rota, responda:
 4. O que acontece se o cliente mandar um id que não existe?
 
 Depois, me faça três perguntas sobre as minhas escolhas. Perguntas que o professor faria numa
-arguição, do tipo "por que este status e não outro".
+apresentação, do tipo "por que este status e não outro".
 
 Limites obrigatórios:
 

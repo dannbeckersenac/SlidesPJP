@@ -109,7 +109,7 @@ html, body {
 
 .slide.escuro .eyebrow { color: #7FA9FF; }
 
-code, .mono { font-family: var(--mono); }
+code, .mono { font-family: var(--mono); font-variant-ligatures: none; }
 
 p code, li code, td code, .intro code, .destaque code, .alerta code, .cartao code {
   font-family: var(--mono);
@@ -347,6 +347,8 @@ td:last-child.neutro { color: var(--cinza-texto); font-weight: 400; }
   line-height: 1.5;
   color: var(--cinza-claro);
   overflow-x: auto;
+  /* sem ligaduras: => e === aparecem como se digitam, não como seta e barra tripla */
+  font-variant-ligatures: none;
 }
 
 .codigo.compacto pre { font-size: 21px; }

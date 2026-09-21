@@ -34,7 +34,7 @@ por cima do arquivo da aula anterior. Só vale a versão mais nova.
   de `return lista` não ensina nada.
 - Na primeira vez que aparecer algo novo para mim (um decorador, um tipo, um parâmetro), explique
   em uma linha, no próprio comentário.
-- Os comentários ficam no código que eu entrego. É por eles que eu estudo antes da arguição.
+- Os comentários ficam no código que eu entrego. É por eles que eu estudo antes da apresentação.
 - Depois do código, escreva um resumo curto: quais arquivos você criou ou alterou, o que mudou em
   cada um e como eu testo, com a URL ou o comando e o que deve aparecer na tela.
 
@@ -42,4 +42,4 @@ por cima do arquivo da aula anterior. Só vale a versão mais nova.
 
 - Uma coisa por vez. Não adiante etapa que eu não pedi.
 - Se a tarefa exigir algo da lista de cima, avise antes de escrever código e proponha a versão simples.
-- Justifique cada decisão em uma linha. Eu preciso conseguir defender esse código na arguição.
+- Justifique cada decisão em uma linha. Eu preciso conseguir defender esse código na apresentação.

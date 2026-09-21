@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 05 · Integração com o front-end · Entrega do Ciclo 1 · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="5">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 05</p>
+    <h1>Integração com o front-end</h1>
+    <p class="sub">A tela aprende a esperar e a errar. Depois, você sorteia o projeto que vai até o fim do curso.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 1 · O contrato</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Derrube a API e olhe a tela</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">o fetch da aula 3, no componente da sua tela</div>
+      <pre><span class="kw">const</span> [itens, setItens] = <span class="fn">useState</span>([]);
+<span class="fn">useEffect</span>(() =&gt; {
+  <span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/itens"</span>)
+    .<span class="fn">then</span>((resposta) =&gt; resposta.<span class="fn">json</span>())
+    .<span class="fn">then</span>((dados) =&gt; <span class="fn">setItens</span>(dados));
+}, []);</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Com a tela aberta no navegador, pare o <code>fastapi dev</code> no terminal com <code>Ctrl+C</code>.</li>
+      <li>Recarregue a página do React.</li>
+      <li>Olhe a tela: vazia, sem aviso nenhum. O erro existe, mas só no console, que o usuário nunca abre.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>Quatro problemas, uma tela vazia</h2>
+    <table>
+      <thead><tr><th>O que aconteceu</th><th>O que a tela mostra</th></tr></thead>
+      <tbody>
+        <tr><td>a API está demorando</td><td>nada</td></tr>
+        <tr><td>a API caiu</td><td>nada</td></tr>
+        <tr><td>o endereço está errado e voltou 404</td><td>nada</td></tr>
+        <tr><td>a lista realmente está vazia</td><td>nada</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">O usuário não sabe se espera, se tenta de novo ou se desiste. <b>Hoje a tela passa a dizer qual das quatro está acontecendo.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · OS TRÊS ESTADOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Toda tela que busca dados vive em três estados</h2>
+    <p class="intro">Como o garçom da aula 4: ou o prato ainda não saiu, ou deu problema, ou chegou.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Carregando</span><span class="d">O pedido saiu e ainda não voltou. A tela avisa que está buscando.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Erro</span><span class="d">Voltou errado, ou nem voltou. A tela diz o que houve, em português.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Pronto</span><span class="d">Voltou certo. A tela mostra os dados, ou avisa que a lista está vazia.</span></div>
+    </div>
+    <p class="dica"><b>No código são três variáveis:</b> os dados, se ainda está carregando e qual foi o erro.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · O FETCH SÓ RECLAMA SEM RESPOSTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O fetch só reclama quando nem houve resposta</h2>
+    <table>
+      <thead><tr><th>Situação</th><th>O que o fetch faz</th><th>Cai no</th></tr></thead>
+      <tbody>
+        <tr><td>a API está fora do ar</td><td class="neutro">rejeita a promessa</td><td><code>.catch</code></td></tr>
+        <tr><td>a API respondeu 404 ou 500</td><td class="neutro">resolve, com <code>ok</code> falso</td><td><code>.then</code></td></tr>
+        <tr><td>a API respondeu 200 ou 201</td><td class="neutro">resolve, com <code>ok</code> verdadeiro</td><td><code>.then</code></td></tr>
+      </tbody>
+    </table>
+    <div class="alerta">Um 404 é uma resposta, então o fetch não vê problema nenhum. <strong>Quem decide que aquilo é erro é você</strong>, olhando o <code>resposta.ok</code>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · THROW E CATCH -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">JavaScript que faltava</p>
+    <h2>O throw pula direto para o catch</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">console do navegador · se ele recusar a colagem, digite allow pasting</div>
+      <pre><span class="fn">fetch</span>(<span class="str">"/nao-existe"</span>)
+  .<span class="fn">then</span>((resposta) =&gt; {
+    <span class="kw">if</span> (!resposta.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"a API respondeu "</span> + resposta.status);
+    <span class="kw">return</span> resposta.<span class="fn">json</span>();
+  })
+  .<span class="fn">then</span>((dados) =&gt; console.<span class="fn">log</span>(<span class="str">"chegou:"</span>, dados))
+  .<span class="fn">catch</span>((problema) =&gt; console.<span class="fn">log</span>(<span class="str">"caiu no catch:"</span>, problema.message));</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Com a API no ar, abra o <code>/docs</code>, aperte F12 e vá na aba Console.</li>
+      <li>Cole o código e aperte Enter. Aparece <code>caiu no catch: a API respondeu 404</code>.</li>
+      <li>Troque <code>/nao-existe</code> por uma rota da sua API e rode de novo. Aparece <code>chegou:</code> com os dados.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
+    <h2>Três variáveis, uma para cada pergunta</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">o componente da sua tela que faz o fetch</div>
+      <pre><span class="kw">const</span> [itens, setItens] = <span class="fn">useState</span>([]);             <span class="com">// os dados</span>
+<span class="kw">const</span> [carregando, setCarregando] = <span class="fn">useState</span>(<span class="kw">true</span>); <span class="com">// a tela nasce esperando</span>
+<span class="kw">const</span> [erro, setErro] = <span class="fn">useState</span>(<span class="kw">null</span>);             <span class="com">// ainda não deu errado</span></pre>
+    </div>
+    <ol class="passos">
+      <li>Abra o componente da sua tela que faz o <code>fetch</code>. O <code>useState</code> da lista fica.</li>
+      <li>Logo abaixo dele, acrescente o <code>carregando</code> e o <code>erro</code>.</li>
+      <li>Salve. A tela continua igual, porque ninguém usa as variáveis novas ainda.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
+    <h2>O fetch com os três desfechos</h2>
+    <div class="codigo compacto">
+      <pre><span class="fn">useEffect</span>(() =&gt; {
+  <span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/itens"</span>)
+    .<span class="fn">then</span>((resposta) =&gt; {
+      <span class="kw">if</span> (!resposta.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"a API respondeu "</span> + resposta.status);
+      <span class="kw">return</span> resposta.<span class="fn">json</span>();
+    })
+    .<span class="fn">then</span>((dados) =&gt; { <span class="fn">setItens</span>(dados); <span class="fn">setCarregando</span>(<span class="kw">false</span>); })
+    .<span class="fn">catch</span>((problema) =&gt; { <span class="fn">setErro</span>(problema.message); <span class="fn">setCarregando</span>(<span class="kw">false</span>); });
+}, []);</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Troque o <code>useEffect</code> antigo por este, e <code>/itens</code> pelo caminho da sua API.</li>
+      <li>Repare nos dois lugares que desligam o <code>carregando</code>: quando deu certo e quando deu errado.</li>
+      <li>Salve. O terminal do <code>npm run dev</code> não pode mostrar erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>Uma tela para cada estado</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">o return do mesmo componente</div>
+      <pre><span class="kw">if</span> (carregando) <span class="kw">return</span> &lt;p&gt;Buscando o cardápio&lt;/p&gt;;
+<span class="kw">if</span> (erro) <span class="kw">return</span> &lt;p&gt;Não deu para carregar: {erro}&lt;/p&gt;;
+<span class="kw">if</span> (itens.length === <span class="num">0</span>) <span class="kw">return</span> &lt;p&gt;O cardápio está vazio.&lt;/p&gt;;
+<span class="kw">return</span> (
+  &lt;ul&gt;
+    {itens.<span class="fn">map</span>((item) =&gt; &lt;li key={item.id}&gt;{item.nome}&lt;/li&gt;)}
+  &lt;/ul&gt;
+);</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Troque o <code>return</code> do componente pelas quatro saídas acima, nesta ordem.</li>
+      <li>Recarregue com a API no ar: os dados aparecem.</li>
+      <li>Pare o <code>fastapi dev</code> e recarregue. No lugar da tela vazia, aparece a mensagem de erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · O FETCH QUE ENVIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">JavaScript que faltava</p>
+    <h2>O fetch que envia dados</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">as opções de um POST · pedido é o objeto com os campos do formulário</div>
+      <pre><span class="kw">const</span> opcoes = {
+  method: <span class="str">"POST"</span>,                                  <span class="com">// o método da aula 2</span>
+  headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> }, <span class="com">// avisa que o corpo é JSON</span>
+  body: JSON.<span class="fn">stringify</span>(pedido),                    <span class="com">// o objeto vira texto</span>
+};</pre>
+    </div>
+    <div class="alerta">Sem o <code>Content-Type</code>, o FastAPI recebe o corpo como texto comum e responde <strong>422</strong>, mesmo com todos os campos certos.</div>
+    <p class="dica"><b>JSON.stringify</b> transforma o objeto no texto que viaja na requisição. O <code>resposta.json()</code> faz o caminho de volta.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · MÃO NA MASSA 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <h2>O formulário que cria</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">na função que o botão de enviar chama, logo depois das opcoes</div>
+      <pre><span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/pedidos"</span>, opcoes)
+  .<span class="fn">then</span>((resposta) =&gt; {
+    <span class="kw">if</span> (resposta.status === <span class="num">422</span>) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"confira os campos do formulário"</span>);
+    <span class="kw">if</span> (!resposta.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"a API respondeu "</span> + resposta.status);
+    <span class="kw">return</span> resposta.<span class="fn">json</span>();
+  })
+  .<span class="fn">then</span>((criado) =&gt; <span class="fn">setMensagem</span>(<span class="str">"Pedido "</span> + criado.id + <span class="str">" criado"</span>))
+  .<span class="fn">catch</span>((problema) =&gt; <span class="fn">setMensagem</span>(<span class="str">"Não foi: "</span> + problema.message));</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No formulário da sua tela, crie um estado <code>mensagem</code> e mostre ele abaixo do botão.</li>
+      <li>Na função do botão, monte as <code>opcoes</code> e chame o fetch acima.</li>
+      <li>Mande um campo inválido: aparece "confira os campos". Mande tudo certo: aparece o número criado.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · A VIRADA -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">A virada do ciclo</p>
+    <h2>O treino acabou</h2>
+    <p class="intro">O projeto das aulas 1 a 4 foi o seu treino. Ele fica no repositório antigo, como referência, e não entra na avaliação.</p>
+    <p class="intro">Hoje você sorteia um problema que ninguém da turma viu. Ele vira o seu projeto até a última aula do curso.</p>
+    <div class="destaque">Do zero: briefing, marca, styleguide, front e back. <b>Sozinho, com a IA, e explicando tudo que ela escrever.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · O SORTEIO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O sorteio</p>
+    <h2>Seis cartilhas, doze pessoas</h2>
+    <ol class="passos">
+      <li>Cada cartilha é um negócio com um problema, uma pessoa que usa e alguém que toca o negócio.</li>
+      <li>Cada cartilha sai para dois alunos, que trabalham separados.</li>
+      <li>Vocês não combinam nada: marca, cores, telas e rotas são de cada um.</li>
+      <li>Depois da entrega, cada um olha o que o outro fez. Na apresentação, você explica por que fez diferente.</li>
+    </ol>
+    <div class="destaque">As seis têm o mesmo tamanho de problema. <b>Ninguém tirou a cartilha fácil.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · A CARTILHA POR DENTRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O sorteio</p>
+    <h2>O que toda cartilha tem</h2>
+    <table>
+      <thead><tr><th>Peça</th><th>Em todas as seis</th></tr></thead>
+      <tbody>
+        <tr><td>Perfis</td><td class="neutro">a pessoa, no celular, e quem toca o negócio, no computador</td></tr>
+        <tr><td>Entidades</td><td class="neutro">o usuário, a principal, que é da pessoa, e a filha, que é da principal</td></tr>
+        <tr><td>Telas</td><td class="neutro">quatro: duas da pessoa e duas da gestão</td></tr>
+        <tr><td>O back</td><td class="neutro">cinco capacidades, escritas em português</td></tr>
+        <tr><td>A regra</td><td class="neutro">uma decisão que mora no serviço</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">A cartilha diz o que o back faz, não como as rotas se chamam. <b>Caminho, método e status são decisão sua.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · RECEBA A SUA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O sorteio</p>
+    <h2>Quando o seu número sair</h2>
+    <ol class="passos">
+      <li>Eu te entrego o arquivo da sua cartilha. Ela não está no material da aula.</li>
+      <li>Salve como <code>docs/CARTILHA.md</code> no repositório novo, sem alterar nada.</li>
+      <li>Leia inteira antes de abrir o editor, e sublinhe a regra do serviço.</li>
+      <li>Escreva as suas dúvidas e tire comigo antes de começar o briefing.</li>
+    </ol>
+    <div class="destaque">A cartilha é sua e do colega que tirou a mesma. <b>Não passe para o resto da turma.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · OS CINCO ENTREGÁVEIS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A avaliação</p>
+    <h2>Os cinco entregáveis</h2>
+    <table>
+      <thead><tr><th>Entregável</th><th>Onde fica no repositório novo</th></tr></thead>
+      <tbody>
+        <tr><td>Briefing</td><td><code>docs/BRIEFING.md</code></td></tr>
+        <tr><td>Marca e logo</td><td><code>docs/marca/</code></td></tr>
+        <tr><td>Styleguide</td><td><code>docs/styleguide/</code>, ou o link do Figma no README</td></tr>
+        <tr><td>Front</td><td><code>frontend/</code></td></tr>
+        <tr><td>Back</td><td><code>backend/</code></td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>Um repositório novo, só para a cartilha,</b> com um README na raiz que diz como rodar o front e o back.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · A RÉGUA DA UC5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A régua · o que veio da UC5</p>
+    <h2>Briefing, marca e styleguide</h2>
+    <ol class="passos">
+      <li><b>Briefing:</b> a dor com as suas palavras, os dois perfis, as jornadas e o que fica de fora.</li>
+      <li><b>Marca:</b> o nome, o logo colorido e em uma cor só, e três linhas sobre por que ele é assim.</li>
+      <li><b>Styleguide:</b> paleta com contraste AA, tipografia e os componentes base.</li>
+      <li><b>A ponte com o código:</b> as cores e as fontes do styleguide são as mesmas do CSS.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · A RÉGUA DA UC4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A régua · o que é desta UC</p>
+    <h2>Front e back</h2>
+    <ol class="passos">
+      <li><b>Front:</b> as quatro telas, e as da pessoa impecáveis no celular.</li>
+      <li><b>Três estados:</b> toda tela que busca dados mostra carregando, erro e vazio.</li>
+      <li><b>Back:</b> as cinco capacidades, em rotas, serviços, repositórios e esquemas.</li>
+      <li><b>A regra:</b> no serviço, e a recusa aparece na tela como mensagem.</li>
+      <li><b>O que não vai:</b> banco, login e senha. Os dados ficam em memória, como na aula 4.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · A APRESENTAÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A apresentação</p>
+    <h2>O que eu vou perguntar</h2>
+    <ol class="passos">
+      <li>Por que esta rota tem este caminho, este método e este status?</li>
+      <li>Onde está a regra da sua cartilha, e por que ela mora ali?</li>
+      <li>Derrube a sua API agora. O que a tela mostra?</li>
+      <li>O que o colega da mesma cartilha fez diferente, e por que você não fez igual?</li>
+    </ol>
+    <div class="destaque">A IA pode escrever. <b>Você tem que explicar.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · AVALIAÇÃO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Avaliação · Entrega do ciclo 1</p>
+    <h2>A sua cartilha, de ponta a ponta</h2>
+    <p class="intro">Individual, num repositório novo, que é o seu projeto até o fim do curso.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Briefing, marca e styleguide em <code>docs/</code>.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Front com as quatro telas, responsivo, com os <b>três estados</b> em toda busca.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Back com as cinco capacidades em camadas, e a <b>regra no serviço</b>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">README na raiz dizendo como rodar o front e o back.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-05-conferencia.md">copiar o prompt que confere a entrega</button>
+      <a class="btn" href="../prompts/aula-05-regras.md" download="REGRAS_AULA5.md">baixar o REGRAS_AULA5.md</a>
+    </div>
+    <p class="dica"><b>Prazo:</b> até o começo da primeira aula do ciclo 2. A apresentação vem depois da entrega.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 5</h2>
+    <ul class="recap">
+      <li>Toda tela que busca dados tem <b>três estados</b>: carregando, erro e pronto.</li>
+      <li>O fetch só rejeita quando não há resposta. O 404 você pega pelo <code>resposta.ok</code>.</li>
+      <li>Para enviar JSON: <code>method</code>, <code>Content-Type</code> e <code>JSON.stringify</code>. Sem o cabeçalho, 422.</li>
+      <li>A cartilha diz <b>o que</b> o sistema faz. O como é seu, e você defende na apresentação.</li>
+      <li>A cartilha vai até o fim do curso: <b>não troque de ideia</b> no meio do caminho.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> você derruba a API de propósito e vê os dados da sua cartilha sumirem. É a vez do banco de dados.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

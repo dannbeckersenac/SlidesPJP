@@ -14,7 +14,7 @@ window.AULAS = [
   { n:  2, data: "2026-09-14", ciclo: 1, titulo: "Métodos HTTP, status e rotas", pronto: true  },
   { n:  3, data: "2026-09-16", ciclo: 1, titulo: "Validação de dados com Pydantic", pronto: true  },
   { n:  4, data: "2026-09-17", ciclo: 1, titulo: "Organização do código em camadas", pronto: true  },
-  { n:  5, data: "2026-09-21", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: false, avaliacao: true },
+  { n:  5, data: "2026-09-21", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: true,  avaliacao: true },
   { n:  6, data: "2026-09-23", ciclo: 2, titulo: "Modelagem de dados e conexão com MySQL", pronto: false },
   { n:  7, data: "2026-09-24", ciclo: 2, titulo: "Introdução ao SQLAlchemy", pronto: false },
   { n:  8, data: "2026-09-28", ciclo: 2, titulo: "CRUD e transações com ORM", pronto: false },
@@ -25,7 +25,7 @@ window.AULAS = [
   { n: 13, data: "2026-10-08", ciclo: 4, titulo: "Autenticação e autorização com JWT", pronto: false },
   { n: 14, data: "2026-10-19", ciclo: 4, titulo: "Segurança da aplicação · Avaliação final", pronto: false, avaliacao: true },
   { n: 15, data: "2026-10-20", ciclo: 5, titulo: "Integração com API de IA e README de entrega", pronto: false },
-  { n: 16, data: "2026-10-21", ciclo: 5, titulo: "Arguição individual e retrospectiva", pronto: false }
+  { n: 16, data: "2026-10-21", ciclo: 5, titulo: "Apresentação individual e retrospectiva", pronto: false }
 ];
 
 /* encontros da UC4 que contam como aula no diário, mas sem slides:

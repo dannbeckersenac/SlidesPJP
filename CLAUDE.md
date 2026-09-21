@@ -156,13 +156,29 @@ mande o aluno achar o equivalente no projeto dele. "A sua tela tem um arquivo as
 
 ### De quem é o trabalho
 
-A **persona é sorteada individualmente** na aula 1: cada aluno recebe a sua, identifica a dor dela
-e constrói front mais back para resolvê-la. **O trabalho é individual da aula 1 à 16**: cada aluno
-tem o seu repositório e entrega sozinho. Não escreva "em equipe", "repositório da equipe" nem
-"outra equipe" em slide algum. Os slides mostram o cardápio; o exercício manda aplicar na persona.
+Houve **dois sorteios**, e o segundo manda:
 
-Nunca troque o domínio dos slides por outro exemplo, nem invente nomes de personas: elas são
-sorteadas em sala.
+- **Aulas 1 a 4, a persona de treino.** Sorteada na aula 1, em sala e sem arquivo no repositório.
+  O projeto dela foi o treino do ciclo 1 e fica no repositório antigo do aluno, como referência.
+- **Aula 5 em diante, a cartilha.** Seis cartilhas, cada uma sorteada para **dois** alunos, que
+  resolvem o mesmo problema separados. A cartilha vira o projeto do aluno, num repositório novo, até
+  a aula 16. A ideia é comparar como os dois pensaram, e a apresentação pergunta isso.
+
+**As cartilhas são exclusivas do professor.** Elas moram em `docente/cartilhas/`, pasta que está no
+`.gitignore`: nunca vão para o repositório nem para o GitHub Pages, e quem clona este repositório não
+as tem. O sorteio é feito pela página `docente/sorteio.html`, aberta direto do disco, que embute as
+seis e permite baixar ou imprimir cada uma para entregar ao aluno. Editou uma cartilha, rode
+`python3 docente/gerar-sorteio.py` para regenerar a página. O `docente/cartilhas/README.md` explica
+o esqueleto que deixa as seis do mesmo tamanho. Nenhum slide, prompt ou arquivo versionado pode
+citar nome, negócio ou regra de cartilha.
+
+**O trabalho é individual da aula 1 à 16**: cada aluno tem o seu repositório e entrega sozinho. Os
+dois alunos da mesma cartilha não são dupla nem equipe. Não escreva "em equipe", "em dupla",
+"repositório da equipe" nem "outra equipe" em slide algum. Os slides mostram o cardápio; o
+exercício manda aplicar na cartilha.
+
+Nunca troque o domínio dos slides por outro exemplo. Os nomes de pessoas e negócios existem só nas
+cartilhas: não invente outros em slide, e não use os das cartilhas no lugar do cardápio.
 
 ---
 
@@ -240,7 +256,7 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 2 | anatomia de requisição e resposta HTTP, SOAP e REST (história), métodos HTTP, status codes e suas famílias, parâmetro de caminho, parâmetro de consulta, filtro com laço e depois com compreensão de lista, `HTTPException` 404, `APIRouter`, pasta `rotas/`, tipo no parâmetro |
 | 3 | corpo recebido como `dict` (só como contraste), `isinstance`, Pydantic `BaseModel`, `Field` e suas restrições, erro 422, esquema de entrada ≠ de saída, pasta `esquemas/`, `model_dump()` e `**`, `response_model`, `status_code=201`, primeiro `fetch` no React, CORS |
 | 4 | separação router/service/repository, estrutura de pacotes, `.env` e configuração, `Depends` |
-| 5 | consumo completo pelo React, estados de carregamento e erro *(avaliação: entrega parcial)* |
+| 5 | consumo completo pelo React: os três estados da tela, `resposta.ok`, `throw` dentro do `.then` e `.catch`, POST com `method`, `Content-Type` e `JSON.stringify`; sorteio das cartilhas *(avaliação: a cartilha de ponta a ponta, com a entrega no começo da aula 6)* |
 | 6 | modelagem, DER, conexão MySQL, SQL escrito à mão |
 | 7 | SQLAlchemy: `engine`, `session`, modelos declarativos, tipos e restrições |
 | 8 | sessão por requisição via `Depends`, CRUD completo, transação, `commit`/`rollback` |
@@ -305,6 +321,7 @@ assets/js/slides.js     navegação por teclado, escala, barra inferior, rodapé
 assets/js/tema.js       troca de tema do índice e do cronograma, com a escolha guardada no navegador
 aulas/aula-NN.html      uma página por aula
 prompts/aula-NN-*.md    prompts e regras que a turma copia ou baixa do slide
+docente/                fora do Git: as cartilhas e a página de sorteio, só na máquina do professor
 cronograma/             o calendário do ano inteiro, das seis UCs, página à parte
 ```
 
@@ -602,6 +619,8 @@ Nenhum destes entra em slide:
 - Adjetivo empilhado antes do substantivo. "O poderoso e robusto framework" é só "o framework".
 - Negrito espalhado. No máximo dois trechos em negrito por parágrafo, e nenhum em frase curta.
 - Emoji. Em nenhum slide, nenhuma exceção.
+- A palavra "arguição". Em tudo que a turma lê (slide, prompt, cartilha, título no índice), o nome é
+  **apresentação**: "na apresentação, você explica".
 - Reticências decorativas e aspas de ironia.
 
 Um teste que funciona: leia o slide em voz alta. Se você não falaria aquilo na frente da turma, reescreva.

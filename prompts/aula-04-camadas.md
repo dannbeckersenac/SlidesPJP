@@ -2,7 +2,7 @@
 
 Cole no seu assistente depois de quebrar o seu recurso em rotas, serviços e repositórios.
 Este prompt não escreve código: ele procura o que ficou na camada errada e devolve perguntas
-de arguição. Se a resposta dele vier vazia, o seu código passou.
+que o professor faria na apresentação. Se a resposta dele vier vazia, o seu código passou.
 
 ---
 
@@ -27,7 +27,7 @@ Procure e liste, com arquivo e linha, cada uma destas quebras:
 Para cada item, escreva em uma frase qual é o problema e para qual arquivo aquela linha deveria ir.
 Não mova nada.
 
-Depois, me faça três perguntas de arguição sobre as minhas escolhas, do tipo "por que esta linha
+Depois, me faça três perguntas que o professor faria na apresentação, sobre as minhas escolhas, do tipo "por que esta linha
 ficou no serviço e não na rota" e "o que quebra se o repositório passar a ler de um banco".
 
 Limites obrigatórios:
