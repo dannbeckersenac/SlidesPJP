@@ -145,20 +145,31 @@ com mais slides e passos menores, e **esse é o padrão da aula 4 em diante**. N
 
 ## 4. O sistema de exemplo
 
-**Todos os slides usam o mesmo sistema: um cardápio digital que emite pedidos.**
-Entidades: item do cardápio, pedido, item do pedido. Isso não muda de aula para aula —
-a familiaridade com o domínio é o que libera atenção para o conceito novo.
+**Os slides usam sempre um sistema só, e ele muda uma única vez, na aula 6.**
+A familiaridade com o domínio é o que libera atenção para o conceito novo, então dentro de cada
+trecho do curso o exemplo não muda.
 
-### De quem é o cardápio
+| Aulas | O exemplo dos slides | Entidades |
+|---|---|---|
+| 1 a 5 | o **cardápio digital** que emite pedidos | item do cardápio, pedido, item do pedido |
+| 6 a 16 | o **controle de tarefas por checklist** | usuário, tarefa, item do checklist |
 
-O cardápio é **o projeto de demonstração do docente**. Nenhum aluno construiu um cardápio digital,
-e slide que diga "o cardápio que vocês fizeram" está errado. O que o aluno tem é a tela da UC5 da
-persona que ele sorteou.
+O controle de tarefas é a **cartilha do professor**, escrita no mesmo molde das dos alunos em
+`docente/cartilhas/professor.md`. Ele entra na aula 6 porque é quando a turma começa a resolver a
+cartilha sorteada dela: o professor passa a resolver a dele no quadro, no mesmo ritmo, e os trechos
+de código dos slides saem daí. As aulas 1 a 5 já foram dadas com o cardápio e **não devem ser
+reescritas**.
 
-O padrão certo, em qualquer slide: mostre o cardápio como exemplo do professor, rotule o bloco de
+### De quem é o exemplo
+
+O exemplo é **o projeto de demonstração do docente**. Nenhum aluno construiu um cardápio digital nem
+o controle de tarefas, e slide que diga "o sistema que vocês fizeram" está errado. O que o aluno tem
+é a cartilha que ele sorteou na aula 5.
+
+O padrão certo, em qualquer slide: mostre o exemplo como projeto do professor, rotule o bloco de
 código como tal quando houver risco de confusão (`exemplo do professor · caminho/do/arquivo`) e
 mande o aluno achar o equivalente no projeto dele. "A sua tela tem um arquivo assim" funciona;
-"o cardápio que vocês construíram" não.
+"o sistema que vocês construíram" não.
 
 ### De quem é o trabalho
 
@@ -178,13 +189,17 @@ cinco e permite baixar ou imprimir cada uma para entregar ao aluno. Editou uma c
 o esqueleto que deixa as cinco do mesmo tamanho. Nenhum slide, prompt ou arquivo versionado pode
 citar nome, negócio ou regra de cartilha.
 
+**A cartilha do professor** está em `docente/cartilhas/professor.md` e não entra no sorteio: é a que
+o docente resolve no quadro, um passo à frente da turma. A regra dela não é igual à de nenhuma
+cartilha sorteada, de propósito. Da aula 6 em diante ela também é o exemplo dos slides (seção 4).
+
 **O trabalho é individual da aula 1 à 15**: cada aluno tem o seu repositório e entrega sozinho. Os
 dois alunos da mesma cartilha não são dupla nem equipe. Não escreva "em equipe", "em dupla",
-"repositório da equipe" nem "outra equipe" em slide algum. Os slides mostram o cardápio; o
-exercício manda aplicar na cartilha.
+"repositório da equipe" nem "outra equipe" em slide algum. Os slides mostram o exemplo do
+professor; o exercício manda aplicar na cartilha.
 
 Nunca troque o domínio dos slides por outro exemplo. Os nomes de pessoas e negócios existem só nas
-cartilhas: não invente outros em slide, e não use os das cartilhas no lugar do cardápio.
+cartilhas: não invente outros em slide, e não use os das cartilhas no lugar do exemplo do professor.
 
 ---
 
@@ -657,8 +672,8 @@ ficam melhores como passos numerados do que como parágrafo.
   simples antes do atalho. Entre 18 e 22 slides. Se a aula saiu com 14, falta degrau.
 - Teste todo trecho de código dos slides num backend descartável antes de dar a aula por pronta.
 - Aula que cria pasta ou arquivo mostra a árvore do `backend/` e ganha o `prompts/aula-NN-estrutura.md`.
-- Use o cardápio digital como exemplo, sempre como projeto do professor; deixe a persona para o exercício.
-- Nunca atribua o cardápio à turma, e nunca fale em equipe: o trabalho é individual.
+- Use o exemplo da seção 4 (cardápio até a aula 5, controle de tarefas da 6 em diante), sempre como projeto do professor; deixe a cartilha para o exercício.
+- Nunca atribua o exemplo à turma, e nunca fale em equipe: o trabalho é individual.
 - Todo slide de mão na massa leva `<ol class="passos">`. Código sem passo a passo é slide incompleto.
 - Antes de dar a aula por pronta, rode `grep -cE '—|–' aulas/aula-NN.html`. O resultado aceitável é `0`.
 - Meça a altura de todo slide que você criar ou alterar (seção 10). Slide que transborda não avisa.
