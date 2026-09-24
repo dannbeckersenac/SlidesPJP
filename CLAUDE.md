@@ -684,4 +684,7 @@ ficam melhores como passos numerados do que como parágrafo.
 - Depois de criar uma aula, marque `pronto: true` no manifesto.
 - Não altere o PTD, as datas de avaliação nem a estrutura dos cinco ciclos sem o docente pedir.
 - Ao renderizar para conferir, o slide tem 1280×720 e é escalado por JS. Confira num viewport amplo,
-  e lembre que `Ctrl+P` precisa continuar gerando um slide por página.
+  e lembre que `Ctrl+P` precisa continuar gerando um slide por página. O botão `baixar PDF` da barra
+  inferior, criado pelo `slides.js`, é só um `window.print()`: quem faz o PDF é o `@media print` do
+  `slides.css`, com `@page` no tamanho do slide. Conferir: `google-chrome --headless=new
+  --print-to-pdf=saida.pdf aulas/aula-NN.html` tem que dar uma página por slide.

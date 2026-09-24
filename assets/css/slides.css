@@ -528,10 +528,26 @@ td:last-child.neutro { color: var(--cinza-texto); font-weight: 400; }
 .barra .titulo { color: #FFFFFF; font-weight: 700; margin-right: auto; }
 .barra .contador { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
+/* ---------- impressão e PDF ----------
+   Uma página por slide, no tamanho exato do slide, com os fundos
+   escuros e roxos preservados. É o que o botão "baixar PDF" usa. */
+@page { size: 1280px 720px; margin: 0; }
+
 @media print {
-  .barra, .acoes, .copiar-codigo { display: none; }
-  .slide { display: flex !important; position: relative; page-break-after: always; transform: none !important; box-shadow: none; }
-  html, body { overflow: visible; background: #FFF; }
+  .barra, .acoes, .copiar-codigo { display: none !important; }
+  html, body { height: auto; overflow: visible; background: #FFF; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .palco { position: static; display: block; }
+  .slide {
+    display: flex !important;
+    position: relative;
+    transform: none !important;
+    box-shadow: none;
+    overflow: hidden;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .slide:last-child { break-after: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
