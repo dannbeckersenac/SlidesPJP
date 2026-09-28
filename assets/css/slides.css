@@ -381,6 +381,46 @@ td:last-child.neutro { color: var(--cinza-texto); font-weight: 400; }
 .lado.ruim .codigo { background: #2A1116; }
 .lado.bom  .codigo { background: var(--escuro); }
 
+/* ---------- DER: uma caixa por tabela ---------- */
+
+.der { display: flex; align-items: flex-start; gap: 10px; margin: 6px 0 18px; }
+.der .entidade {
+  flex: 1;
+  border: 2px solid var(--escuro);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--papel);
+}
+.der .entidade .nome {
+  background: var(--escuro);
+  color: #FFFFFF;
+  font-family: var(--mono);
+  font-size: 21px;
+  font-weight: 600;
+  padding: 8px 14px;
+}
+.der .entidade.hoje { border-color: var(--azul); }
+.der .entidade.hoje .nome { background: var(--azul); }
+.der .col {
+  display: flex;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 19.5px;
+  color: var(--cinza-texto);
+  padding: 5px 14px;
+  border-top: 1px solid var(--cinza-claro);
+}
+.der .col .chave { width: 28px; flex-shrink: 0; color: var(--azul); font-weight: 600; }
+.der .col .tipo  { margin-left: auto; color: #64748B; }
+.der .liga {
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--azul);
+  white-space: nowrap;
+}
+
 /* ---------- botões de prompt e de download ---------- */
 
 .acoes { display: flex; flex-wrap: wrap; gap: 14px; margin: 2px 0 8px; }

@@ -27,7 +27,7 @@ O docente precisa conseguir abrir um arquivo e editar um slide no meio de uma au
 | Curso | Desenvolvimento Web com IA — Senac Blumenau |
 | Turma | 2026.10.78 (noturna, 18h–22h) |
 | Unidade | UC4 — Back-end de Projetos Web |
-| Carga | 72h · 18 encontros de 4h · 15 aulas com conteúdo (ver "Remanejamento", abaixo) |
+| Carga | 72h · 18 encontros de 4h · 14 aulas com conteúdo (ver "Remanejamento", abaixo) |
 | Docente | Daniel Becker Bortoluzzi |
 | Idioma | **Português do Brasil, sempre.** Código, comentários, nomes de variáveis, tudo. |
 
@@ -54,33 +54,37 @@ trate como não visto.
 O plano de trabalho docente está aprovado e **não deve ser alterado**. O material tem que caber nele.
 Os números abaixo já são os das aulas depois do remanejamento:
 
-- **SA1** — aulas 1 a 10 — indicadores 1 e 2 (camada de acesso a dados com ORM; estruturas
+- **SA1** — aulas 1 a 9 — indicadores 1 e 2 (camada de acesso a dados com ORM; estruturas
   back-end integradas à camada visual).
-- **SA2** — aulas 11 a 15 — indicador 3 (autenticação, protocolos de segurança, privacidade)
+- **SA2** — aulas 10 a 14 — indicador 3 (autenticação, protocolos de segurança, privacidade)
   e a habilidade de usar IA para acelerar o desenvolvimento.
-- **Avaliações nas aulas 5, 9 e 13** (21/09, 01/10 e 19/10). A do ciclo 1 ocupa também o encontro
-  de 23/09, que não tem slides. Não invente avaliação em outra aula.
+- **Avaliações nas aulas 5, 8 e 12** (21/09, 01/10 e 19/10). A do ciclo 1 ocupa também os encontros
+  de 23 e 24/09, que não têm slides. Não invente avaliação em outra aula.
 
 ### Remanejamento de setembro de 2026
 
-O PTD previa 18 aulas em 18 encontros. Três encontros da UC4 ficaram sem slides:
+O PTD previa 18 aulas em 18 encontros. Quatro encontros da UC4 ficaram sem slides:
 
 - **09/09:** a turma terminou a landing page da persona, que tinha ficado pendente na UC5.
   A aula 1 foi dada em 10/09.
 - **15/09:** visita à Senior Sistemas, no horário de aula.
 - **23/09:** segundo dia da avaliação do ciclo 1, que não coube em 21/09.
+- **24/09:** uma palestra ocupou a primeira metade do encontro, e a segunda fechou a avaliação do
+  ciclo 1. A aula 6 foi dada em 28/09.
 
-Os três contam como encontro no diário. Ficam em `ENCONTROS_SEM_AULA`, no `aulas.js`, e o índice
-os mostra na lista do Ciclo 1 sem número e sem link. No `cronograma/dados.js`, o 23/09 é marcado
-como avaliação e ganha uma nota.
+Os quatro contam como encontro no diário. Ficam em `ENCONTROS_SEM_AULA`, no `aulas.js`, e o índice
+os mostra na lista do Ciclo 1 sem número e sem link. No `cronograma/dados.js`, o 23 e o 24/09 são
+marcados como avaliação e ganham uma nota.
 
-Sobraram 15 aulas. O docente decidiu:
+Sobraram 14 aulas. O docente decidiu:
 
 - As aulas 1, 2 e 3 só mudaram de data. Os slides delas não mudam por causa disto.
 - As antigas aulas 6 (modelagem e SQL à mão) e 7 (SQLAlchemy) viraram a aula 6. A turma já
   conhece `mysql.connector`, então o SQL à mão entra como a dor, e o conceito novo é o ORM.
-- As antigas aulas 11 (regras de negócio) e 12 (consolidação e documentação) viraram a aula 10.
-- O Docker saiu da UC4 e vai para a UC2 (DevOps). O README de entrega foi para a aula 14, junto
+- Com o 24/09 perdido, as antigas aulas 7 (CRUD e transações) e 8 (relacionamentos e migrations)
+  viraram a aula 7, em 30/09, para a avaliação do ciclo 2 ficar em 01/10.
+- As antigas aulas 11 (regras de negócio) e 12 (consolidação e documentação) viraram a aula 9.
+- O Docker saiu da UC4 e vai para a UC2 (DevOps). O README de entrega foi para a aula 13, junto
   com a integração com IA, que passou para depois da avaliação final.
 - A avaliação final continua em 19/10. As duas parciais andaram: a do ciclo 1 foi para 21 e
   23/09, e a do ciclo 2 foi de 28/09 para 01/10.
@@ -105,7 +109,7 @@ Exemplos de como isso já está montado, para você seguir o mesmo padrão:
 | 3 | a rota com `dados: dict` aceita quantidade negativa; validar no `if` cansa e ainda deixa um 500 | Pydantic |
 | 4 | uma função de rota com 80 linhas fazendo tudo | as camadas |
 | 6 | derrubar o `uvicorn` ao vivo e ver os dados sumirem; gravar com SQL à mão e sentir o trabalho | o ORM |
-| 11 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
+| 10 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
 
 Corolários:
 
@@ -152,7 +156,7 @@ trecho do curso o exemplo não muda.
 | Aulas | O exemplo dos slides | Entidades |
 |---|---|---|
 | 1 a 5 | o **cardápio digital** que emite pedidos | item do cardápio, pedido, item do pedido |
-| 6 a 16 | o **controle de tarefas por checklist** | usuário, tarefa, item do checklist |
+| 6 a 14 | o **controle de tarefas por checklist** | usuário, tarefa, item do checklist |
 
 O controle de tarefas é a **cartilha do professor**, escrita no mesmo molde das dos alunos em
 `docente/cartilhas/professor.md`. Ele entra na aula 6 porque é quando a turma começa a resolver a
@@ -179,7 +183,7 @@ Houve **dois sorteios**, e o segundo manda:
   O projeto dela foi o treino do ciclo 1 e fica no repositório antigo do aluno, como referência.
 - **Aula 5 em diante, a cartilha.** Cinco cartilhas para dez alunos, cada uma sorteada para **dois** alunos, que
   resolvem o mesmo problema separados. A cartilha vira o projeto do aluno, num repositório novo, até
-  a aula 15. A ideia é comparar como os dois pensaram, e a apresentação pergunta isso.
+  a aula 14. A ideia é comparar como os dois pensaram, e a apresentação pergunta isso.
 
 **As cartilhas são exclusivas do professor.** Elas moram em `docente/cartilhas/`, pasta que está no
 `.gitignore`: nunca vão para o repositório nem para o GitHub Pages, e quem clona este repositório não
@@ -193,7 +197,7 @@ citar nome, negócio ou regra de cartilha.
 o docente resolve no quadro, um passo à frente da turma. A regra dela não é igual à de nenhuma
 cartilha sorteada, de propósito. Da aula 6 em diante ela também é o exemplo dos slides (seção 4).
 
-**O trabalho é individual da aula 1 à 15**: cada aluno tem o seu repositório e entrega sozinho. Os
+**O trabalho é individual da aula 1 à 14**: cada aluno tem o seu repositório e entrega sozinho. Os
 dois alunos da mesma cartilha não são dupla nem equipe. Não escreva "em equipe", "em dupla",
 "repositório da equipe" nem "outra equipe" em slide algum. Os slides mostram o exemplo do
 professor; o exercício manda aplicar na cartilha.
@@ -225,7 +229,7 @@ repo-do-aluno/
 **Estrutura interna do backend, ensinada a partir da aula 4:** `router` → `service` → `repository`.
 A rota não acessa banco; o service não sabe que existe SQL.
 
-**Fatiar por camada é escolha, não consenso, e a aula 14 diz isso em voz alta.** O FastAPI não
+**Fatiar por camada é escolha, não consenso, e a aula 13 diz isso em voz alta.** O FastAPI não
 prescreve estrutura. A documentação oficial para em `routers/` e não tem serviço nem repositório; o
 template do próprio Tiangolo vai da rota direto para um `crud.py`, sem camada de serviço; e o
 `fastapi-best-practices`, o mais citado da comunidade, recomenda fatiar por domínio
@@ -244,15 +248,18 @@ arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de ca
 | 2 | `rotas/<recurso>.py` no plural, com `APIRouter` e a lista em memória; o `main.py` só liga os routers |
 | 3 | `esquemas/<recurso>.py` no singular, com os esquemas Pydantic de entrada e de saída |
 | 4 | `servicos/<recurso>.py` e `repositorios/<recurso>.py`, no singular, mais o `__init__.py` vazio em cada pasta; `.env`, `.env.exemplo` e `configuracao.py` na raiz do `backend/` |
-| 5 em diante | definir ao criar a aula, no mesmo padrão |
+| 5 | nada novo: a aula é de front e de entrega |
+| 6 | `banco.py` (`engine`, `Sessao`, `Base`) e `criar_tabelas.py` na raiz; `modelos/<recurso>.py` no singular, com o `__init__.py`; `URL_DO_BANCO` no `.env` e no `.env.exemplo`, e a chave no `configuracao.py` |
+| 7 em diante | definir ao criar a aula, no mesmo padrão |
 
 **Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
 A palavra **modelo** fica para a classe do SQLAlchemy, na aula 6. Não misture nos slides.
 
 **O que a chegada do ORM muda nas camadas.** A estrutura da aula 4 foi testada contra uma versão
-com SQLAlchemy antes de virar slide. O `main.py` e o `configuracao.py` não mudam uma linha, e os
-nomes das funções do repositório continuam os mesmos: só o corpo delas é reescrito. Três coisas
-mudam para cima, e elas são conteúdo das aulas 6 e 7, não conserto de aula 4:
+com SQLAlchemy antes de virar slide, e de novo ao montar a aula 6. O `main.py` não muda uma linha,
+o `configuracao.py` só ganha a chave `url_do_banco`, e os nomes das funções do repositório continuam
+os mesmos: só o corpo delas é reescrito. Duas coisas mudam para cima, e elas são conteúdo das aulas
+6 e 7, não conserto de aula 4:
 
 - **A sessão atravessa as camadas.** Toda função de serviço e de repositório ganha `sessao` como
   primeiro parâmetro, e a rota recebe a sessão por `Depends`. É o item "sessão por requisição" do
@@ -260,9 +267,16 @@ mudam para cima, e elas são conteúdo das aulas 6 e 7, não conserto de aula 4:
 - **O repositório para de devolver dicionário e passa a devolver objeto.** O serviço que escrevia
   `item["preco"]` passa a escrever `item.preco`. É uma linha no projeto inteiro, e vale um slide na
   aula 6, porque sem ela o erro aparece como 500 em tempo de execução, não como aviso.
-- **O esquema de saída precisa ler de objeto.** O `PedidoSaida` ganha
-  `model_config = ConfigDict(from_attributes=True)`, senão o `response_model` não monta a resposta
-  a partir do modelo.
+
+Na aula 6, cada função do repositório ainda abre e fecha a própria sessão (`sessao = Sessao()` e
+`sessao.close()`, no molde do `mysql.connector`). Com isso, a regra da cartilha que altera a entidade
+principal muda o objeto e o banco não fica sabendo: é a dor que abre a aula 7.
+
+**O `from_attributes` não é obrigatório.** A versão anterior deste arquivo dizia que o esquema de
+saída precisava de `model_config = ConfigDict(from_attributes=True)` para o `response_model` ler do
+modelo. Testado na montagem da aula 6 (FastAPI 0.141, Pydantic 2.13, SQLAlchemy 2.0): o FastAPI já
+valida a resposta lendo atributos, e a rota devolve o objeto do SQLAlchemy sem ele. Os slides não
+ensinam o `from_attributes`; o `regras` aceita se a IA puser e o aluno explicar.
 
 ---
 
@@ -277,24 +291,23 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 2 | anatomia de requisição e resposta HTTP, SOAP e REST (história), métodos HTTP, status codes e suas famílias, parâmetro de caminho, parâmetro de consulta, filtro com laço e depois com compreensão de lista, `HTTPException` 404, `APIRouter`, pasta `rotas/`, tipo no parâmetro |
 | 3 | corpo recebido como `dict` (só como contraste), `isinstance`, Pydantic `BaseModel`, `Field` e suas restrições, erro 422, esquema de entrada ≠ de saída, pasta `esquemas/`, `model_dump()` e `**`, `response_model`, `status_code=201`, primeiro `fetch` no React, CORS |
 | 4 | separação router/service/repository, estrutura de pacotes, `.env` e configuração, `Depends` |
-| 5 | consumo completo pelo React: os três estados da tela, `resposta.ok`, `throw` dentro do `.then` e `.catch`, POST com `method`, `Content-Type` e `JSON.stringify`; sorteio das cartilhas *(avaliação: a cartilha de ponta a ponta, com a entrega no começo da aula 6; a avaliação continua em 23/09, encontro sem slides)* |
-| 6 | modelagem curta e DER, conexão MySQL e SQL escrito à mão como a dor; SQLAlchemy: `engine`, `session`, modelos declarativos, tipos e restrições |
-| 7 | sessão por requisição via `Depends`, CRUD completo, transação, `commit`/`rollback` |
-| 8 | chave estrangeira, `relationship`, junção, filtro, ordenação, paginação, migrations |
-| 9 | — *(avaliação: indicadores 1 e 2)* |
-| 10 | regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto) |
-| 11 | entidade usuário, hash de senha, segredo fora do código |
-| 12 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
-| 13 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |
-| 14 | chamada a API de LLM, higienização de input, timeout, falha, custo; README de entrega; convenções de estrutura de projeto, para reconhecer o que a IA gera |
-| 15 | apresentação individual, retrospectiva |
+| 5 | consumo completo pelo React: os três estados da tela, `resposta.ok`, `throw` dentro do `.then` e `.catch`, POST com `method`, `Content-Type` e `JSON.stringify`; sorteio das cartilhas *(avaliação: a cartilha de ponta a ponta, com a entrega no começo da aula 6; a avaliação continua em 23 e 24/09, encontros sem slides)* |
+| 6 | modelagem curta e DER, `CREATE TABLE`, `INSERT` e `SELECT` com `mysql.connector` como a dor; SQLAlchemy 2 com `mysql+mysqlconnector`: `create_engine`, `sessionmaker`, `DeclarativeBase`, modelo com `Column`, tipos (`Integer`, `String(n)`, `Date`) e restrições (`primary_key`, `nullable`), `create_all` num `criar_tabelas.py`; no repositório, sessão aberta e fechada em cada função, `scalars(select())`, `get`, `add`, `commit`, `refresh`; objeto no lugar de dicionário (`registro.campo`) |
+| 7 | sessão por requisição via `Depends`, CRUD completo, transação, `rollback`; chave estrangeira, `relationship`, junção, filtro, ordenação, paginação, migrations |
+| 8 | — *(avaliação: indicadores 1 e 2)* |
+| 9 | regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto) |
+| 10 | entidade usuário, hash de senha, segredo fora do código |
+| 11 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
+| 12 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |
+| 13 | chamada a API de LLM, higienização de input, timeout, falha, custo; README de entrega; convenções de estrutura de projeto, para reconhecer o que a IA gera |
+| 14 | apresentação individual, retrospectiva |
 
 Docker não entra na UC4: vai para a UC2. Não use em slide nem em `regras`.
 
 **Armadilhas frequentes:**
-- Usar `async def` antes da aula 14 sem necessidade. Até lá, `def` normal — o FastAPI resolve.
+- Usar `async def` antes da aula 13 sem necessidade. Até lá, `def` normal — o FastAPI resolve.
 - Usar ORM ou banco antes da aula 6. Antes disso é **lista em memória**, e isso é proposital.
-- Proteger rota antes da aula 12.
+- Proteger rota antes da aula 11.
 - Usar `allow_origins=["*"]` em qualquer slide. Isso é apresentado explicitamente como erro na aula 3.
 
 ---
@@ -306,10 +319,10 @@ Agrupamento pedagógico, alinhado com as avaliações do PTD. Cada ciclo fecha c
 | Ciclo | Aulas | Nome | Pergunta que responde |
 |---|---|---|---|
 | 1 | 1 a 5 | O contrato | A tela que eu já fiz precisa de quais dados? |
-| 2 | 6 a 9 | A persistência | Por que meus dados somem quando eu reinicio o servidor? |
-| 3 | 10 | As regras | O que o meu sistema não pode deixar acontecer? |
-| 4 | 11 a 13 | O acesso | Quem pode fazer isso com os dados da minha persona? |
-| 5 | 14 e 15 | A entrega | Você consegue explicar o que a IA escreveu? |
+| 2 | 6 a 8 | A persistência | Por que meus dados somem quando eu reinicio o servidor? |
+| 3 | 9 | As regras | O que o meu sistema não pode deixar acontecer? |
+| 4 | 10 a 12 | O acesso | Quem pode fazer isso com os dados da minha persona? |
+| 5 | 13 e 14 | A entrega | Você consegue explicar o que a IA escreveu? |
 
 ---
 
@@ -336,7 +349,7 @@ index.html              índice, montado em JS a partir do manifesto
 .nojekyll               necessário para o GitHub Pages
 assets/css/slides.css   o sistema visual inteiro
 assets/css/navegacao.css  barra do topo, capa e tema claro/escuro do índice e do cronograma
-assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 15 aulas e os encontros sem aula
+assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 14 aulas e os encontros sem aula
 assets/js/slides.js     navegação por teclado, escala, barra inferior, rodapé dos slides
 assets/js/tema.js       troca de tema do índice e do cronograma, com a escolha guardada no navegador
 aulas/aula-NN.html      uma página por aula
@@ -454,6 +467,8 @@ rodapé com texto dentro (fora o da capa) é erro, porque o JS sobrescreve ao ca
 `.lado` sozinho dá uma comparação **neutra** de duas colunas, útil para contrastes que não são
 certo/errado) · `.tarefas` + `.tarefa` ·
 `.recap` + `.proximo` · `.acoes` + `.btn` botões de copiar prompt e de baixar arquivo (seção 11) ·
+`.der` + `.entidade` (`.nome`, `.col` com `.chave` e `.tipo`; `.hoje` pinta de azul) + `.liga` o DER com
+uma caixa por tabela, criado na aula 6 ·
 **`<ol class="passos">`** lista numerada de passos, o bloco padrão de todo slide
 de mão na massa (funciona em slide claro, escuro e de exercício; variante `.passos.curta` para texto menor).
 

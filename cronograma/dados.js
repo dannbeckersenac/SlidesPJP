@@ -113,7 +113,7 @@ const AULAS = `
 09-17 back
 09-21 back *
 09-23 back *
-09-24 back
+09-24 back *
 09-28 back
 09-30 back
 10-01 back *
@@ -168,6 +168,7 @@ const VISITAS = `
 const NOTAS = `
 09-09 encontro usado para terminar a landing page da persona, pendência da UC5; as aulas de back-end começaram em 10/09
 09-23 segundo dia da avaliação do Ciclo 1, que começou em 21/09
+09-24 palestra na primeira metade do encontro e fim da avaliação do Ciclo 1 na segunda; a aula 6 passou para 28/09
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

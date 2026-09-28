@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 06 · Do SQL à mão ao SQLAlchemy · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="6">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 06</p>
+    <h1>Do SQL à mão ao SQLAlchemy</h1>
+    <p class="sub">Hoje os dados param de sumir quando o servidor para.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 2 · A persistência</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · O EXEMPLO MUDA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de começar</p>
+    <h2>O exemplo muda hoje</h2>
+    <p class="intro">Da aula 1 à 5, o exemplo foi o cardápio. Daqui até o fim do curso, é o controle de tarefas por checklist: a cartilha que eu resolvo no quadro.</p>
+    <div class="cartoes n2">
+      <div class="cartao"><div class="icone">1</div><span class="t">Quem pede, no celular</span><span class="d">Abre uma tarefa com título, descrição e prazo, e acompanha o checklist dela.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Quem executa, no computador</span><span class="d">Vê a fila inteira, filtrada por situação, e lança cada item que terminou.</span></div>
+    </div>
+    <p class="dica"><b>A sua cartilha tem o mesmo esqueleto.</b> Onde eu escrevo tarefa, você lê a entidade principal da sua.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Derrube a API e procure os seus dados</h2>
+    <ol class="passos">
+      <li>No <code>/docs</code> do seu projeto, crie dois registros da sua entidade principal pelo POST.</li>
+      <li>Rode o GET da lista. Os dois estão lá.</li>
+      <li>No terminal, pare o servidor com <code>Ctrl+C</code> e suba de novo com <code>fastapi dev main.py</code>.</li>
+      <li>Rode o GET da lista de novo. A resposta é <code>[]</code>.</li>
+    </ol>
+    <div class="destaque">Ninguém apagou nada. <b>Os dados moravam num lugar que some quando o servidor para.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>A lista vive dentro do servidor</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/repositorios/tarefa.py, como ficou no ciclo 1</div>
+      <pre>tarefas = []                        <span class="com"># nasce vazia toda vez que o servidor sobe</span>
+
+<span class="kw">def</span> <span class="fn">salvar</span>(tarefa: <span class="kw">dict</span>):
+    tarefa[<span class="str">"id"</span>] = <span class="fn">len</span>(tarefas) + <span class="num">1</span>
+    tarefas.<span class="fn">append</span>(tarefa)          <span class="com"># guarda na memória do processo</span>
+    <span class="kw">return</span> tarefa</pre>
+    </div>
+    <div class="alerta">E o <code>fastapi dev</code> reinicia sozinho toda vez que você salva um <code>.py</code>. <strong>Cada Ctrl+S no editor apaga a lista.</strong></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · DER -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Modelagem</p>
+    <h2>Antes do banco, o desenho: o DER</h2>
+    <div class="der">
+      <div class="entidade">
+        <div class="nome">usuarios</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>nome<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>tipo<span class="tipo">VARCHAR(20)</span></div>
+      </div>
+      <span class="liga">1──N</span>
+      <div class="entidade hoje">
+        <div class="nome">tarefas</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>titulo<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>descricao<span class="tipo">VARCHAR(500)</span></div>
+        <div class="col"><span class="chave"></span>prazo<span class="tipo">DATE</span></div>
+        <div class="col"><span class="chave"></span>situacao<span class="tipo">VARCHAR(20)</span></div>
+        <div class="col"><span class="chave"></span>itens_feitos<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave">FK</span>solicitante_id<span class="tipo">INT</span></div>
+      </div>
+      <span class="liga">1──N</span>
+      <div class="entidade">
+        <div class="nome">itens_checklist</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>tipo<span class="tipo">VARCHAR(20)</span></div>
+        <div class="col"><span class="chave"></span>descricao<span class="tipo">VARCHAR(200)</span></div>
+        <div class="col"><span class="chave"></span>data<span class="tipo">DATE</span></div>
+        <div class="col"><span class="chave">FK</span>tarefa_id<span class="tipo">INT</span></div>
+      </div>
+    </div>
+    <div class="destaque"><b>PK</b> é o número da linha. <b>FK</b> guarda o número de uma linha de outra tabela. Hoje só a tarefa, em azul, vai para o banco. A ligação é a próxima aula.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · CREATE TABLE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A segunda dor de hoje</p>
+    <h2>A tabela, escrita à mão</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no MySQL do professor · o SQL do curso de Python</div>
+      <pre><span class="kw">CREATE TABLE</span> tarefas (
+  id <span class="kw">INT PRIMARY KEY AUTO_INCREMENT</span>,   <span class="com">-- o banco numera sozinho</span>
+  titulo <span class="kw">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,        <span class="com">-- texto de até 100, obrigatório</span>
+  descricao <span class="kw">VARCHAR</span>(<span class="num">500</span>) <span class="kw">NOT NULL</span>,
+  prazo <span class="kw">DATE NOT NULL</span>,                 <span class="com">-- só o dia, sem hora</span>
+  situacao <span class="kw">VARCHAR</span>(<span class="num">20</span>) <span class="kw">NOT NULL</span>,
+  itens_feitos <span class="kw">INT NOT NULL</span>,
+  solicitante_id <span class="kw">INT NOT NULL</span>          <span class="com">-- o número de quem pediu</span>
+);</pre>
+    </div>
+    <p class="dica"><b>Eu rodo, você acompanha.</b> Os tamanhos são os mesmos do <code>Field</code> do esquema. No seu projeto, quem cria a tabela vai ser o Python.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · INSERT À MÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A segunda dor de hoje</p>
+    <h2>Gravar com SQL à mão</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · repositorios/tarefa.py com mysql.connector</div>
+      <pre><span class="kw">def</span> <span class="fn">salvar</span>(tarefa: <span class="kw">dict</span>):
+    conexao = <span class="fn">abrir_conexao</span>()           <span class="com"># host, usuário, senha e banco</span>
+    cursor = conexao.<span class="fn">cursor</span>()
+    cursor.<span class="fn">execute</span>(
+        <span class="str">"INSERT INTO tarefas (titulo, descricao, prazo, situacao,"</span>
+        <span class="str">" itens_feitos, solicitante_id) VALUES (%s, %s, %s, %s, %s, %s)"</span>,
+        (tarefa[<span class="str">"titulo"</span>], tarefa[<span class="str">"descricao"</span>], tarefa[<span class="str">"prazo"</span>],
+         tarefa[<span class="str">"situacao"</span>], tarefa[<span class="str">"itens_feitos"</span>], tarefa[<span class="str">"solicitante_id"</span>]))
+    conexao.<span class="fn">commit</span>()
+    tarefa[<span class="str">"id"</span>] = cursor.lastrowid     <span class="com"># o número que o banco gerou</span>
+    conexao.<span class="fn">close</span>()
+    <span class="kw">return</span> tarefa</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · SELECT À MÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A segunda dor de hoje</p>
+    <h2>Ler com SQL à mão</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · repositorios/tarefa.py com mysql.connector</div>
+      <pre><span class="kw">def</span> <span class="fn">listar</span>():
+    conexao = <span class="fn">abrir_conexao</span>()
+    cursor = conexao.<span class="fn">cursor</span>()
+    cursor.<span class="fn">execute</span>(<span class="str">"SELECT id, titulo, descricao, prazo, situacao,"</span>
+                   <span class="str">" itens_feitos, solicitante_id FROM tarefas"</span>)
+    tarefas = []
+    <span class="kw">for</span> linha <span class="kw">in</span> cursor.<span class="fn">fetchall</span>():      <span class="com"># cada linha chega como tupla</span>
+        tarefas.<span class="fn">append</span>({<span class="str">"id"</span>: linha[<span class="num">0</span>], <span class="str">"titulo"</span>: linha[<span class="num">1</span>], <span class="str">"descricao"</span>: linha[<span class="num">2</span>],
+                        <span class="str">"prazo"</span>: linha[<span class="num">3</span>], <span class="str">"situacao"</span>: linha[<span class="num">4</span>],
+                        <span class="str">"itens_feitos"</span>: linha[<span class="num">5</span>], <span class="str">"solicitante_id"</span>: linha[<span class="num">6</span>]})
+    conexao.<span class="fn">close</span>()
+    <span class="kw">return</span> tarefas</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · ONDE DÓI -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A segunda dor de hoje</p>
+    <h2>Onde dói</h2>
+    <table>
+      <thead><tr><th>O que você viu</th><th>O que isso custa</th></tr></thead>
+      <tbody>
+        <tr><td>as colunas escritas três vezes</td><td class="neutro">CREATE, INSERT e SELECT têm que concordar para sempre</td></tr>
+        <tr><td>a linha chega como tupla</td><td class="neutro">trocou a ordem do SELECT, o título vira descrição, sem erro</td></tr>
+        <tr><td>o SQL é um texto</td><td class="neutro">erro de digitação só aparece quando a rota roda, como 500</td></tr>
+        <tr><td>abrir e fechar a conexão</td><td class="neutro">repetido em toda função do repositório</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">Você fala Python e o banco fala SQL. <b>Até agora, o tradutor era você.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · ORM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>ORM: uma classe vira uma tabela</h2>
+    <p class="intro">ORM é Object-Relational Mapping. Você escreve a classe, e ele escreve o SQL.</p>
+    <div class="fluxo">
+      <div class="passo"><span class="t">O seu código</span><span class="d">Um objeto <code>Tarefa</code>, com título, prazo e situação.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">O SQLAlchemy</span><span class="d">O tradutor: faz do objeto um INSERT, e da linha um objeto.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">O MySQL</span><span class="d">Recebe o mesmo SQL de sempre. Nem sabe que foi o Python.</span></div>
+    </div>
+    <p class="dica"><b>O SQL não sumiu.</b> Ele só deixou de ser escrito por você.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · O TRADUTOR AO VIVO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O tradutor, ao vivo</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Você escreve, em Python</div>
+        <div class="codigo compacto"><pre>tarefa = <span class="fn">Tarefa</span>(
+    titulo=<span class="str">"Trocar o toner"</span>,
+    descricao=<span class="str">"Impressora do 2º andar"</span>,
+    prazo=<span class="fn">date</span>(<span class="num">2026</span>, <span class="num">10</span>, <span class="num">2</span>),
+    situacao=<span class="str">"aberta"</span>,
+    itens_feitos=<span class="num">0</span>, solicitante_id=<span class="num">1</span>,
+)
+sessao.<span class="fn">add</span>(tarefa)
+sessao.<span class="fn">commit</span>()</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">O MySQL recebe, em SQL</div>
+        <div class="codigo compacto"><pre><span class="kw">INSERT INTO</span> tarefas
+  (titulo, descricao, prazo,
+   situacao, itens_feitos,
+   solicitante_id)
+<span class="kw">VALUES</span>
+  (<span class="str">'Trocar o toner'</span>,
+   <span class="str">'Impressora do 2º andar'</span>,
+   <span class="str">'2026-10-02'</span>, <span class="str">'aberta'</span>, <span class="num">0</span>, <span class="num">1</span>);
+<span class="kw">COMMIT</span></pre></div>
+      </div>
+    </div>
+    <div class="destaque">Classe vira tabela, atributo vira coluna, <b>objeto vira linha</b>. É o mesmo INSERT que você escreveu à mão.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · AS QUATRO PEÇAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>As quatro peças do SQLAlchemy</h2>
+    <div class="cartoes n4">
+      <div class="cartao"><div class="icone">1</div><span class="t">Engine</span><span class="d">Sabe onde o banco está e abre as conexões. Um só no projeto.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Sessão</span><span class="d">Uma conversa com o banco: abre, pede, grava e fecha.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Base</span><span class="d">A classe mãe. Todo modelo herda dela, como o esquema herda de <code>BaseModel</code>.</span></div>
+      <div class="cartao"><div class="icone">4</div><span class="t">Modelo</span><span class="d">Uma classe por tabela, um atributo por coluna.</span></div>
+    </div>
+    <div class="alerta"><strong>Modelo não é esquema.</strong> O esquema, em <code>esquemas/</code>, confere o que chega na requisição. O modelo, em <code>modelos/</code>, é a tabela.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · A URL DO BANCO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O endereço do banco</h2>
+    <p class="intro"><code>mysql+mysqlconnector://root:senha@localhost:3306/tarefa_certa</code></p>
+    <table>
+      <thead><tr><th>Pedaço</th><th>O que é</th></tr></thead>
+      <tbody>
+        <tr><td><code>mysql</code></td><td class="neutro">o tipo de banco</td></tr>
+        <tr><td><code>mysqlconnector</code></td><td class="neutro">o driver, o mesmo <code>mysql.connector</code> do curso de Python</td></tr>
+        <tr><td><code>root:senha</code></td><td class="neutro">o usuário e a senha do seu MySQL</td></tr>
+        <tr><td><code>localhost:3306</code></td><td class="neutro">onde o MySQL roda, e a porta padrão dele</td></tr>
+        <tr><td><code>tarefa_certa</code></td><td class="neutro">o banco que você criou</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · A ÁRVORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>O backend ao fim de hoje</h2>
+    <div class="codigo compacto">
+      <pre>backend/            <span class="com"># sem o venv/ e sem o __pycache__</span>
+├── .env                 <span class="com"># ganha o URL_DO_BANCO, com a senha</span>
+├── .env.exemplo         <span class="com"># ganha a mesma chave, sem valor</span>
+├── configuracao.py      <span class="com"># passa a entregar o endereço do banco</span>
+├── banco.py             <span class="com"># engine, Sessao e Base. arquivo novo</span>
+├── criar_tabelas.py     <span class="com"># cria as tabelas no MySQL. arquivo novo</span>
+├── main.py              <span class="com"># não muda</span>
+├── esquemas/tarefa.py   <span class="com"># não muda</span>
+├── modelos/tarefa.py    <span class="com"># a tabela, em Python. pasta nova</span>
+├── rotas/tarefas.py     <span class="com"># não muda</span>
+├── servicos/tarefa.py   <span class="com"># troca colchete por ponto</span>
+└── repositorios/tarefa.py  <span class="com"># as mesmas funções, com o corpo novo</span></pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · CALIBRAGEM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes da mão na massa</p>
+    <h2>Se o seu backend está diferente</h2>
+    <p class="intro">Uma pasta e dois arquivos entram hoje. Antes de criar qualquer coisa, alinhe o que já existe.</p>
+    <ol class="passos curta">
+      <li>Copie o prompt pelo botão abaixo e cole no assistente, com o repositório da cartilha aberto.</li>
+      <li>Leia a lista de diferenças que ele devolve. Até aqui ele não mexeu em nada.</li>
+      <li>Responda <code>pode seguir</code> só se concordar com cada movimento da lista.</li>
+      <li>Rode <code>fastapi dev main.py</code> e abra o <code>/docs</code>. As rotas de antes continuam lá.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-06-estrutura.md">copiar o prompt que alinha a estrutura</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 7</p>
+    <h2>O banco existe antes do Python</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no MySQL · troque tarefa_certa pelo nome do seu projeto</div>
+      <pre><span class="kw">CREATE DATABASE</span> tarefa_certa;</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abra o MySQL do laboratório, pelo Workbench ou pelo terminal.</li>
+      <li>Rode o <code>CREATE DATABASE</code> com o nome do seu projeto, em minúsculas e sem espaço.</li>
+      <li>Rode <code>SHOW DATABASES;</code> e confira o nome na lista.</li>
+      <li>No terminal do <code>backend/</code>, com o venv ativo, rode <code>pip install sqlalchemy mysql-connector-python</code>.</li>
+      <li>Rode <code>pip show sqlalchemy</code>. A linha <code>Version</code> começa com <code>2</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 7</p>
+    <h2>O endereço vai para o .env</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/.env · com o seu usuário, a sua senha e o seu banco</div>
+      <pre>URL_DO_BANCO=mysql+mysqlconnector://root:senha@localhost:3306/tarefa_certa</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>.env</code>, acrescente a linha acima, com os seus dados.</li>
+      <li>No <code>.env.exemplo</code>, a mesma chave sem valor: <code>URL_DO_BANCO=</code></li>
+      <li>No dicionário do <code>configuracao.py</code>, acrescente <code>"url_do_banco": os.getenv("URL_DO_BANCO"),</code></li>
+      <li>Rode <code>git status</code>. O <code>.env</code> não aparece, porque o <code>.gitignore</code> segura ele.</li>
+    </ol>
+    <p class="dica"><b>O endereço leva a senha do banco.</b> Por isso ele mora no <code>.env</code>, e não no código.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · A OUTRA FORMA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A outra forma</p>
+    <h2>As peças no .env, o endereço no código</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">backend/.env</div>
+        <div class="codigo compacto"><pre>BANCO_USUARIO=root
+BANCO_SENHA=senha
+BANCO_HOST=localhost
+BANCO_PORTA=3306
+BANCO_NOME=tarefa_certa</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">backend/configuracao.py</div>
+        <div class="codigo compacto"><pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> URL
+
+url_do_banco = URL.<span class="fn">create</span>(
+    <span class="str">"mysql+mysqlconnector"</span>,
+    username=os.<span class="fn">getenv</span>(<span class="str">"BANCO_USUARIO"</span>),
+    password=os.<span class="fn">getenv</span>(<span class="str">"BANCO_SENHA"</span>),
+    host=os.<span class="fn">getenv</span>(<span class="str">"BANCO_HOST"</span>),
+    port=os.<span class="fn">getenv</span>(<span class="str">"BANCO_PORTA"</span>),
+    database=os.<span class="fn">getenv</span>(<span class="str">"BANCO_NOME"</span>),
+)</pre></div>
+      </div>
+    </div>
+    <p class="dica"><b>O URL.create monta o mesmo endereço</b>, peça por peça. O dicionário devolve <code>url_do_banco</code>, e o <code>banco.py</code> não muda.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · QUAL DAS DUAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A outra forma</p>
+    <h2>Qual das duas</h2>
+    <table>
+      <thead><tr><th></th><th>Endereço inteiro</th><th>Peças separadas</th></tr></thead>
+      <tbody>
+        <tr><td>Linhas no <code>.env</code></td><td class="neutro">uma</td><td class="neutro">cinco</td></tr>
+        <tr><td>Senha <code>p@ss</code></td><td class="neutro">quebra o endereço: o <code>@</code> vira <code>%40</code> à mão</td><td class="neutro">o <code>URL.create</code> resolve</td></tr>
+        <tr><td>Trocar só a senha</td><td class="neutro">achar o pedaço no meio da linha</td><td class="neutro">uma linha com nome próprio</td></tr>
+        <tr><td>Hospedagem na nuvem</td><td class="neutro">costuma entregar assim, pronto</td><td class="neutro">você separa as peças</td></tr>
+        <tr><td>No código</td><td class="neutro">nada para montar</td><td class="neutro">o <code>configuracao.py</code> monta</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">A aula segue o endereço inteiro. <b>As duas funcionam:</b> entregue a que você sabe explicar.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 7</p>
+    <h2>Um arquivo só para o banco</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/banco.py</div>
+      <pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> create_engine
+<span class="kw">from</span> sqlalchemy.orm <span class="kw">import</span> DeclarativeBase, sessionmaker
+<span class="kw">from</span> configuracao <span class="kw">import</span> obter_configuracao
+configuracao = <span class="fn">obter_configuracao</span>()
+engine = <span class="fn">create_engine</span>(configuracao[<span class="str">"url_do_banco"</span>])  <span class="com"># o motor</span>
+Sessao = <span class="fn">sessionmaker</span>(bind=engine)   <span class="com"># cada Sessao() abre uma conversa</span>
+<span class="kw">class</span> <span class="fn">Base</span>(DeclarativeBase):         <span class="com"># a classe mãe dos modelos</span>
+    <span class="kw">pass</span>                            <span class="com"># o corpo fica vazio de propósito</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>banco.py</code> do lado do <code>main.py</code>, com o código acima.</li>
+      <li>No terminal do <code>backend/</code>, rode <code>python -c "import banco"</code>.</li>
+      <li>Nenhuma mensagem é o resultado certo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · LEITURA DO MODELO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A tabela, em Python</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/modelos/tarefa.py</div>
+      <pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> Column, Integer, String, Date
+<span class="kw">from</span> banco <span class="kw">import</span> Base
+
+<span class="kw">class</span> <span class="fn">Tarefa</span>(Base):                             <span class="com"># herda da Base: vira tabela</span>
+    __tablename__ = <span class="str">"tarefas"</span>                    <span class="com"># o nome da tabela no MySQL</span>
+    id = <span class="fn">Column</span>(Integer, primary_key=<span class="kw">True</span>)       <span class="com"># INT PRIMARY KEY AUTO_INCREMENT</span>
+    titulo = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">100</span>), nullable=<span class="kw">False</span>) <span class="com"># VARCHAR(100) NOT NULL</span>
+    descricao = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">500</span>), nullable=<span class="kw">False</span>)
+    prazo = <span class="fn">Column</span>(Date, nullable=<span class="kw">False</span>)         <span class="com"># DATE NOT NULL</span>
+    situacao = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">20</span>), nullable=<span class="kw">False</span>)
+    itens_feitos = <span class="fn">Column</span>(Integer, nullable=<span class="kw">False</span>)
+    solicitante_id = <span class="fn">Column</span>(Integer, nullable=<span class="kw">False</span>)</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · MÃO NA MASSA 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 7</p>
+    <h2>A tabela nasce do modelo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/criar_tabelas.py</div>
+      <pre><span class="kw">from</span> banco <span class="kw">import</span> Base, engine
+<span class="kw">from</span> modelos.tarefa <span class="kw">import</span> Tarefa   <span class="com"># o import apresenta o modelo para a Base</span>
+
+Base.metadata.<span class="fn">create_all</span>(engine)    <span class="com"># cria só a tabela que ainda não existe</span>
+<span class="fn">print</span>(<span class="str">"Tabelas:"</span>, <span class="fn">list</span>(Base.metadata.tables))</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie <code>modelos/</code> com o <code>__init__.py</code> vazio e o modelo da sua principal, no molde do slide anterior.</li>
+      <li>Crie o <code>criar_tabelas.py</code> do lado do <code>main.py</code>, trocando o import pelo seu modelo.</li>
+      <li>No terminal do <code>backend/</code>, rode <code>python criar_tabelas.py</code>. Aparece <code>Tabelas: ['tarefas']</code>.</li>
+      <li>No MySQL, rode <code>DESCRIBE tarefas;</code> com o nome da sua tabela. As colunas estão lá.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · O QUE A SESSÃO FAZ -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>O SQL que o tradutor escreve</h2>
+    <table>
+      <thead><tr><th>Você escreve</th><th>O que acontece no banco</th></tr></thead>
+      <tbody>
+        <tr><td><code>sessao = Sessao()</code></td><td class="neutro">abre a conversa, como o <code>abrir_conexao()</code></td></tr>
+        <tr><td><code>sessao.scalars(select(Tarefa)).all()</code></td><td class="neutro">SELECT de todas as linhas, já como objetos</td></tr>
+        <tr><td><code>sessao.get(Tarefa, 7)</code></td><td class="neutro">SELECT da tarefa 7, ou <code>None</code> se não existe</td></tr>
+        <tr><td><code>sessao.add(tarefa)</code> e <code>sessao.commit()</code></td><td class="neutro">INSERT, gravado de vez no commit</td></tr>
+        <tr><td><code>sessao.refresh(tarefa)</code></td><td class="neutro">busca de volta o id que o banco gerou</td></tr>
+        <tr><td><code>sessao.close()</code></td><td class="neutro">fecha a conversa, como o <code>conexao.close()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · MÃO NA MASSA 5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 7</p>
+    <h2>O repositório lê do banco</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/tarefa.py · no lugar da lista tarefas = []</div>
+      <pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> select
+<span class="kw">from</span> banco <span class="kw">import</span> Sessao
+<span class="kw">from</span> modelos.tarefa <span class="kw">import</span> Tarefa
+<span class="kw">def</span> <span class="fn">listar</span>():
+    sessao = <span class="fn">Sessao</span>()
+    tarefas = sessao.<span class="fn">scalars</span>(<span class="fn">select</span>(Tarefa)).<span class="fn">all</span>()
+    sessao.<span class="fn">close</span>()
+    <span class="kw">return</span> tarefas</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No repositório da sua principal, troque a lista e o <code>listar()</code> pelo código acima.</li>
+      <li>No <code>buscar_por_id</code>, o mesmo molde com <code>sessao.get(Tarefa, tarefa_id)</code>.</li>
+      <li>No <code>/docs</code>, o GET da lista volta <code>[]</code>, sem erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · MÃO NA MASSA 6 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 6 de 7</p>
+    <h2>E grava no banco</h2>
+    <div class="codigo compacto">
+      <pre><span class="kw">def</span> <span class="fn">salvar</span>(dados: <span class="kw">dict</span>):
+    sessao = <span class="fn">Sessao</span>()
+    tarefa = <span class="fn">Tarefa</span>(**dados)    <span class="com"># o ** da aula 3: o dicionário vira objeto</span>
+    sessao.<span class="fn">add</span>(tarefa)          <span class="com"># entra na conversa</span>
+    sessao.<span class="fn">commit</span>()             <span class="com"># o INSERT acontece aqui</span>
+    sessao.<span class="fn">refresh</span>(tarefa)      <span class="com"># traz de volta o id gerado</span>
+    sessao.<span class="fn">close</span>()
+    <span class="kw">return</span> tarefa</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No mesmo repositório, troque o corpo do <code>salvar</code> por este.</li>
+      <li>No <code>/docs</code>, crie um registro pelo POST. Volta <code>201</code>, com o <code>id</code>.</li>
+      <li>Pare o servidor com <code>Ctrl+C</code> e suba de novo.</li>
+      <li>Rode o GET da lista. <b>O registro continua lá.</b></li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · MÃO NA MASSA 7 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 7 de 7</p>
+    <h2>O dicionário virou objeto</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/servicos/tarefa.py · o filtro por situação</div>
+      <pre><span class="kw">def</span> <span class="fn">listar</span>(situacao):
+    tarefas = repositorio.<span class="fn">listar</span>()
+    <span class="kw">if</span> situacao <span class="kw">is None</span>:
+        <span class="kw">return</span> tarefas
+    <span class="kw">return</span> [t <span class="kw">for</span> t <span class="kw">in</span> tarefas <span class="kw">if</span> t.situacao == situacao]  <span class="com"># era t["situacao"]</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>/docs</code>, rode o GET com o filtro da sua cartilha. Volta <code>500</code>.</li>
+      <li>No terminal, a última linha diz <code>TypeError: 'Tarefa' object is not subscriptable</code>.</li>
+      <li>Nos serviços, troque todo <code>registro["campo"]</code> por <code>registro.campo</code>.</li>
+      <li>Rode o filtro de novo. Volta <code>200</code>, com a lista filtrada.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 24 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 06</p>
+    <h2>A sua principal, no MySQL</h2>
+    <p class="intro">Ao final, você derruba a API e a entidade principal da sua cartilha continua lá.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">O DER das três entidades da cartilha em <code>docs/</code>, com o tipo e a restrição de cada coluna.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">O banco criado, e o <code>URL_DO_BANCO</code> no <code>.env</code> e no <code>.env.exemplo</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">A principal em <code>modelos/</code>, com a tabela criada e o repositório lendo e gravando no MySQL.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">No README: reinicie a API e escreva <b>o que continuou e o que ainda some</b>, e por quê.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-06-modelo.md">copiar o prompt que confere o modelo</button>
+      <a class="btn" href="../prompts/aula-06-regras.md" download="REGRAS_AULA6.md">baixar o REGRAS_AULA6.md</a>
+    </div>
+    <p class="dica"><b>Entrega no repositório da cartilha</b> até o começo da próxima aula.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 6</h2>
+    <ul class="recap">
+      <li>Lista em memória <b>morre com o servidor</b>. Banco é o que fica.</li>
+      <li>SQL à mão funciona, mas as colunas se repetem e a linha chega como <b>tupla</b>.</li>
+      <li>O ORM traduz: <b>uma classe é uma tabela</b>, um atributo é uma coluna.</li>
+      <li>Engine sabe onde o banco está. <b>A sessão</b> é a conversa: abre, pede, grava e fecha.</li>
+      <li>O repositório troca o corpo e mantém os nomes. O serviço troca <b>colchete por ponto</b>.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> a regra da sua cartilha muda a principal, e o banco não fica sabendo. A sessão passa a atravessar a requisição, e as três tabelas se ligam.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
