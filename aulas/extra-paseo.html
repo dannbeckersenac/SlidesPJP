@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extra da aula 06 · Agentes de graça com o Paseo · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="6" data-extra="paseo">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Extra da aula 06</p>
+    <h1>Agentes de graça com o Paseo</h1>
+    <p class="sub">Um agente planeja, outro escreve, e quem decide é você. Sem pagar assinatura.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 2 · A persistência</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor</p>
+    <h2>O modelo gratuito se perde sozinho</h2>
+    <p class="intro">Peça "faz a API da lista de compras" a um modelo gratuito e ele erra justamente onde precisa decidir.</p>
+    <table>
+      <thead><tr><th>Quando ele precisa</th><th>O que costuma sair</th></tr></thead>
+      <tbody>
+        <tr><td>escolher as pastas</td><td class="neutro">uma estrutura diferente a cada pedido</td></tr>
+        <tr><td>inventar nomes e formatos</td><td class="neutro">um arquivo chama de <code>item</code>, o outro de <code>produto</code></td></tr>
+        <tr><td>entender um pedido vago</td><td class="neutro">o que ele achou que você quis</td></tr>
+        <tr><td>mexer em vários arquivos</td><td class="neutro">um conserto que quebra outro lugar</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A IDEIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A ideia</p>
+    <h2>O Master decide, o Executor preenche</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Você</span><span class="d">Pede, aprova o plano, confere o resultado e faz o commit.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Master</span><span class="d">O Codex. Decide a arquitetura, escreve o plano, o esqueleto e os testes.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Executor</span><span class="d">O OpenCode. Preenche uma tarefa pequena até os testes passarem.</span></div>
+    </div>
+    <div class="destaque">O modelo gratuito é bom em tarefa pequena e bem explicada. <b>Então toda decisão sai dele e vai para o Master.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · AS FERRAMENTAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">As ferramentas</p>
+    <h2>Quatro peças, custo zero</h2>
+    <table>
+      <thead><tr><th>Ferramenta</th><th>Papel</th><th>Custo</th></tr></thead>
+      <tbody>
+        <tr><td>Paseo</td><td class="neutro">abre os agentes e mostra o que cada um faz</td><td class="neutro">grátis, código aberto</td></tr>
+        <tr><td>Codex CLI</td><td class="neutro">o Master</td><td class="neutro">plano grátis do ChatGPT, com limite</td></tr>
+        <tr><td>OpenCode</td><td class="neutro">o Executor</td><td class="neutro">modelos free do OpenCode Zen</td></tr>
+        <tr><td>git e GitHub</td><td class="neutro">o histórico do projeto</td><td class="neutro">grátis</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>O Paseo não é um modelo.</b> Ele é o painel onde o Master cria o Executor e você acompanha os dois.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · O FLUXO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O fluxo de uma tarefa</p>
+    <h2>Do pedido ao commit</h2>
+    <ol class="passos curta">
+      <li><b>Você pede</b> uma funcionalidade ao Master.</li>
+      <li><b>O Master planeja:</b> escreve o plano, o esqueleto das funções e os testes.</li>
+      <li><b>Você aprova</b> o plano, ou pede ajuste.</li>
+      <li><b>O Executor implementa</b>, só nos arquivos que o plano libera.</li>
+      <li><b>O Master confere:</b> roda os testes e olha o que mudou. Até duas rodadas de ajuste.</li>
+      <li><b>Você valida</b> no <code>/docs</code> e faz o commit.</li>
+    </ol>
+    <p class="dica"><b>É o fluxo de uma empresa</b>: arquitetura, contrato, teste, implementação, revisão e commit. A ferramenta muda, o fluxo fica.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · O TESTE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>O teste vem antes do código</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">um teste com pytest · o Master escreve, o Executor não pode mexer</div>
+      <pre><span class="kw">def</span> <span class="fn">test_cadastrar_item</span>():
+    item = <span class="fn">cadastrar</span>(<span class="str">"Arroz"</span>, <span class="num">2</span>)
+    <span class="kw">assert</span> item[<span class="str">"nome"</span>] == <span class="str">"Arroz"</span>   <span class="com"># assert: confira que isto é verdade</span>
+    <span class="kw">assert</span> item[<span class="str">"quantidade"</span>] == <span class="num">2</span> <span class="com"># se não for, o teste falha</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>O Master escreve o teste, e ele falha: a função <code>cadastrar</code> ainda está vazia.</li>
+      <li>O Executor escreve a função até o <code>python -m pytest</code> mostrar <code>passed</code>.</li>
+      <li>Se o Executor mexer no teste, o Master percebe no diff e recusa.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · CUIDADOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de instalar</p>
+    <h2>Grátis tem preço</h2>
+    <div class="alerta"><strong>Modelo gratuito pode usar o que você manda para treinar.</strong> Nada de senha, chave de API ou dado pessoal nos projetos feitos com ele.</div>
+    <ol class="passos curta">
+      <li>Hoje o projeto é de treino, uma lista de compras. O da cartilha segue com o <code>REGRAS.md</code> dele.</li>
+      <li>O Codex grátis tem limite de uso. Se acabar no meio, siga com tarefas menores ou escreva você.</li>
+      <li>A lista de modelos free muda toda semana. Escolha pelo selo <b>free</b>, não pelo nome.</li>
+      <li>Um Executor por vez. A máquina e a cota agradecem.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 7</p>
+    <h2>Instale o Codex</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell</div>
+      <pre>npm install -g @openai/codex</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abra o PowerShell pelo menu Iniciar.</li>
+      <li>Rode o comando acima e espere terminar.</li>
+      <li>Feche o PowerShell e abra de novo, para ele achar o comando novo.</li>
+      <li>Rode <code>codex --version</code>. Aparece um número de versão.</li>
+    </ol>
+    <p class="dica"><b>Deu erro de "execução de scripts desabilitada"?</b> O próximo slide resolve.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · SE DER ERRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Se der erro</p>
+    <h2>O PowerShell recusou o comando</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">a mensagem, em vermelho</div>
+      <pre>codex.ps1 não pode ser carregado porque a execução de scripts
+foi desabilitada neste sistema.</pre>
+    </div>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · libera scripts só para o seu usuário</div>
+      <pre>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode o comando acima e responda <code>S</code> na pergunta.</li>
+      <li>Rode <code>codex --version</code> de novo. Agora aparece a versão.</li>
+      <li>Vale para o <code>opencode</code> também. Se a máquina bloquear até isso, me chame.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 7</p>
+    <h2>Entre no Codex com a conta grátis</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell</div>
+      <pre>mkdir teste-codex
+cd teste-codex
+codex</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode os três comandos. O Codex abre dentro do terminal.</li>
+      <li>Escolha <b>Sign in with ChatGPT</b>. O navegador abre: entre com a sua conta.</li>
+      <li>De volta ao terminal, pergunte: <code>explique em uma frase o que é uma API</code>.</li>
+      <li>A resposta chegou? Feche com <code>Ctrl+C</code> duas vezes.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 7</p>
+    <h2>Instale o OpenCode</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell</div>
+      <pre>npm install -g opencode-ai</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode o comando acima no PowerShell.</li>
+      <li>Feche e abra o PowerShell de novo.</li>
+      <li>Rode <code>opencode --version</code>. Aparece um número de versão.</li>
+      <li>Entre na pasta <code>teste-codex</code> e rode <code>opencode</code>. A tela dele abre no terminal.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · MÃO NA MASSA 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 7</p>
+    <h2>Conecte o OpenCode aos modelos free</h2>
+    <ol class="passos curta">
+      <li>Dentro do OpenCode, digite <code>/connect</code> e escolha <b>OpenCode Zen</b>.</li>
+      <li>Ele manda para <code>opencode.ai/auth</code>. Entre com a conta do GitHub.</li>
+      <li>Copie a chave que o site mostra e cole no terminal.</li>
+      <li>Digite <code>/models</code> e escolha um modelo com o selo <b>Free</b>.</li>
+      <li>Pergunte a mesma coisa que perguntou ao Codex. A resposta chegou, o OpenCode está pronto.</li>
+    </ol>
+    <div class="alerta"><strong>Não cadastre cartão.</strong> Os modelos free não cobram. Se o site exigir cartão para mostrar a chave, pare e me chame.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · MÃO NA MASSA 5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 7</p>
+    <h2>Instale e ajuste o Paseo</h2>
+    <ol class="passos curta">
+      <li>Baixe o instalador de Windows em <code>paseo.sh/download</code>, instale e abra.</li>
+      <li>Vá em <b>Settings</b>, clique no seu host e abra a aba <b>Agents</b>.</li>
+      <li>Ligue as <b>ferramentas do Paseo</b>, que deixam o Master criar o Executor. Desligue as <b>browser tools</b>.</li>
+      <li>Nas skills, desmarque "todas" e deixe só a <code>paseo</code>.</li>
+      <li>No <b>prompt do sistema</b>, cole o texto do botão abaixo e salve.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/extra-paseo-sistema.md">copiar o prompt do sistema</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · MÃO NA MASSA 6 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 6 de 7</p>
+    <h2>Os dois perfis de agente</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Master</th><th>Executor</th></tr></thead>
+      <tbody>
+        <tr><td>Provedor</td><td class="neutro">Codex</td><td class="neutro">OpenCode</td></tr>
+        <tr><td>Modelo</td><td class="neutro">o padrão do plano grátis</td><td class="neutro">um com o selo free</td></tr>
+        <tr><td>Raciocínio</td><td class="neutro">médio</td><td class="neutro">padrão</td></tr>
+        <tr><td>Quando usar</td><td class="neutro">o texto do primeiro botão</td><td class="neutro">o texto do segundo botão</td></tr>
+      </tbody>
+    </table>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/extra-paseo-perfil-master.md">copiar o "quando usar" do Master</button>
+      <button class="btn" data-copiar="../prompts/extra-paseo-perfil-executor.md">copiar o do Executor</button>
+    </div>
+    <p class="dica"><b>Os nomes têm que ser exatamente</b> <code>Master</code> e <code>Executor</code>. É por eles que o Master acha o perfil.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · O PROJETO DE TREINO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O projeto de treino</p>
+    <h2>Um repositório só para treinar</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · troque SEU-USUARIO pelo seu usuário do GitHub</div>
+      <pre>git clone https://github.com/SEU-USUARIO/lista-de-compras.git</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No GitHub, crie um repositório vazio chamado <code>lista-de-compras</code>, público, com README.</li>
+      <li>No PowerShell, na sua pasta de projetos, rode o <code>git clone</code> acima.</li>
+      <li>No Paseo, abra a pasta <code>lista-de-compras</code> como projeto.</li>
+      <li>Confira: o Paseo mostra o nome da pasta e o branch <code>main</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · MÃO NA MASSA 7 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 7 de 7</p>
+    <h2>O kickoff com o Master</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">as suas respostas às quatro perguntas dele</div>
+      <pre>O que faz: uma API de lista de compras. Cada item tem nome,
+quantidade e se já foi comprado.
+Quem usa: eu, pelo /docs.
+MVP: cadastrar item, listar itens, marcar como comprado, apagar item.
+Repositório: https://github.com/SEU-USUARIO/lista-de-compras</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No Paseo, abra um agente novo com o perfil <b>Master</b>.</li>
+      <li>Cole o prompt do botão abaixo como primeira mensagem. Ele responde com quatro perguntas.</li>
+      <li>Responda com o texto acima, trocando o link pelo seu.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/extra-paseo-master.md">copiar o prompt do Master</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · APROVAR A ARQUITETURA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O kickoff</p>
+    <h2>Leia antes de dizer ok</h2>
+    <p class="intro">O Master devolve a arquitetura em até dez linhas. Ela é sua a partir do ok.</p>
+    <ol class="passos curta">
+      <li>As pastas fazem sentido? Rota, serviço e repositório, como na aula 4?</li>
+      <li>As dependências são só <code>fastapi[standard]</code> e <code>pytest</code>?</li>
+      <li>Nada de banco, login ou <code>async def</code>?</li>
+      <li>Tudo certo: responda <code>ok</code>. Ele cria o <code>AGENTS.md</code>, o <code>.docs/</code> e as pastas.</li>
+      <li>Faça o commit inicial e o push. No GitHub aparecem o <code>AGENTS.md</code> e o <code>.docs/</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · A PRIMEIRA TAREFA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A primeira tarefa, todo mundo junto</p>
+    <h2>Cadastrar item</h2>
+    <ol class="passos curta">
+      <li>Peça ao Master: <code>vamos começar pelo cadastro de item</code>.</li>
+      <li>Abra o plano que ele criou em <code>.docs/planos/</code> e leia os arquivos permitidos.</li>
+      <li>Responda <code>ok</code>. Na lateral do Paseo aparece o Executor trabalhando.</li>
+      <li>Espere o Master dizer que conferiu. Ele roda os testes, não confia no relato.</li>
+      <li>Com o venv ativo, rode você mesmo <code>python -m pytest</code>. Aparece <code>passed</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · O COMMIT É SEU -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A primeira tarefa, todo mundo junto</p>
+    <h2>O commit é seu</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · a mensagem que o Master sugerir</div>
+      <pre>git add .
+git commit -m "feat(itens): adiciona cadastro de item"
+git push -u origin HEAD</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode <code>git diff --stat</code> e confira: só os arquivos do plano mudaram.</li>
+      <li>Abra o <code>/docs</code> e cadastre um item. Volta o item com o <code>id</code>.</li>
+      <li>Rode os três comandos acima. O branch <code>feat/...</code> aparece no GitHub.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · QUANDO O EXECUTOR ERRA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Quando dá errado</p>
+    <h2>O erro do Executor é aula</h2>
+    <table>
+      <thead><tr><th>O que aconteceu</th><th>O que fazer</th></tr></thead>
+      <tbody>
+        <tr><td>falhou duas rodadas</td><td class="neutro">o Master para e propõe dividir a tarefa</td></tr>
+        <tr><td>mexeu em arquivo proibido</td><td class="neutro">o plano não deixou claro: reescreva o plano</td></tr>
+        <tr><td>o modelo free sumiu</td><td class="neutro">troque no perfil por outro com o selo free</td></tr>
+        <tr><td>a cota do Codex acabou</td><td class="neutro">o estado fica em <code>proximos-passos.md</code>, e você segue amanhã</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">A pergunta certa não é "por que ele errou". <b>É "o que o meu pedido deixou em aberto".</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício extra</p>
+    <h2>O ambiente de pé e uma tarefa entregue</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Codex e OpenCode respondendo sozinhos, cada um no terminal.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Paseo com o prompt do sistema e os perfis <code>Master</code> e <code>Executor</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Kickoff aprovado, com <code>AGENTS.md</code> e <code>.docs/</code> no GitHub.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O cadastro de item commitado, e em <code>.docs/decisoes.md</code>: <b>por que o teste veio antes</b>.</span></div>
+    </div>
+    <p class="dica"><b>Na apresentação:</b> abra o plano da tarefa e explique o que o Executor podia e o que não podia fazer.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica do extra</h2>
+    <ul class="recap">
+      <li>Modelo gratuito acerta tarefa pequena. <b>A decisão fica com o Master</b>, e a aprovação com você.</li>
+      <li>O Master escreve <b>o teste antes</b>, e o Executor só termina quando ele passa.</li>
+      <li>Plano com a <b>lista de arquivos permitidos</b>: o que não está lá, o Executor não toca.</li>
+      <li>Modelo free pode treinar com o que você manda. <b>Nada de senha nem dado pessoal.</b></li>
+      <li>Quem revisa, testa e faz o commit é você. <b>O código é seu.</b></li>
+    </ul>
+    <p class="proximo"><b>Depois:</b> o mesmo fluxo serve para qualquer projeto. O da cartilha continua seguindo o <code>REGRAS.md</code> dele.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

@@ -141,7 +141,7 @@
   (function () {
     var pad = function (n) { return String(n).padStart(2, "0"); };
     var agora = new Date();
-    var endereco = function (a) { return "aulas/aula-" + pad(a.n) + ".html"; };
+    var endereco = function (a) { return a.arquivo ? "aulas/" + a.arquivo : "aulas/aula-" + pad(a.n) + ".html"; };
     var ehHoje = function (a) { return window.aberturaDaAula(a).toDateString() === agora.toDateString(); };
 
     if (window.MODO_DOCENTE) document.getElementById("avisoDocente").hidden = false;
@@ -197,14 +197,18 @@
       var doCiclo = function (a) { return a.ciclo === c.n; };
       var linhas = window.AULAS.filter(doCiclo)
         .concat((window.ENCONTROS_SEM_AULA || []).filter(doCiclo))
-        .sort(function (x, y) { return x.data < y.data ? -1 : 1; });
+        .concat((window.EXTRAS || []).filter(doCiclo))
+        .sort(function (x, y) {
+          if (x.data !== y.data) return x.data < y.data ? -1 : 1;
+          return (x.chave ? 1 : 0) - (y.chave ? 1 : 0);   /* no mesmo dia, o extra vem depois da aula */
+        });
       var itens = linhas.map(function (a) {
-        if (!("n" in a)) return semAula(a);
+        if (!("n" in a) && !a.chave) return semAula(a);
         var e = estado(a);
         var aberta = window.liberada(a);
         var cls = "aula" + (aberta ? "" : " indisponivel") + (a.avaliacao ? " aval" : "");
         var conteudo =
-          '<span class="n">' + pad(a.n) + '</span>' +
+          '<span class="n">' + (a.chave ? "+" : pad(a.n)) + '</span>' +
           '<span class="data">' + window.dataCurta(a.data) + '</span>' +
           '<span class="t">' + a.titulo + '</span>' +
           '<span class="estado' + e.cls + '">' + e.txt + '</span>';

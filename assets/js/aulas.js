@@ -35,6 +35,14 @@ window.ENCONTROS_SEM_AULA = [
   { data: "2026-09-24", ciclo: 1, titulo: "Palestra e fim da avaliação do Ciclo 1", avaliacao: true }
 ];
 
+/* aulas extras: paralelas a uma aula do curso, sem número próprio.
+   O índice mostra logo abaixo da aula indicada em "aula", e a página
+   de slides usa data-extra no <body> para achar esta ficha. */
+window.EXTRAS = [
+  { chave: "paseo", aula: 6, arquivo: "extra-paseo.html", data: "2026-09-28", ciclo: 2,
+    titulo: "Extra · Agentes de graça com o Paseo", pronto: true }
+];
+
 window.CICLOS = [
   { n: 1, nome: "O contrato",     aulas: "aulas 1 a 5",   guia: "A tela que eu já fiz precisa de quais dados?" },
   { n: 2, nome: "A persistência", aulas: "aulas 6 a 8",   guia: "Por que meus dados somem quando eu reinicio o servidor?" },

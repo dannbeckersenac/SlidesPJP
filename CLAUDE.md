@@ -373,6 +373,12 @@ navegação leem dali e formatam para `09/09` na tela. Nunca escreva data dentro
 O calendário do ano tem a sua própria fonte, `cronograma/dados.js`, que cobre as seis unidades.
 As duas listas precisam bater: mexeu numa data da UC4 num arquivo, mexa no outro.
 
+**Aula extra** é uma página paralela a uma aula do curso, sem número próprio e fora do ledger: a
+primeira é `aulas/extra-paseo.html`, de 28/09, que monta o ambiente de agentes com o Paseo. Ela vive
+em `window.EXTRAS`, no `aulas.js`, com a `chave`, a `aula` a que pertence e o `arquivo`. O `<body>` leva
+`data-aula` da aula e `data-extra` com a chave; o índice mostra o extra com `+` logo abaixo da aula, e
+a barra troca as setas por um link de volta para ela. Os prompts dela são `prompts/extra-<chave>-*.md`.
+
 Para liberar uma aula no índice: crie `aulas/aula-NN.html` e marque `pronto: true` no manifesto.
 A partir daí ela ainda espera as 18h do dia do encontro, pela regra de liberação no fim do
 `aulas.js`. Para ver tudo antes da hora, abra qualquer página com `?docente=1` uma vez; `?docente=0`

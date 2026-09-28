@@ -14,6 +14,8 @@
   var atual = 0;
   var total = slides.length;
   var aulaAtual = Number(document.body.dataset.aula || 0);
+  /* página de aula extra: <body data-aula="6" data-extra="paseo"> */
+  var extra = (window.EXTRAS || []).filter(function (e) { return e.chave === document.body.dataset.extra; })[0] || null;
 
   /* ----- escala: mantém o slide 1280x720 inteiro na tela ----- */
   function escalar() {
@@ -143,7 +145,7 @@
      a paginação à esquerda e a identificação da aula à direita. ----- */
   function rodapes() {
     var meta = (window.AULAS || []).filter(function (a) { return a.n === aulaAtual; })[0] || {};
-    var etiqueta = "Aula " + String(aulaAtual).padStart(2, "0") +
+    var etiqueta = (extra ? "Extra da aula " : "Aula ") + String(aulaAtual).padStart(2, "0") +
                    (meta.ciclo ? " · Ciclo " + meta.ciclo : "");
     slides.forEach(function (s, k) {
       if (k === 0) return;
@@ -172,10 +174,11 @@
     }).join("");
 
     barra.innerHTML =
-      '<span class="titulo">Aula ' + pad(aulaAtual) + " · " + (meta.titulo || "") + "</span>" +
+      '<span class="titulo">' + (extra ? extra.titulo : "Aula " + pad(aulaAtual) + " · " + (meta.titulo || "")) + "</span>" +
       (seletor ? '<select id="ir" aria-label="Ir para outra aula">' + seletor + "</select>" : "") +
-      (idx > 0 ? '<a href="aula-' + pad(abertas[idx - 1].n) + '.html">← aula anterior</a>' : "") +
-      (idx > -1 && idx < abertas.length - 1 ? '<a href="aula-' + pad(abertas[idx + 1].n) + '.html">próxima aula →</a>' : "") +
+      (extra ? '<a href="aula-' + pad(aulaAtual) + '.html">← aula ' + pad(aulaAtual) + '</a>' :
+        (idx > 0 ? '<a href="aula-' + pad(abertas[idx - 1].n) + '.html">← aula anterior</a>' : "") +
+        (idx > -1 && idx < abertas.length - 1 ? '<a href="aula-' + pad(abertas[idx + 1].n) + '.html">próxima aula →</a>' : "")) +
       (window.PREVIEW ? "" : '<a href="../index.html">índice</a>') +
       '<button type="button" id="baixar-pdf" title="Abre a impressão. No destino, escolha Salvar como PDF.">baixar PDF</button>' +
       '<span class="contador" id="contador"></span>';
