@@ -88,7 +88,9 @@ Sobraram 12 aulas. O docente decidiu:
   conhece `mysql.connector`, então o SQL à mão entra como a dor, e o conceito novo é o ORM.
 - Com o 24, o 28 e o 30/09 perdidos, as antigas aulas 7 (CRUD e transações) e 8 (relacionamentos
   e migrations) também entraram na aula 6, dada em 01/10 em dois tempos: o SQLAlchemy antes do
-  intervalo, e CRUD, transação, relacionamentos e migrations depois. A aula tem 55 slides por isso.
+  intervalo, e CRUD, transação, relacionamentos, filtro e paginação depois. A aula tem 51 slides por isso.
+- As migrations foram para o primeiro tempo da aula 7 (05/10). O segundo tempo é o de regras de
+  negócio, exceções e documentação da API, e a documentação é gerada com IA e revisada pelo aluno.
 - A avaliação do ciclo 2 saiu. Fica só a avaliação final, em 19/10.
 - As antigas aulas 11 (regras de negócio) e 12 (consolidação e documentação) viraram a aula 7.
 - O Docker saiu da UC4 e vai para a UC2 (DevOps). O README de entrega foi para a aula 11, junto
@@ -115,7 +117,8 @@ Exemplos de como isso já está montado, para você seguir o mesmo padrão:
 | 3 | a rota com `dados: dict` aceita quantidade negativa; validar no `if` cansa e ainda deixa um 500 | Pydantic |
 | 4 | uma função de rota com 80 linhas fazendo tudo | as camadas |
 | 6 | derrubar o `uvicorn` ao vivo e ver os dados sumirem; gravar com SQL à mão e sentir o trabalho | o ORM |
-| 6, segundo tempo | a regra muda a tarefa e o banco não fica sabendo; o `create_all` não altera a tabela | a sessão por requisição; a migration |
+| 6, segundo tempo | a regra muda a tarefa e o banco não fica sabendo | a sessão por requisição |
+| 7, primeiro tempo | a chave nova no modelo, e o `create_all` não altera a tabela que já existe | a migration |
 | 8 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
 
 Corolários:
@@ -256,8 +259,9 @@ arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de ca
 | 3 | `esquemas/<recurso>.py` no singular, com os esquemas Pydantic de entrada e de saída |
 | 4 | `servicos/<recurso>.py` e `repositorios/<recurso>.py`, no singular, mais o `__init__.py` vazio em cada pasta; `.env`, `.env.exemplo` e `configuracao.py` na raiz do `backend/` |
 | 5 | nada novo: a aula é de front e de entrega |
-| 6 | `banco.py` (`engine`, `Sessao`, `Base`, `obter_sessao`) e `criar_tabelas.py` na raiz; `modelos/<recurso>.py` no singular, um para cada uma das três entidades, com o `__init__.py`; `URL_DO_BANCO` no `.env` e no `.env.exemplo`, e a chave no `configuracao.py`; `alembic.ini` e `migracoes/` (com `env.py` e `versions/`), do `alembic init migracoes` |
-| 7 em diante | definir ao criar a aula, no mesmo padrão |
+| 6 | `banco.py` (`engine`, `Sessao`, `Base`, `obter_sessao`) e `criar_tabelas.py` na raiz; `modelos/<recurso>.py` no singular, um para cada uma das três entidades, com o `__init__.py`; `URL_DO_BANCO` no `.env` e no `.env.exemplo`, e a chave no `configuracao.py` |
+| 7 | `alembic.ini` e `migracoes/` (com `env.py` e `versions/`), do `alembic init migracoes` |
+| 8 em diante | definir ao criar a aula, no mesmo padrão |
 
 **Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
 A palavra **modelo** fica para a classe do SQLAlchemy, na aula 6. Não misture nos slides.
@@ -280,8 +284,9 @@ No primeiro tempo da aula 6, cada função do repositório ainda abre e fecha a 
 que altera a entidade principal muda o objeto e o banco não fica sabendo: é a dor que abre o segundo
 tempo.
 
-**O que o segundo tempo da aula 6 decidiu, testado na montagem** (FastAPI 0.141, SQLAlchemy 2.0.54,
-Alembic 1.20, MySQL 8):
+**O que o segundo tempo da aula 6 e as migrations da aula 7 decidiram, testado na montagem** (FastAPI
+0.141, SQLAlchemy 2.0.54, Alembic 1.20, MySQL 8). Os slides de migration foram escritos e medidos
+para a aula 6 e retirados antes de ela ser dada: estão no commit `00c85be`, prontos para a aula 7.
 
 - `obter_sessao` usa `with Sessao() as sessao: yield sessao`, sem `try`/`finally`. O `with` e o
   `yield` ganharam um slide de "Python que faltava" cada. O `Depends` guarda o valor por requisição,
@@ -294,7 +299,9 @@ Alembic 1.20, MySQL 8):
 - **O modelo com `ForeignKey` importa o modelo da tabela para onde a chave aponta.** Sem isso, a API
   que não importa o `Usuario` dá 500 com `NoReferencedTableError` no primeiro INSERT.
 - Paginação com `pagina: int = Query(default=1, ge=1)`. Sem o `ge`, `pagina=0` vira OFFSET negativo e 500.
-- A dor da migration é a segunda chave estrangeira (tarefa → usuário) numa tabela que já existe: o
+- Na aula 6, só a chave da filha para a principal existe, e a tabela de usuários nasce do `create_all`
+  com os usuários da lista fixa cadastrados por `INSERT`. A chave da principal para o usuário fica fora.
+- Aula 7: a dor da migration é a segunda chave estrangeira (tarefa → usuário) numa tabela que já existe: o
   `create_all` não a cria. A chave leva `name=` porque, sem nome, o autogenerate avisa que não sabe
   escrever o `downgrade`. Antes, os usuários da lista fixa entram na tabela por `INSERT`, na mesma ordem,
   senão o `upgrade` falha com o erro 1452.
@@ -323,8 +330,8 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 3 | corpo recebido como `dict` (só como contraste), `isinstance`, Pydantic `BaseModel`, `Field` e suas restrições, erro 422, esquema de entrada ≠ de saída, pasta `esquemas/`, `model_dump()` e `**`, `response_model`, `status_code=201`, primeiro `fetch` no React, CORS |
 | 4 | separação router/service/repository, estrutura de pacotes, `.env` e configuração, `Depends` |
 | 5 | consumo completo pelo React: os três estados da tela, `resposta.ok`, `throw` dentro do `.then` e `.catch`, POST com `method`, `Content-Type` e `JSON.stringify`; sorteio das cartilhas *(avaliação: a cartilha de ponta a ponta, com a entrega no começo da aula 6; a avaliação continua em 23 e 24/09, encontros sem slides)* |
-| 6 | **primeiro tempo:** modelagem curta e DER, `CREATE TABLE`, `INSERT` e `SELECT` com `mysql.connector` como a dor; SQLAlchemy 2 com `mysql+mysqlconnector`: `create_engine`, `sessionmaker`, `DeclarativeBase`, modelo com `Column`, tipos (`Integer`, `String(n)`, `Date`) e restrições (`primary_key`, `nullable`), `create_all` num `criar_tabelas.py`; no repositório, sessão aberta e fechada em cada função, `scalars(select())`, `get`, `add`, `commit`, `refresh`; objeto no lugar de dicionário (`registro.campo`). **Segundo tempo:** `with` e `yield`, sessão por requisição via `Depends`, CRUD completo (`delete` só na tabela de referência), transação num commit só, rollback por sessão fechada sem commit; `ForeignKey`, `relationship`, `join`, `where`, `order_by`, `limit`, `offset`, `Query(ge=)`; migrations com Alembic (`init`, `env.py`, `revision --autogenerate`, `upgrade head`, `stamp head`) |
-| 7 | regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto) |
+| 6 | **primeiro tempo:** modelagem curta e DER, `CREATE TABLE`, `INSERT` e `SELECT` com `mysql.connector` como a dor; SQLAlchemy 2 com `mysql+mysqlconnector`: `create_engine`, `sessionmaker`, `DeclarativeBase`, modelo com `Column`, tipos (`Integer`, `String(n)`, `Date`) e restrições (`primary_key`, `nullable`), `create_all` num `criar_tabelas.py`; no repositório, sessão aberta e fechada em cada função, `scalars(select())`, `get`, `add`, `commit`, `refresh`; objeto no lugar de dicionário (`registro.campo`). **Segundo tempo:** `with` e `yield`, sessão por requisição via `Depends`, CRUD completo (`delete` só na tabela de referência), transação num commit só, rollback por sessão fechada sem commit; `ForeignKey`, `relationship`, `join`, `where`, `order_by`, `limit`, `offset`, `Query(ge=)` |
+| 7 | **primeiro tempo:** migrations com Alembic (`init`, `env.py`, `revision --autogenerate`, `upgrade head`, `stamp head`), `ForeignKey` com `name=`. **Segundo tempo:** regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto), gerada com IA e revisada pelo aluno |
 | 8 | entidade usuário, hash de senha, segredo fora do código |
 | 9 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
 | 10 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |

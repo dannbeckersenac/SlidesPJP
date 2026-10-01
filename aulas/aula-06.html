@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aula 06 · Do SQL à mão ao SQLAlchemy, e o banco inteiro · UC4</title>
+<title>Aula 06 · Do SQL à mão ao SQLAlchemy, e as tabelas ligadas · UC4</title>
 <link rel="stylesheet" href="../assets/css/slides.css">
 </head>
 <body data-aula="6">
@@ -14,7 +14,7 @@
   <div class="corpo">
     <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 06</p>
     <h1>Do SQL à mão ao SQLAlchemy</h1>
-    <p class="sub">Antes do intervalo, os dados param de sumir. Depois, a regra grava de verdade e as três tabelas se ligam.</p>
+    <p class="sub">Antes do intervalo, os dados param de sumir. Depois, a regra grava de verdade e as tabelas se ligam.</p>
   </div>
   <div class="rodape"><span>Ciclo 2 · A persistência</span><span>Senac Blumenau · 2026.10.78</span></div>
 </section>
@@ -41,7 +41,7 @@
     <h2>Hoje são duas aulas numa só</h2>
     <div class="cartoes n2">
       <div class="cartao"><div class="icone">1</div><span class="t">Antes do intervalo</span><span class="d">O SQLAlchemy. A principal da sua cartilha passa a morar no MySQL e para de sumir.</span></div>
-      <div class="cartao"><div class="icone">2</div><span class="t">Depois do intervalo</span><span class="d">A regra grava de verdade, as três tabelas se ligam e o banco ganha histórico de versões.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Depois do intervalo</span><span class="d">A regra grava de verdade, as tabelas se ligam e quem filtra passa a ser o banco.</span></div>
     </div>
     <p class="dica"><b>O segundo tempo começa de onde o primeiro parou.</b> Travou antes do intervalo? Chame na hora, não depois.</p>
   </div>
@@ -621,7 +621,7 @@ Base.metadata.<span class="fn">create_all</span>(engine)    <span class="com"># 
   <div class="corpo">
     <p class="eyebrow">Depois do intervalo</p>
     <h1>Segundo tempo</h1>
-    <p class="sub">Os dados já ficam. Agora a regra grava de verdade, as tabelas se ligam e o banco ganha versões.</p>
+    <p class="sub">Os dados já ficam. Agora a regra grava de verdade, as tabelas se ligam e o banco filtra.</p>
   </div>
   <div class="rodape"></div>
 </section>
@@ -728,10 +728,29 @@ Base.metadata.<span class="fn">create_all</span>(engine)    <span class="com"># 
   <div class="rodape"></div>
 </section>
 
+<!-- A ÁRVORE AO FIM DE HOJE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>O backend ao fim do segundo tempo</h2>
+    <div class="codigo compacto">
+      <pre>backend/            <span class="com"># sem o venv/, o __pycache__ e os arquivos que não mudam</span>
+├── banco.py             <span class="com"># ganha o obter_sessao</span>
+├── criar_tabelas.py     <span class="com"># importa todos os modelos</span>
+├── modelos/             <span class="com"># usuario.py, tarefa.py e item.py</span>
+├── rotas/tarefas.py     <span class="com"># pede a sessão com Depends</span>
+├── servicos/            <span class="com"># recebem a sessão e passam adiante</span>
+└── repositorios/        <span class="com"># recebem a sessão. não abrem, não fecham</span></pre>
+    </div>
+    <p class="dica"><b>O prompt de estrutura do começo da aula</b> já conhece esta árvore. Rode de novo agora, se quiser conferir.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
 <!-- MÃO NA MASSA 2.1 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 1 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 1 de 7</p>
     <h2>A função que entrega a sessão</h2>
     <div class="codigo">
       <div class="arquivo">backend/banco.py · no fim do arquivo</div>
@@ -776,7 +795,7 @@ Base.metadata.<span class="fn">create_all</span>(engine)    <span class="com"># 
 <!-- MÃO NA MASSA 2.2 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 2 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 2 de 7</p>
     <h2>A sessão passa de mão em mão</h2>
     <div class="codigo compacto">
       <div class="arquivo">exemplo do professor · a mesma função nas outras duas camadas</div>
@@ -801,7 +820,7 @@ Base.metadata.<span class="fn">create_all</span>(engine)    <span class="com"># 
 <!-- MÃO NA MASSA 2.3 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 3 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 3 de 7</p>
     <h2>Agora a mudança grava</h2>
     <div class="codigo compacto">
       <div class="arquivo">backend/repositorios/tarefa.py · troque tarefa pela sua principal</div>
@@ -896,7 +915,7 @@ itens = <span class="fn">relationship</span>(<span class="str">"ItemChecklist"</
 <!-- MÃO NA MASSA 2.4 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 4 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 4 de 7</p>
     <h2>As duas tabelas que faltavam</h2>
     <div class="codigo compacto">
       <div class="arquivo">backend/criar_tabelas.py · os imports, um por modelo</div>
@@ -905,7 +924,7 @@ itens = <span class="fn">relationship</span>(<span class="str">"ItemChecklist"</
 <span class="kw">from</span> modelos.item <span class="kw">import</span> ItemChecklist</pre>
     </div>
     <ol class="passos curta">
-      <li>Crie em <code>modelos/</code> as outras duas entidades da cartilha, com a <code>ForeignKey</code> onde o DER tem FK.</li>
+      <li>Crie em <code>modelos/</code> as outras duas entidades da cartilha, com a <code>ForeignKey</code> da filha para a principal.</li>
       <li>Na classe da principal, acrescente o <code>relationship</code> para a filha.</li>
       <li>No <code>criar_tabelas.py</code>, importe os três modelos e rode <code>python criar_tabelas.py</code>. Aparecem as três tabelas.</li>
       <li>No MySQL, cadastre com <code>INSERT</code> os usuários da lista fixa, na mesma ordem dela, para os ids baterem.</li>
@@ -975,7 +994,7 @@ repositorio.<span class="fn">salvar</span>(sessao, dados)
 <!-- MÃO NA MASSA 2.5 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 5 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 5 de 7</p>
     <h2>O item vai para o banco, junto com a tarefa</h2>
     <div class="codigo compacto">
       <div class="arquivo">backend/repositorios/item.py · no lugar da lista itens = []</div>
@@ -1000,7 +1019,7 @@ repositorio.<span class="fn">salvar</span>(sessao, dados)
 <!-- MÃO NA MASSA 2.6 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 6 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 6 de 7</p>
     <h2>Quebre de propósito e veja o rollback</h2>
     <div class="codigo compacto">
       <div class="arquivo">backend/servicos/item.py · na linha antes do return repositorio.salvar</div>
@@ -1039,7 +1058,7 @@ repositorio.<span class="fn">salvar</span>(sessao, dados)
 <!-- MÃO NA MASSA 2.7 -->
 <section class="slide">
   <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 7 de 8</p>
+    <p class="eyebrow">Segundo tempo · passo 7 de 7</p>
     <h2>O filtro desce para o repositório</h2>
     <div class="codigo compacto">
       <div class="arquivo">backend/repositorios/tarefa.py · o listar novo</div>
@@ -1060,119 +1079,16 @@ repositorio.<span class="fn">salvar</span>(sessao, dados)
   <div class="rodape"></div>
 </section>
 
-<!-- A DOR DA MIGRATION -->
-<section class="slide">
-  <div class="corpo">
-    <p class="eyebrow">A última dor de hoje</p>
-    <h2>O modelo mudou, e a tabela não</h2>
-    <div class="codigo compacto">
-      <div class="arquivo">exemplo do professor · backend/modelos/tarefa.py</div>
-      <pre><span class="kw">from</span> modelos.usuario <span class="kw">import</span> Usuario    <span class="com"># sem ele, a chave não acha usuarios</span>
-
-    solicitante_id = <span class="fn">Column</span>(Integer,
-        <span class="fn">ForeignKey</span>(<span class="str">"usuarios.id"</span>, name=<span class="str">"fk_tarefa_solicitante"</span>), nullable=<span class="kw">False</span>)</pre>
-    </div>
-    <ol class="passos curta">
-      <li>A tarefa ganha a segunda chave estrangeira do DER, a do solicitante, com um nome próprio.</li>
-      <li>No terminal, eu rodo <code>python criar_tabelas.py</code> de novo. Nenhum erro.</li>
-      <li>No MySQL, <code>SHOW CREATE TABLE tarefas;</code> não tem <code>FOREIGN KEY</code> nenhuma.</li>
-    </ol>
-    <div class="alerta">O <code>create_all</code> só cria a tabela que não existe. <strong>Tabela que já existe, ele não toca.</strong></div>
-  </div>
-  <div class="rodape"></div>
-</section>
-
-<!-- MIGRATION -->
-<section class="slide">
-  <div class="corpo">
-    <p class="eyebrow">Conceito</p>
-    <h2>Migration: o commit do banco</h2>
-    <p class="intro">O Git guarda cada mudança do código. A migration guarda cada mudança das tabelas, em ordem.</p>
-    <div class="cartoes n3">
-      <div class="cartao"><div class="icone">1</div><span class="t">O arquivo</span><span class="d">Um <code>.py</code> por mudança, em <code>migracoes/versions/</code>. Vai para o Git.</span></div>
-      <div class="cartao"><div class="icone">2</div><span class="t">A versão</span><span class="d">Uma tabela <code>alembic_version</code> diz em que mudança o banco está.</span></div>
-      <div class="cartao"><div class="icone">3</div><span class="t">O upgrade</span><span class="d">Roda só as mudanças que o banco ainda não tem.</span></div>
-    </div>
-    <p class="dica"><b>Quem faz isso é o Alembic</b>, escrito pelo mesmo autor do SQLAlchemy. Ele compara os modelos com o banco e escreve a mudança.</p>
-  </div>
-  <div class="rodape"></div>
-</section>
-
-<!-- A ÁRVORE AO FIM DE HOJE -->
-<section class="slide">
-  <div class="corpo">
-    <p class="eyebrow">A estrutura do projeto</p>
-    <h2>O backend ao fim de hoje</h2>
-    <div class="codigo compacto">
-      <pre>backend/            <span class="com"># sem o venv/, o __pycache__ e os arquivos que não mudam</span>
-├── alembic.ini          <span class="com"># a configuração do Alembic. arquivo novo</span>
-├── banco.py             <span class="com"># ganha o obter_sessao</span>
-├── criar_tabelas.py     <span class="com"># importa todos os modelos</span>
-├── migracoes/           <span class="com"># env.py e versions/. pasta nova</span>
-├── modelos/             <span class="com"># usuario.py, tarefa.py e item.py</span>
-├── rotas/tarefas.py     <span class="com"># pede a sessão com Depends</span>
-├── servicos/            <span class="com"># recebem a sessão e passam adiante</span>
-└── repositorios/        <span class="com"># recebem a sessão. não abrem, não fecham</span></pre>
-    </div>
-    <p class="dica"><b>O prompt de estrutura do começo da aula</b> já conhece esta árvore. Rode de novo no fim, se quiser conferir.</p>
-  </div>
-  <div class="rodape"></div>
-</section>
-
-<!-- MÃO NA MASSA 2.8a -->
-<section class="slide">
-  <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 8 de 8 · parte 1</p>
-    <h2>O Alembic conhece os seus modelos</h2>
-    <div class="codigo compacto">
-      <div class="arquivo">backend/migracoes/env.py · no lugar de target_metadata = None</div>
-      <pre><span class="kw">from</span> banco <span class="kw">import</span> Base, engine
-<span class="kw">from</span> modelos <span class="kw">import</span> usuario, tarefa, item   <span class="com"># troque pelos seus três</span>
-target_metadata = Base.metadata</pre>
-    </div>
-    <ol class="passos curta">
-      <li>No terminal do <code>backend/</code>, rode <code>pip install alembic</code>.</li>
-      <li>Rode <code>alembic init migracoes</code>. Aparecem o <code>alembic.ini</code> e a pasta <code>migracoes/</code>.</li>
-      <li>No <code>migracoes/env.py</code>, troque a linha <code>target_metadata = None</code> pelas três acima.</li>
-      <li>No mesmo arquivo, troque o bloco <code>connectable = engine_from_config(</code>, até o <code>)</code> dele, por <code>connectable = engine</code>.</li>
-      <li>Rode <code>alembic current</code>. Saem duas linhas <code>INFO</code>, sem erro.</li>
-    </ol>
-  </div>
-  <div class="rodape"></div>
-</section>
-
-<!-- MÃO NA MASSA 2.8b -->
-<section class="slide">
-  <div class="corpo">
-    <p class="eyebrow">Segundo tempo · passo 8 de 8 · parte 2</p>
-    <h2>A primeira migration</h2>
-    <div class="codigo compacto">
-      <div class="arquivo">migracoes/versions/…_chave_do_solicitante.py · o que o Alembic escreveu</div>
-      <pre><span class="kw">def</span> <span class="fn">upgrade</span>() -> <span class="kw">None</span>:
-    op.<span class="fn">create_foreign_key</span>(<span class="str">'fk_tarefa_solicitante'</span>, <span class="str">'tarefas'</span>, <span class="str">'usuarios'</span>,
-                          [<span class="str">'solicitante_id'</span>], [<span class="str">'id'</span>])</pre>
-    </div>
-    <ol class="passos curta">
-      <li>Rode <code>alembic revision --autogenerate -m "chave do solicitante"</code>. Uma linha diz <code>Detected added foreign key</code>.</li>
-      <li>Abra o arquivo novo em <code>migracoes/versions/</code>. O <code>upgrade</code> tem só a mudança que faltava.</li>
-      <li>Rode <code>alembic upgrade head</code>.</li>
-      <li>No MySQL, <code>SHOW CREATE TABLE</code> da principal. Agora a <code>FOREIGN KEY</code> está lá.</li>
-    </ol>
-    <div class="alerta">Erro <code>1452</code> no upgrade? <strong>Algum id não existe na tabela-mãe.</strong> Confira o INSERT do passo 4.</div>
-  </div>
-  <div class="rodape"></div>
-</section>
-
 <!-- EXERCÍCIO -->
 <section class="slide exercicio">
   <div class="corpo">
     <p class="eyebrow">Exercício 06</p>
     <h2>A sua cartilha inteira no MySQL</h2>
     <div class="tarefas">
-      <div class="tarefa"><span class="n">1</span><span class="txt">O DER das três entidades em <code>docs/</code>, e as três tabelas no MySQL, com as duas chaves estrangeiras.</span></div>
+      <div class="tarefa"><span class="n">1</span><span class="txt">O DER das três entidades em <code>docs/</code>, e as três tabelas no MySQL, com a chave da filha para a principal.</span></div>
       <div class="tarefa"><span class="n">2</span><span class="txt">A sessão por requisição: nenhuma função de repositório abre nem fecha sessão.</span></div>
       <div class="tarefa"><span class="n">3</span><span class="txt">A regra da cartilha grava a principal e a filha num commit só. No README: <b>o que acontece se der erro no meio</b>, e por quê.</span></div>
-      <div class="tarefa"><span class="n">4</span><span class="txt">Uma migration em <code>migracoes/versions/</code>. No README, o banco do zero: <code>python criar_tabelas.py</code> e <code>alembic stamp head</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O filtro e a página da lista no repositório. No README: <b>por que filtrar no banco</b>, e não no serviço.</span></div>
     </div>
     <div class="acoes">
       <button class="btn" data-copiar="../prompts/aula-06-modelo.md">copiar o prompt que confere os modelos</button>
@@ -1191,10 +1107,10 @@ target_metadata = Base.metadata</pre>
       <li>Lista em memória morre com o servidor. O ORM traduz: <b>uma classe é uma tabela</b>.</li>
       <li>Uma sessão por requisição, entregue pelo <code>Depends</code>, <b>de mão em mão</b> pelas três camadas.</li>
       <li>O UPDATE é mudar o atributo e dar commit. <b>Um commit só</b> grava a regra inteira, ou nada.</li>
-      <li>A <code>ForeignKey</code> é a coluna; o <code>relationship</code> é o atalho; o <b>banco filtra</b>, ordena e pagina.</li>
-      <li>O <code>create_all</code> não altera tabela. <b>A migration</b> guarda cada mudança, em ordem.</li>
+      <li>A <code>ForeignKey</code> é a coluna no banco. O <code>relationship</code> é <b>o atalho no Python</b>.</li>
+      <li>Quem filtra, ordena e pagina é <b>o banco</b>. O repositório só monta a consulta.</li>
     </ul>
-    <p class="proximo"><b>Próxima aula:</b> a regra da cartilha sai do meio do serviço e ganha nome próprio, e a API passa a explicar os próprios erros.</p>
+    <p class="proximo"><b>Próxima aula:</b> o modelo muda e a tabela não acompanha. Depois do intervalo, a regra ganha nome próprio, e a API, documentação.</p>
   </div>
   <div class="rodape"></div>
 </section>

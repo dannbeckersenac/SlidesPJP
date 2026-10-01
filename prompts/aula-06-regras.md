@@ -19,9 +19,7 @@ por cima da versão anterior.
   - `configuracao.py`: o único arquivo que lê o `.env`, com `load_dotenv()` e `os.getenv`.
   - `banco.py`: o `engine`, a fábrica `Sessao`, a classe `Base` e a função `obter_sessao`. Nada mais.
   - `criar_tabelas.py`: importa os três modelos e roda `Base.metadata.create_all(engine)`. Rodado à mão
-    no terminal, com `python criar_tabelas.py`, e não pelo `main.py`. Serve para o banco vazio.
-  - `alembic.ini` e `migracoes/`: a configuração do Alembic, o `env.py` e as migrations em
-    `migracoes/versions/`. Toda mudança numa tabela que já existe é uma migration.
+    no terminal, com `python criar_tabelas.py`, e não pelo `main.py`.
   - `main.py`: cria o `app`, registra o CORS lendo a configuração e liga os routers
     com `include_router`. Nenhuma rota nele.
   - `rotas/<recurso>.py`, no plural: o `APIRouter`, as rotas do recurso e nada mais.
@@ -62,8 +60,8 @@ por cima da versão anterior.
     `BANCO_SENHA`, `BANCO_HOST`, `BANCO_PORTA`, `BANCO_NOME`) montadas com `URL.create` no `configuracao.py`.
     Use a forma que já estiver no meu projeto.
   - Modelo declarativo com `__tablename__` e `Column(Integer | String(n) | Date, primary_key=..., nullable=...)`.
-  - `ForeignKey("tabela.coluna")`, com `name=` quando a chave entra numa tabela que já existe, e
-    `relationship("Classe")` na entidade principal, para ler a filha com ponto (`tarefa.itens`).
+  - `ForeignKey("tabela.coluna")` na filha, apontando para a principal, e `relationship("Classe")`
+    na principal, para ler a filha com ponto (`tarefa.itens`).
   - O modelo que tem `ForeignKey` importa o modelo da tabela para onde a chave aponta.
   - Sessão por requisição: `obter_sessao` com `with Sessao() as sessao:` e `yield sessao`, entregue
     pela rota com `sessao=Depends(obter_sessao)`. O `with` e o `yield` foram vistos nesta aula.
@@ -73,9 +71,6 @@ por cima da versão anterior.
     Paginação com `pagina: int = Query(default=1, ge=1)` na rota.
   - Transação: a regra que muda mais de uma tabela grava tudo num commit só. Erro antes do commit
     desfaz tudo, porque fechar a sessão sem commit é `rollback`.
-- Alembic: `alembic init migracoes`, o `env.py` com `target_metadata = Base.metadata` e
-  `connectable = engine`, `alembic revision --autogenerate -m "..."`, `alembic upgrade head`,
-  `alembic current` e, para o banco do zero, `python criar_tabelas.py` seguido de `alembic stamp head`.
 - O repositório devolve objeto do modelo, e o serviço lê com ponto: `registro.campo`, não `registro["campo"]`.
 
 ## O que ainda não foi visto, e não deve aparecer
@@ -83,8 +78,9 @@ por cima da versão anterior.
 - `try`/`except`. O rollback acontece porque a sessão fecha sem commit, e isso basta por enquanto.
 - Função de repositório que abre a própria sessão com `Sessao()`. Toda sessão vem do `Depends`.
 - `back_populates`, `backref`, `lazy=`, `joinedload`, `selectinload`, `cascade`. O `relationship` simples basta.
-- Migration escrita à mão, `op.execute` com SQL, `bulk_insert`, `alembic downgrade` em banco que tem
-  dado de verdade. Se o autogenerate não gerar o que você esperava, pare e me avise.
+- Migrations e Alembic. As tabelas nascem do `criar_tabelas.py`. Se uma mudança precisar alterar uma
+  tabela que já existe, como uma chave estrangeira nova na principal, **não apague a tabela e me avise**:
+  isso é o assunto da próxima aula.
 - SQL escrito à mão no código Python, `mysql.connector` direto, `text()` do SQLAlchemy.
 - SQLite ou qualquer banco que não seja o MySQL.
 - `orm_mode` e `class Config` do Pydantic 1. Se o esquema de saída precisar ler de objeto, o FastAPI

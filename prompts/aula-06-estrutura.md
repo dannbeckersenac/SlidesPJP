@@ -16,10 +16,8 @@ backend/
 ├── .env                   o que muda de máquina para máquina, fora do Git
 ├── .env.exemplo           as mesmas chaves do .env, sem os valores, esse vai para o Git
 ├── configuracao.py        load_dotenv() e as leituras com os.getenv
-├── alembic.ini            chega hoje: a configuração do Alembic
 ├── banco.py               chega hoje: engine, Sessao, Base e obter_sessao
 ├── criar_tabelas.py       chega hoje: cria as tabelas a partir dos modelos
-├── migracoes/             chega hoje: env.py e versions/, as migrations do Alembic
 ├── main.py                cria o app, registra o CORS e liga os routers
 ├── rotas/
 │   ├── __init__.py        vazio
@@ -66,10 +64,10 @@ Limites obrigatórios:
 
 - Não mude o comportamento de nenhuma rota, nem caminho, nem método, nem status code.
   Só lugar, nome e import.
-- Não crie `banco.py`, `criar_tabelas.py`, `modelos/`, `alembic.ini` nem `migracoes/`, e não instale nada. Isso é a mão na massa
+- Não crie `banco.py`, `criar_tabelas.py`, `modelos/`, e não instale nada. Isso é a mão na massa
   da aula, e eu faço junto com a turma.
 - Não crie pasta que não está na estrutura acima. Nada de `app/`, `models/`, `database/`, `db/`,
-  `core/`, `crud/`, `utils/`, `schemas/`, `services/` ou `alembic/` em inglês.
+  `core/`, `crud/`, `utils/`, `schemas/`, `services/`, `alembic/` ou `migrations/` em inglês.
 - Não use `async def`, autenticação nem `pydantic-settings`.
 - Não toque na pasta `frontend/`.
 - Código, nomes e comentários em português do Brasil.
