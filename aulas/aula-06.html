@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aula 06 · Do SQL à mão ao SQLAlchemy · UC4</title>
+<title>Aula 06 · Do SQL à mão ao SQLAlchemy, e o banco inteiro · UC4</title>
 <link rel="stylesheet" href="../assets/css/slides.css">
 </head>
 <body data-aula="6">
@@ -14,7 +14,7 @@
   <div class="corpo">
     <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 06</p>
     <h1>Do SQL à mão ao SQLAlchemy</h1>
-    <p class="sub">Hoje os dados param de sumir quando o servidor para.</p>
+    <p class="sub">Antes do intervalo, os dados param de sumir. Depois, a regra grava de verdade e as três tabelas se ligam.</p>
   </div>
   <div class="rodape"><span>Ciclo 2 · A persistência</span><span>Senac Blumenau · 2026.10.78</span></div>
 </section>
@@ -30,6 +30,20 @@
       <div class="cartao"><div class="icone">2</div><span class="t">Quem executa, no computador</span><span class="d">Vê a fila inteira, filtrada por situação, e lança cada item que terminou.</span></div>
     </div>
     <p class="dica"><b>A sua cartilha tem o mesmo esqueleto.</b> Onde eu escrevo tarefa, você lê a entidade principal da sua.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · DOIS TEMPOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de começar</p>
+    <h2>Hoje são duas aulas numa só</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><div class="icone">1</div><span class="t">Antes do intervalo</span><span class="d">O SQLAlchemy. A principal da sua cartilha passa a morar no MySQL e para de sumir.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Depois do intervalo</span><span class="d">A regra grava de verdade, as três tabelas se ligam e o banco ganha histórico de versões.</span></div>
+    </div>
+    <p class="dica"><b>O segundo tempo começa de onde o primeiro parou.</b> Travou antes do intervalo? Chame na hora, não depois.</p>
   </div>
   <div class="rodape"></div>
 </section>
@@ -102,7 +116,7 @@
         <div class="col"><span class="chave">FK</span>tarefa_id<span class="tipo">INT</span></div>
       </div>
     </div>
-    <div class="destaque"><b>PK</b> é o número da linha. <b>FK</b> guarda o número de uma linha de outra tabela. Hoje só a tarefa, em azul, vai para o banco. A ligação é a próxima aula.</div>
+    <div class="destaque"><b>PK</b> é o número da linha. <b>FK</b> guarda o número de uma linha de outra tabela. No primeiro tempo, só a tarefa, em azul, vai para o banco. As ligações vêm depois do intervalo.</div>
   </div>
   <div class="rodape"></div>
 </section>
@@ -290,7 +304,7 @@ sessao.<span class="fn">commit</span>()</pre></div>
 <section class="slide">
   <div class="corpo">
     <p class="eyebrow">A estrutura do projeto</p>
-    <h2>O backend ao fim de hoje</h2>
+    <h2>O backend no intervalo</h2>
     <div class="codigo compacto">
       <pre>backend/            <span class="com"># sem o venv/ e sem o __pycache__</span>
 ├── .env                 <span class="com"># ganha o URL_DO_BANCO, com a senha</span>
@@ -314,7 +328,7 @@ sessao.<span class="fn">commit</span>()</pre></div>
   <div class="corpo">
     <p class="eyebrow">Antes da mão na massa</p>
     <h2>Se o seu backend está diferente</h2>
-    <p class="intro">Uma pasta e dois arquivos entram hoje. Antes de criar qualquer coisa, alinhe o que já existe.</p>
+    <p class="intro">No primeiro tempo, entram uma pasta e dois arquivos. Antes de criar qualquer coisa, alinhe o que já existe.</p>
     <ol class="passos curta">
       <li>Copie o prompt pelo botão abaixo e cole no assistente, com o repositório da cartilha aberto.</li>
       <li>Leia a lista de diferenças que ele devolve. Até aqui ele não mexeu em nada.</li>
@@ -586,40 +600,601 @@ Base.metadata.<span class="fn">create_all</span>(engine)    <span class="com"># 
   <div class="rodape"></div>
 </section>
 
-<!-- 24 · EXERCÍCIO -->
-<section class="slide exercicio">
+<!-- ANTES DO INTERVALO -->
+<section class="slide escuro">
   <div class="corpo">
-    <p class="eyebrow">Exercício 06</p>
-    <h2>A sua principal, no MySQL</h2>
-    <p class="intro">Ao final, você derruba a API e a entidade principal da sua cartilha continua lá.</p>
-    <div class="tarefas">
-      <div class="tarefa"><span class="n">1</span><span class="txt">O DER das três entidades da cartilha em <code>docs/</code>, com o tipo e a restrição de cada coluna.</span></div>
-      <div class="tarefa"><span class="n">2</span><span class="txt">O banco criado, e o <code>URL_DO_BANCO</code> no <code>.env</code> e no <code>.env.exemplo</code>.</span></div>
-      <div class="tarefa"><span class="n">3</span><span class="txt">A principal em <code>modelos/</code>, com a tabela criada e o repositório lendo e gravando no MySQL.</span></div>
-      <div class="tarefa"><span class="n">4</span><span class="txt">No README: reinicie a API e escreva <b>o que continuou e o que ainda some</b>, e por quê.</span></div>
-    </div>
-    <div class="acoes">
-      <button class="btn" data-copiar="../prompts/aula-06-modelo.md">copiar o prompt que confere o modelo</button>
-      <a class="btn" href="../prompts/aula-06-regras.md" download="REGRAS_AULA6.md">baixar o REGRAS_AULA6.md</a>
-    </div>
-    <p class="dica"><b>Entrega no repositório da cartilha</b> até o começo da próxima aula.</p>
+    <p class="eyebrow">Antes do intervalo</p>
+    <h2>Confira os quatro antes de sair da sala</h2>
+    <ol class="passos">
+      <li>No <code>/docs</code>, o GET da lista da sua principal responde, vindo do MySQL.</li>
+      <li>O POST devolve <code>201</code>, com o <code>id</code> que o banco gerou.</li>
+      <li>Derrube o servidor com <code>Ctrl+C</code> e suba de novo. O registro continua lá.</li>
+      <li>O filtro da sua cartilha responde <code>200</code>, com ponto no lugar do colchete.</li>
+    </ol>
+    <div class="destaque">Os quatro funcionando, <b>você está pronto para o segundo tempo.</b> Algum falhou? Chame agora.</div>
   </div>
   <div class="rodape"></div>
 </section>
 
-<!-- 25 · RECAP -->
+<!-- SEGUNDO TEMPO · ABERTURA -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Depois do intervalo</p>
+    <h1>Segundo tempo</h1>
+    <p class="sub">Os dados já ficam. Agora a regra grava de verdade, as tabelas se ligam e o banco ganha versões.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A DOR DO SEGUNDO TEMPO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor do segundo tempo</p>
+    <h2>A regra mudou a tarefa, e o banco não ficou sabendo</h2>
+    <ol class="passos">
+      <li>No <code>/docs</code> do exemplo, eu abro uma tarefa. Ela nasce <code>aberta</code>, com <code>itens_feitos</code> em <code>0</code>.</li>
+      <li>Lanço um item de etapa pelo POST de itens. Volta <code>201</code>.</li>
+      <li>Rodo o GET da tarefa. Continua <code>aberta</code>, com <code>0</code>.</li>
+      <li>No seu projeto: rode a regra da cartilha que muda a principal, e depois o GET dela.</li>
+    </ol>
+    <div class="destaque">A regra rodou, ninguém reclamou. <b>A mudança só não chegou ao banco.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>A conversa fechou antes da mudança</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · o caminho da tarefa, do repositório até a regra</div>
+      <pre><span class="com"># repositorios/tarefa.py</span>
+<span class="kw">def</span> <span class="fn">buscar_por_id</span>(tarefa_id: <span class="kw">int</span>):
+    sessao = <span class="fn">Sessao</span>()                   <span class="com"># abre a conversa</span>
+    tarefa = sessao.<span class="fn">get</span>(Tarefa, tarefa_id)
+    sessao.<span class="fn">close</span>()                       <span class="com"># e fecha antes de devolver</span>
+    <span class="kw">return</span> tarefa
+
+<span class="com"># servicos/item.py, a regra</span>
+    tarefa.itens_feitos += <span class="num">1</span>              <span class="com"># muda o objeto, com a conversa já fechada</span>
+    tarefa.situacao = <span class="str">"em andamento"</span>       <span class="com"># e ninguém faz o commit</span></pre>
+    </div>
+    <p class="dica"><b>Cada função do repositório tem a sua conversa.</b> Quem muda a tarefa não fala com nenhuma delas.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- UMA CONVERSA POR REQUISIÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Uma conversa por requisição</h2>
+    <p class="intro">A sessão abre quando a requisição chega e fecha quando a resposta sai. No meio, as três camadas usam a mesma.</p>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Chega a requisição</span><span class="d">O FastAPI abre uma sessão.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Rota, serviço, repositório</span><span class="d">Recebem a mesma sessão, de mão em mão.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Sai a resposta</span><span class="d">O FastAPI fecha a sessão.</span></div>
+    </div>
+    <p class="dica"><b>Quem entrega a sessão é o Depends</b>, o mesmo da aula 4. Para escrever essa função, faltam duas peças de Python.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- PYTHON QUE FALTAVA: WITH -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>with: abre, usa e fecha sozinho</h2>
+    <div class="codigo">
+      <div class="arquivo">no terminal, com python</div>
+      <pre><span class="kw">with</span> <span class="fn">open</span>(<span class="str">"teste.txt"</span>, <span class="str">"w"</span>) <span class="kw">as</span> arquivo:   <span class="com"># abre e dá um nome</span>
+    arquivo.<span class="fn">write</span>(<span class="str">"oi"</span>)                 <span class="com"># usa dentro do bloco</span>
+
+<span class="fn">print</span>(arquivo.closed)                    <span class="com"># True: fechou na saída do bloco</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal, digite <code>python</code> e cole o código acima.</li>
+      <li>A última linha mostra <code>True</code>. Ninguém chamou <code>close()</code>.</li>
+    </ol>
+    <div class="destaque">O <code>with</code> fecha na saída do bloco, <b>mesmo se der erro lá dentro.</b> A sessão do SQLAlchemy funciona igual.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- PYTHON QUE FALTAVA: YIELD -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>yield: entrega e espera</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no terminal, com python</div>
+      <pre><span class="kw">def</span> <span class="fn">conversa</span>():
+    <span class="fn">print</span>(<span class="str">"abre"</span>)
+    <span class="kw">yield</span> <span class="str">"sessão"</span>          <span class="com"># entrega o valor e para aqui</span>
+    <span class="fn">print</span>(<span class="str">"fecha"</span>)            <span class="com"># só roda quando quem recebeu termina</span>
+
+<span class="kw">for</span> valor <span class="kw">in</span> <span class="fn">conversa</span>():
+    <span class="fn">print</span>(<span class="str">"usa a"</span>, valor)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Cole no mesmo terminal e aperte Enter duas vezes.</li>
+      <li>Aparecem três linhas, nesta ordem: <code>abre</code>, <code>usa a sessão</code>, <code>fecha</code>.</li>
+    </ol>
+    <p class="dica"><b>O <code>return</code> entrega e acaba.</b> O <code>yield</code> entrega, espera o outro lado usar e depois continua.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 1 de 8</p>
+    <h2>A função que entrega a sessão</h2>
+    <div class="codigo">
+      <div class="arquivo">backend/banco.py · no fim do arquivo</div>
+      <pre><span class="kw">def</span> <span class="fn">obter_sessao</span>():
+    <span class="kw">with</span> <span class="fn">Sessao</span>() <span class="kw">as</span> sessao:   <span class="com"># fecha sozinho, mesmo com erro</span>
+        <span class="kw">yield</span> sessao             <span class="com"># entrega para a rota e espera a resposta sair</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>banco.py</code>, acrescente a função acima, depois da <code>class Base</code>.</li>
+      <li>No terminal do <code>backend/</code>, rode <code>python -c "import banco"</code>.</li>
+      <li>Nenhuma mensagem é o resultado certo.</li>
+    </ol>
+    <p class="dica"><b>É a mesma conversa do slide anterior.</b> No lugar do <code>for</code>, quem usa a sessão é a rota.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- LEITURA: A ROTA PEDE A SESSÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A rota pede a sessão</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/tarefas.py</div>
+      <pre><span class="kw">from</span> banco <span class="kw">import</span> obter_sessao
+<span class="com"># a dependência da aula 4 também pede a sessão, e passa adiante</span>
+<span class="kw">def</span> <span class="fn">tarefa_existente</span>(tarefa_id: <span class="kw">int</span>, sessao=<span class="fn">Depends</span>(obter_sessao)):
+    tarefa = servico.<span class="fn">buscar_por_id</span>(sessao, tarefa_id)
+    <span class="kw">if</span> tarefa <span class="kw">is None</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">404</span>, detail=<span class="str">"Tarefa não encontrada"</span>)
+    <span class="kw">return</span> tarefa
+
+<span class="com"># o FastAPI chama obter_sessao e entrega o que veio do yield</span>
+<span class="fn">@router.get</span>(<span class="str">""</span>, response_model=<span class="kw">list</span>[TarefaSaida])
+<span class="kw">def</span> <span class="fn">listar_tarefas</span>(situacao: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span>, sessao=<span class="fn">Depends</span>(obter_sessao)):
+    <span class="kw">return</span> servico.<span class="fn">listar</span>(sessao, situacao)</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 2 de 8</p>
+    <h2>A sessão passa de mão em mão</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · a mesma função nas outras duas camadas</div>
+      <pre><span class="com"># servicos/tarefa.py: a sessão chega e segue adiante</span>
+<span class="kw">def</span> <span class="fn">buscar_por_id</span>(sessao, tarefa_id: <span class="kw">int</span>):
+    <span class="kw">return</span> repositorio.<span class="fn">buscar_por_id</span>(sessao, tarefa_id)
+
+<span class="com"># repositorios/tarefa.py: sem Sessao() e sem close()</span>
+<span class="kw">def</span> <span class="fn">buscar_por_id</span>(sessao, tarefa_id: <span class="kw">int</span>):
+    <span class="kw">return</span> sessao.<span class="fn">get</span>(Tarefa, tarefa_id)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Nas rotas, toda função que chega ao banco ganha <code>sessao=Depends(obter_sessao)</code> e passa a sessão ao serviço.</li>
+      <li>Nos serviços, <code>sessao</code> vira o primeiro parâmetro e segue para o repositório.</li>
+      <li>Nos repositórios, apague as linhas com <code>Sessao()</code> e <code>close()</code>, e o import do <code>Sessao</code>.</li>
+      <li>No <code>/docs</code>, o GET da lista e o POST respondem como antes.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 3 de 8</p>
+    <h2>Agora a mudança grava</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/tarefa.py · troque tarefa pela sua principal</div>
+      <pre><span class="kw">def</span> <span class="fn">atualizar</span>(sessao, tarefa):
+    sessao.<span class="fn">commit</span>()          <span class="com"># o UPDATE do que mudou no objeto</span>
+    sessao.<span class="fn">refresh</span>(tarefa)
+    <span class="kw">return</span> tarefa</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No repositório da sua principal, crie o <code>atualizar</code> acima.</li>
+      <li>A rota da regra ganha <code>sessao=Depends(obter_sessao)</code> e passa a sessão ao serviço.</li>
+      <li>No serviço, depois de mudar a principal, chame <code>atualizar(sessao, tarefa)</code> do repositório dela.</li>
+      <li>Rode a regra pelo <code>/docs</code> e depois o GET da principal. <b>A mudança está lá.</b></li>
+    </ol>
+    <p class="dica"><b>A tarefa veio da mesma sessão</b>, pela <code>tarefa_existente</code>. Por isso o commit sabe o que mudou.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- REFERÊNCIA: CRUD -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>CRUD: as quatro operações na sessão</h2>
+    <table>
+      <thead><tr><th>Operação</th><th>Você escreve</th><th>O banco recebe</th></tr></thead>
+      <tbody>
+        <tr><td>Criar</td><td class="neutro"><code>sessao.add(obj)</code> e <code>commit()</code></td><td class="neutro">INSERT</td></tr>
+        <tr><td>Ler</td><td class="neutro"><code>sessao.get</code> ou <code>sessao.scalars(select())</code></td><td class="neutro">SELECT</td></tr>
+        <tr><td>Atualizar</td><td class="neutro">muda o atributo e <code>commit()</code></td><td class="neutro">UPDATE</td></tr>
+        <tr><td>Apagar</td><td class="neutro"><code>sessao.delete(obj)</code> e <code>commit()</code></td><td class="neutro">DELETE</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">O UPDATE não tem comando próprio. <b>A sessão anota o que mudou no objeto</b> e grava no commit.</div>
+    <p class="dica"><b>Apagar só se a sua cartilha pedir.</b> Rota que ninguém usa é rota que você vai ter que explicar.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- CHAVE ESTRANGEIRA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O item aponta para a tarefa</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/modelos/item.py</div>
+      <pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> Column, Integer, String, Date, ForeignKey
+<span class="kw">from</span> banco <span class="kw">import</span> Base
+<span class="kw">class</span> <span class="fn">ItemChecklist</span>(Base):
+    __tablename__ = <span class="str">"itens_checklist"</span>
+    id = <span class="fn">Column</span>(Integer, primary_key=<span class="kw">True</span>)
+    tipo = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">20</span>), nullable=<span class="kw">False</span>)
+    descricao = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">200</span>), nullable=<span class="kw">False</span>)
+    data = <span class="fn">Column</span>(Date, nullable=<span class="kw">False</span>)
+    <span class="com"># FOREIGN KEY: o banco só aceita o id de uma tarefa que existe</span>
+    tarefa_id = <span class="fn">Column</span>(Integer, <span class="fn">ForeignKey</span>(<span class="str">"tarefas.id"</span>), nullable=<span class="kw">False</span>)</pre>
+    </div>
+    <p class="dica"><b><code>"tarefas.id"</code> é tabela ponto coluna</b>, com o nome do <code>__tablename__</code>, não o da classe.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- RELATIONSHIP -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Da tarefa para os itens, com um ponto</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">modelos/tarefa.py e o serviço</div>
+        <div class="codigo compacto"><pre><span class="kw">from</span> sqlalchemy.orm <span class="kw">import</span> relationship
+
+<span class="com"># dentro da class Tarefa</span>
+itens = <span class="fn">relationship</span>(<span class="str">"ItemChecklist"</span>)
+
+<span class="com"># no serviço que lista os itens</span>
+<span class="kw">return</span> tarefa.itens</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">O MySQL recebe, em SQL</div>
+        <div class="codigo compacto"><pre><span class="kw">SELECT</span> id, tipo, descricao,
+       data, tarefa_id
+<span class="kw">FROM</span> itens_checklist
+<span class="kw">WHERE</span> tarefa_id = <span class="num">4</span></pre></div>
+      </div>
+    </div>
+    <div class="destaque">A <code>ForeignKey</code> é a coluna no banco. <b>O <code>relationship</code> é o atalho no Python</b>: não cria coluna nenhuma.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 4 de 8</p>
+    <h2>As duas tabelas que faltavam</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/criar_tabelas.py · os imports, um por modelo</div>
+      <pre><span class="kw">from</span> modelos.usuario <span class="kw">import</span> Usuario
+<span class="kw">from</span> modelos.tarefa <span class="kw">import</span> Tarefa
+<span class="kw">from</span> modelos.item <span class="kw">import</span> ItemChecklist</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie em <code>modelos/</code> as outras duas entidades da cartilha, com a <code>ForeignKey</code> onde o DER tem FK.</li>
+      <li>Na classe da principal, acrescente o <code>relationship</code> para a filha.</li>
+      <li>No <code>criar_tabelas.py</code>, importe os três modelos e rode <code>python criar_tabelas.py</code>. Aparecem as três tabelas.</li>
+      <li>No MySQL, cadastre com <code>INSERT</code> os usuários da lista fixa, na mesma ordem dela, para os ids baterem.</li>
+      <li>Rode <code>SHOW CREATE TABLE</code> na tabela filha. Aparece uma linha <code>FOREIGN KEY</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- JUNÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Junção: perguntar a duas tabelas de uma vez</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Os itens das tarefas da Júlia</div>
+        <div class="codigo compacto"><pre>consulta = (
+    <span class="fn">select</span>(ItemChecklist)
+    .<span class="fn">join</span>(Tarefa)
+    .<span class="fn">where</span>(Tarefa.solicitante_id == <span class="num">1</span>)
+)
+sessao.<span class="fn">scalars</span>(consulta).<span class="fn">all</span>()</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">O MySQL recebe, em SQL</div>
+        <div class="codigo compacto"><pre><span class="kw">SELECT</span> itens_checklist.*
+<span class="kw">FROM</span> itens_checklist
+<span class="kw">INNER JOIN</span> tarefas
+  <span class="kw">ON</span> tarefas.id =
+     itens_checklist.tarefa_id
+<span class="kw">WHERE</span> tarefas.solicitante_id = <span class="num">1</span></pre></div>
+      </div>
+    </div>
+    <div class="destaque">O item não sabe quem pediu. A tarefa sabe. <b>O <code>join</code> segue a <code>ForeignKey</code></b> sem você dizer qual coluna.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- TRANSAÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Dois commits, duas chances de dar metade</h2>
+    <div class="comparacao">
+      <div class="lado ruim">
+        <div class="rotulo">Dois commits</div>
+        <div class="codigo compacto"><pre><span class="com"># commit 1: grava a tarefa</span>
+repositorio_tarefa.<span class="fn">atualizar</span>(sessao, tarefa)
+<span class="com"># commit 2: grava o item. se falhar,</span>
+<span class="com"># a tarefa fica sem o item que a mudou</span>
+repositorio.<span class="fn">salvar</span>(sessao, dados)</pre></div>
+      </div>
+      <div class="lado bom">
+        <div class="rotulo">Um commit</div>
+        <div class="codigo compacto"><pre><span class="com"># a regra muda a tarefa e não grava</span>
+repositorio.<span class="fn">salvar</span>(sessao, dados)
+<span class="com"># um commit: o item e a tarefa,</span>
+<span class="com"># juntos, ou nenhum dos dois</span></pre></div>
+      </div>
+    </div>
+    <div class="destaque"><b>Transação</b> é o que vai junto para o banco. O <code>commit</code> grava tudo o que a sessão anotou. O <code>rollback</code> descarta tudo.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 5 de 8</p>
+    <h2>O item vai para o banco, junto com a tarefa</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/item.py · no lugar da lista itens = []</div>
+      <pre><span class="kw">from</span> modelos.item <span class="kw">import</span> ItemChecklist
+<span class="kw">def</span> <span class="fn">salvar</span>(sessao, dados: <span class="kw">dict</span>):
+    item = <span class="fn">ItemChecklist</span>(**dados)
+    sessao.<span class="fn">add</span>(item)
+    sessao.<span class="fn">commit</span>()          <span class="com"># grava o item e a tarefa que a regra mudou</span>
+    sessao.<span class="fn">refresh</span>(item)
+    <span class="kw">return</span> item</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No repositório da filha, troque a lista por este <code>salvar</code>.</li>
+      <li>No serviço da regra, apague a chamada do <code>atualizar</code> e passe a sessão para o <code>salvar</code>.</li>
+      <li>No serviço que lista a filha, devolva <code>tarefa.itens</code>, com o seu <code>relationship</code>.</li>
+      <li>Rode a regra pelo <code>/docs</code>. O GET da principal e o GET da filha mostram a mudança.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.6 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 6 de 8</p>
+    <h2>Quebre de propósito e veja o rollback</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/servicos/item.py · na linha antes do return repositorio.salvar</div>
+      <pre>    <span class="kw">raise</span> <span class="fn">ValueError</span>(<span class="str">"teste do rollback"</span>)   <span class="com"># erro depois de mudar a tarefa</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No serviço da regra, cole a linha acima logo antes do <code>return</code> que salva a filha.</li>
+      <li>Rode a regra pelo <code>/docs</code>. Volta <code>500</code>.</li>
+      <li>Rode o GET da principal. <b>Nada mudou</b>, nem o contador, nem a situação.</li>
+      <li>Apague a linha do <code>raise</code> e rode a regra de novo. Volta <code>201</code>.</li>
+    </ol>
+    <div class="destaque">A sessão fechou sem commit, e <b>fechar sem commit é rollback</b>. Quem fechou foi o <code>with</code> do <code>obter_sessao</code>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- FILTRO, ORDEM E PÁGINA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Quem filtra é o banco</h2>
+    <p class="intro">Hoje o repositório traz a tabela inteira, e o serviço filtra em Python. Com mil tarefas, chegam mil para sobrar dez.</p>
+    <table>
+      <thead><tr><th>Você escreve</th><th>O banco recebe</th></tr></thead>
+      <tbody>
+        <tr><td><code>.where(Tarefa.situacao == situacao)</code></td><td class="neutro"><code>WHERE situacao = 'aberta'</code></td></tr>
+        <tr><td><code>.order_by(Tarefa.prazo)</code></td><td class="neutro"><code>ORDER BY prazo</code>, o prazo mais perto primeiro</td></tr>
+        <tr><td><code>.limit(10)</code></td><td class="neutro"><code>LIMIT 10</code>, dez por página</td></tr>
+        <tr><td><code>.offset((pagina - 1) * 10)</code></td><td class="neutro">pula as páginas de antes: a página 3 pula 20</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.7 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 7 de 8</p>
+    <h2>O filtro desce para o repositório</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/tarefa.py · o listar novo</div>
+      <pre><span class="kw">def</span> <span class="fn">listar</span>(sessao, situacao, pagina):
+    consulta = <span class="fn">select</span>(Tarefa).<span class="fn">order_by</span>(Tarefa.prazo)
+    <span class="kw">if</span> situacao <span class="kw">is not None</span>:                         <span class="com"># o filtro só entra se veio</span>
+        consulta = consulta.<span class="fn">where</span>(Tarefa.situacao == situacao)
+    consulta = consulta.<span class="fn">limit</span>(<span class="num">10</span>).<span class="fn">offset</span>((pagina - <span class="num">1</span>) * <span class="num">10</span>)
+    <span class="kw">return</span> sessao.<span class="fn">scalars</span>(consulta).<span class="fn">all</span>()</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No repositório da principal, troque o <code>listar</code> por este, com os filtros da sua cartilha.</li>
+      <li>No serviço, o <code>listar</code> só repassa: apague a compreensão de lista.</li>
+      <li>Na rota, acrescente <code>pagina: int = Query(default=1, ge=1)</code>. O <code>ge</code> é o mesmo do <code>Field</code>.</li>
+      <li>No <code>/docs</code>, <code>pagina=0</code> volta <code>422</code>, e <code>pagina=1</code> volta a lista em ordem de prazo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A DOR DA MIGRATION -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A última dor de hoje</p>
+    <h2>O modelo mudou, e a tabela não</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/modelos/tarefa.py</div>
+      <pre><span class="kw">from</span> modelos.usuario <span class="kw">import</span> Usuario    <span class="com"># sem ele, a chave não acha usuarios</span>
+
+    solicitante_id = <span class="fn">Column</span>(Integer,
+        <span class="fn">ForeignKey</span>(<span class="str">"usuarios.id"</span>, name=<span class="str">"fk_tarefa_solicitante"</span>), nullable=<span class="kw">False</span>)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>A tarefa ganha a segunda chave estrangeira do DER, a do solicitante, com um nome próprio.</li>
+      <li>No terminal, eu rodo <code>python criar_tabelas.py</code> de novo. Nenhum erro.</li>
+      <li>No MySQL, <code>SHOW CREATE TABLE tarefas;</code> não tem <code>FOREIGN KEY</code> nenhuma.</li>
+    </ol>
+    <div class="alerta">O <code>create_all</code> só cria a tabela que não existe. <strong>Tabela que já existe, ele não toca.</strong></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MIGRATION -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Migration: o commit do banco</h2>
+    <p class="intro">O Git guarda cada mudança do código. A migration guarda cada mudança das tabelas, em ordem.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">O arquivo</span><span class="d">Um <code>.py</code> por mudança, em <code>migracoes/versions/</code>. Vai para o Git.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">A versão</span><span class="d">Uma tabela <code>alembic_version</code> diz em que mudança o banco está.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">O upgrade</span><span class="d">Roda só as mudanças que o banco ainda não tem.</span></div>
+    </div>
+    <p class="dica"><b>Quem faz isso é o Alembic</b>, escrito pelo mesmo autor do SQLAlchemy. Ele compara os modelos com o banco e escreve a mudança.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A ÁRVORE AO FIM DE HOJE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>O backend ao fim de hoje</h2>
+    <div class="codigo compacto">
+      <pre>backend/            <span class="com"># sem o venv/, o __pycache__ e os arquivos que não mudam</span>
+├── alembic.ini          <span class="com"># a configuração do Alembic. arquivo novo</span>
+├── banco.py             <span class="com"># ganha o obter_sessao</span>
+├── criar_tabelas.py     <span class="com"># importa todos os modelos</span>
+├── migracoes/           <span class="com"># env.py e versions/. pasta nova</span>
+├── modelos/             <span class="com"># usuario.py, tarefa.py e item.py</span>
+├── rotas/tarefas.py     <span class="com"># pede a sessão com Depends</span>
+├── servicos/            <span class="com"># recebem a sessão e passam adiante</span>
+└── repositorios/        <span class="com"># recebem a sessão. não abrem, não fecham</span></pre>
+    </div>
+    <p class="dica"><b>O prompt de estrutura do começo da aula</b> já conhece esta árvore. Rode de novo no fim, se quiser conferir.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.8a -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 8 de 8 · parte 1</p>
+    <h2>O Alembic conhece os seus modelos</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/migracoes/env.py · no lugar de target_metadata = None</div>
+      <pre><span class="kw">from</span> banco <span class="kw">import</span> Base, engine
+<span class="kw">from</span> modelos <span class="kw">import</span> usuario, tarefa, item   <span class="com"># troque pelos seus três</span>
+target_metadata = Base.metadata</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>backend/</code>, rode <code>pip install alembic</code>.</li>
+      <li>Rode <code>alembic init migracoes</code>. Aparecem o <code>alembic.ini</code> e a pasta <code>migracoes/</code>.</li>
+      <li>No <code>migracoes/env.py</code>, troque a linha <code>target_metadata = None</code> pelas três acima.</li>
+      <li>No mesmo arquivo, troque o bloco <code>connectable = engine_from_config(</code>, até o <code>)</code> dele, por <code>connectable = engine</code>.</li>
+      <li>Rode <code>alembic current</code>. Saem duas linhas <code>INFO</code>, sem erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.8b -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 8 de 8 · parte 2</p>
+    <h2>A primeira migration</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">migracoes/versions/…_chave_do_solicitante.py · o que o Alembic escreveu</div>
+      <pre><span class="kw">def</span> <span class="fn">upgrade</span>() -> <span class="kw">None</span>:
+    op.<span class="fn">create_foreign_key</span>(<span class="str">'fk_tarefa_solicitante'</span>, <span class="str">'tarefas'</span>, <span class="str">'usuarios'</span>,
+                          [<span class="str">'solicitante_id'</span>], [<span class="str">'id'</span>])</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode <code>alembic revision --autogenerate -m "chave do solicitante"</code>. Uma linha diz <code>Detected added foreign key</code>.</li>
+      <li>Abra o arquivo novo em <code>migracoes/versions/</code>. O <code>upgrade</code> tem só a mudança que faltava.</li>
+      <li>Rode <code>alembic upgrade head</code>.</li>
+      <li>No MySQL, <code>SHOW CREATE TABLE</code> da principal. Agora a <code>FOREIGN KEY</code> está lá.</li>
+    </ol>
+    <div class="alerta">Erro <code>1452</code> no upgrade? <strong>Algum id não existe na tabela-mãe.</strong> Confira o INSERT do passo 4.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 06</p>
+    <h2>A sua cartilha inteira no MySQL</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">O DER das três entidades em <code>docs/</code>, e as três tabelas no MySQL, com as duas chaves estrangeiras.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">A sessão por requisição: nenhuma função de repositório abre nem fecha sessão.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">A regra da cartilha grava a principal e a filha num commit só. No README: <b>o que acontece se der erro no meio</b>, e por quê.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Uma migration em <code>migracoes/versions/</code>. No README, o banco do zero: <code>python criar_tabelas.py</code> e <code>alembic stamp head</code>.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-06-modelo.md">copiar o prompt que confere os modelos</button>
+      <a class="btn" href="../prompts/aula-06-regras.md" download="REGRAS_AULA6.md">baixar o REGRAS_AULA6.md</a>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- RECAP -->
 <section class="slide escuro">
   <div class="corpo">
     <p class="eyebrow">Recapitulando</p>
     <h2>O que fica da aula 6</h2>
     <ul class="recap">
-      <li>Lista em memória <b>morre com o servidor</b>. Banco é o que fica.</li>
-      <li>SQL à mão funciona, mas as colunas se repetem e a linha chega como <b>tupla</b>.</li>
-      <li>O ORM traduz: <b>uma classe é uma tabela</b>, um atributo é uma coluna.</li>
-      <li>Engine sabe onde o banco está. <b>A sessão</b> é a conversa: abre, pede, grava e fecha.</li>
-      <li>O repositório troca o corpo e mantém os nomes. O serviço troca <b>colchete por ponto</b>.</li>
+      <li>Lista em memória morre com o servidor. O ORM traduz: <b>uma classe é uma tabela</b>.</li>
+      <li>Uma sessão por requisição, entregue pelo <code>Depends</code>, <b>de mão em mão</b> pelas três camadas.</li>
+      <li>O UPDATE é mudar o atributo e dar commit. <b>Um commit só</b> grava a regra inteira, ou nada.</li>
+      <li>A <code>ForeignKey</code> é a coluna; o <code>relationship</code> é o atalho; o <b>banco filtra</b>, ordena e pagina.</li>
+      <li>O <code>create_all</code> não altera tabela. <b>A migration</b> guarda cada mudança, em ordem.</li>
     </ul>
-    <p class="proximo"><b>Próxima aula:</b> a regra da sua cartilha muda a principal, e o banco não fica sabendo. A sessão passa a atravessar a requisição, e as três tabelas se ligam.</p>
+    <p class="proximo"><b>Próxima aula:</b> a regra da cartilha sai do meio do serviço e ganha nome próprio, e a API passa a explicar os próprios erros.</p>
   </div>
   <div class="rodape"></div>
 </section>

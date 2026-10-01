@@ -7,8 +7,8 @@ O que ele devolve primeiro é uma lista de diferenças: leia antes de responder.
 ---
 
 Leia o meu repositório e compare a pasta `backend/` com a estrutura abaixo. Ela é a estrutura
-do curso até a aula 6. Os arquivos marcados como "chega hoje" ainda não existem: não crie nenhum deles.
-Quero só que o que já existe esteja no lugar certo para recebê-los.
+do curso até a aula 6. Os itens marcados como "chega hoje" entram durante a aula: se ainda não
+existirem, não crie nenhum deles. Quero só que o que já existe esteja no lugar certo para recebê-los.
 
 ```
 backend/
@@ -16,8 +16,10 @@ backend/
 ├── .env                   o que muda de máquina para máquina, fora do Git
 ├── .env.exemplo           as mesmas chaves do .env, sem os valores, esse vai para o Git
 ├── configuracao.py        load_dotenv() e as leituras com os.getenv
-├── banco.py               chega hoje: engine, Sessao e Base
+├── alembic.ini            chega hoje: a configuração do Alembic
+├── banco.py               chega hoje: engine, Sessao, Base e obter_sessao
 ├── criar_tabelas.py       chega hoje: cria as tabelas a partir dos modelos
+├── migracoes/             chega hoje: env.py e versions/, as migrations do Alembic
 ├── main.py                cria o app, registra o CORS e liga os routers
 ├── rotas/
 │   ├── __init__.py        vazio
@@ -31,7 +33,7 @@ backend/
 ├── esquemas/
 │   ├── __init__.py        vazio
 │   └── <recurso>.py       singular: os esquemas Pydantic de entrada e de saída
-└── modelos/               chega hoje: o modelo SQLAlchemy de cada tabela
+└── modelos/               chega hoje: o modelo SQLAlchemy de cada uma das três tabelas
 ```
 
 Regras desta estrutura:
@@ -64,10 +66,10 @@ Limites obrigatórios:
 
 - Não mude o comportamento de nenhuma rota, nem caminho, nem método, nem status code.
   Só lugar, nome e import.
-- Não crie `banco.py`, `criar_tabelas.py` nem `modelos/`, e não instale nada. Isso é a mão na massa
+- Não crie `banco.py`, `criar_tabelas.py`, `modelos/`, `alembic.ini` nem `migracoes/`, e não instale nada. Isso é a mão na massa
   da aula, e eu faço junto com a turma.
 - Não crie pasta que não está na estrutura acima. Nada de `app/`, `models/`, `database/`, `db/`,
-  `core/`, `crud/`, `utils/`, `schemas/` ou `services/` em inglês.
+  `core/`, `crud/`, `utils/`, `schemas/`, `services/` ou `alembic/` em inglês.
 - Não use `async def`, autenticação nem `pydantic-settings`.
 - Não toque na pasta `frontend/`.
 - Código, nomes e comentários em português do Brasil.

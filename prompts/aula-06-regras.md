@@ -17,20 +17,24 @@ por cima da versão anterior.
   - `.env`: o que muda de máquina para máquina, inclusive o `URL_DO_BANCO` com a senha. Fica fora do Git.
   - `.env.exemplo`: as mesmas chaves, sem os valores. Esse vai para o Git.
   - `configuracao.py`: o único arquivo que lê o `.env`, com `load_dotenv()` e `os.getenv`.
-  - `banco.py`: o `engine`, a fábrica `Sessao` e a classe `Base`. Nada mais.
-  - `criar_tabelas.py`: importa os modelos e roda `Base.metadata.create_all(engine)`. Rodado à mão
-    no terminal, com `python criar_tabelas.py`, e não pelo `main.py`.
+  - `banco.py`: o `engine`, a fábrica `Sessao`, a classe `Base` e a função `obter_sessao`. Nada mais.
+  - `criar_tabelas.py`: importa os três modelos e roda `Base.metadata.create_all(engine)`. Rodado à mão
+    no terminal, com `python criar_tabelas.py`, e não pelo `main.py`. Serve para o banco vazio.
+  - `alembic.ini` e `migracoes/`: a configuração do Alembic, o `env.py` e as migrations em
+    `migracoes/versions/`. Toda mudança numa tabela que já existe é uma migration.
   - `main.py`: cria o `app`, registra o CORS lendo a configuração e liga os routers
     com `include_router`. Nenhuma rota nele.
   - `rotas/<recurso>.py`, no plural: o `APIRouter`, as rotas do recurso e nada mais.
   - `servicos/<recurso>.py`, no singular: as decisões, as contas e a regra da cartilha.
-  - `repositorios/<recurso>.py`, no singular: as funções que leem e gravam. A da entidade principal
-    usa o banco; as outras ainda podem ter a lista em memória.
+  - `repositorios/<recurso>.py`, no singular: as funções que leem e gravam no banco. Recebem a sessão
+    como primeiro parâmetro.
   - `esquemas/<recurso>.py`, no singular: os esquemas Pydantic de entrada e de saída.
-  - `modelos/<recurso>.py`, no singular: o modelo SQLAlchemy, uma classe por tabela.
+  - `modelos/<recurso>.py`, no singular: o modelo SQLAlchemy, uma classe por tabela, para as três
+    entidades da cartilha.
   - Um `__init__.py` vazio em cada uma dessas pastas.
 - A chamada vai sempre na mesma direção: rota chama serviço, serviço chama repositório.
-  Só o repositório importa `Sessao` e os modelos.
+  A sessão nasce na rota, pelo `Depends(obter_sessao)`, e passa de mão em mão: rota, serviço,
+  repositório. Só o repositório importa os modelos e chama métodos da sessão.
 - **Esquema** é a classe Pydantic, em `esquemas/`. **Modelo** é a classe SQLAlchemy, em `modelos/`.
   Não troque uma palavra pela outra.
 - Código, nomes de variáveis, comentários e respostas sempre em português do Brasil.
@@ -58,22 +62,29 @@ por cima da versão anterior.
     `BANCO_SENHA`, `BANCO_HOST`, `BANCO_PORTA`, `BANCO_NOME`) montadas com `URL.create` no `configuracao.py`.
     Use a forma que já estiver no meu projeto.
   - Modelo declarativo com `__tablename__` e `Column(Integer | String(n) | Date, primary_key=..., nullable=...)`.
-  - No repositório, cada função abre a própria sessão com `sessao = Sessao()` e fecha com `sessao.close()`
-    antes do `return`.
-  - `sessao.scalars(select(Modelo)).all()`, `sessao.get(Modelo, id)`, `sessao.add`, `sessao.commit`
-    e `sessao.refresh`.
+  - `ForeignKey("tabela.coluna")`, com `name=` quando a chave entra numa tabela que já existe, e
+    `relationship("Classe")` na entidade principal, para ler a filha com ponto (`tarefa.itens`).
+  - O modelo que tem `ForeignKey` importa o modelo da tabela para onde a chave aponta.
+  - Sessão por requisição: `obter_sessao` com `with Sessao() as sessao:` e `yield sessao`, entregue
+    pela rota com `sessao=Depends(obter_sessao)`. O `with` e o `yield` foram vistos nesta aula.
+  - `sessao.scalars(select(Modelo)).all()`, `sessao.get(Modelo, id)`, `sessao.add`, `sessao.commit`,
+    `sessao.refresh` e `sessao.delete`. Atualizar é mudar o atributo do objeto e dar commit.
+  - Consulta com `.where`, `.order_by`, `.limit`, `.offset` e `.join`, montada no repositório.
+    Paginação com `pagina: int = Query(default=1, ge=1)` na rota.
+  - Transação: a regra que muda mais de uma tabela grava tudo num commit só. Erro antes do commit
+    desfaz tudo, porque fechar a sessão sem commit é `rollback`.
+- Alembic: `alembic init migracoes`, o `env.py` com `target_metadata = Base.metadata` e
+  `connectable = engine`, `alembic revision --autogenerate -m "..."`, `alembic upgrade head`,
+  `alembic current` e, para o banco do zero, `python criar_tabelas.py` seguido de `alembic stamp head`.
 - O repositório devolve objeto do modelo, e o serviço lê com ponto: `registro.campo`, não `registro["campo"]`.
 
 ## O que ainda não foi visto, e não deve aparecer
 
-- Sessão recebida por `Depends`, sessão passada como parâmetro entre as camadas, `yield` e `with Sessao()`.
-  Cada função do repositório abre e fecha a própria sessão.
-- `rollback`, `try`/`except`, transação que junta mais de uma operação.
-- Atualizar e apagar registro no banco. Se a regra da cartilha muda a entidade principal, **deixe
-  como está e me avise**: essa mudança ainda não grava no banco, e é o assunto da próxima aula.
-- `ForeignKey`, `relationship`, junção, filtro, ordenação ou paginação feitos no SQL. O filtro por
-  situação continua no serviço, em Python, sobre a lista que o repositório devolve.
-- Migrations e Alembic. A tabela nasce do `criar_tabelas.py`.
+- `try`/`except`. O rollback acontece porque a sessão fecha sem commit, e isso basta por enquanto.
+- Função de repositório que abre a própria sessão com `Sessao()`. Toda sessão vem do `Depends`.
+- `back_populates`, `backref`, `lazy=`, `joinedload`, `selectinload`, `cascade`. O `relationship` simples basta.
+- Migration escrita à mão, `op.execute` com SQL, `bulk_insert`, `alembic downgrade` em banco que tem
+  dado de verdade. Se o autogenerate não gerar o que você esperava, pare e me avise.
 - SQL escrito à mão no código Python, `mysql.connector` direto, `text()` do SQLAlchemy.
 - SQLite ou qualquer banco que não seja o MySQL.
 - `orm_mode` e `class Config` do Pydantic 1. Se o esquema de saída precisar ler de objeto, o FastAPI

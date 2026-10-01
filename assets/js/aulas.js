@@ -5,8 +5,9 @@
    As datas são as do cronograma da turma 2026.10.78, em
    cronograma/dados.js. Se mudar lá, mude aqui também.
 
-   São 18 encontros e 14 aulas. Quatro encontros não têm slides
-   da UC4 e estão em ENCONTROS_SEM_AULA, abaixo.
+   São 18 encontros e 12 aulas. Cinco encontros não têm slides
+   da UC4 e estão em ENCONTROS_SEM_AULA, abaixo. O de 28/09 foi
+   a aula extra do Paseo, que está em EXTRAS.
    ============================================================ */
 
 window.AULAS = [
@@ -15,15 +16,13 @@ window.AULAS = [
   { n:  3, data: "2026-09-16", ciclo: 1, titulo: "Validação de dados com Pydantic", pronto: true  },
   { n:  4, data: "2026-09-17", ciclo: 1, titulo: "Organização do código em camadas", pronto: true  },
   { n:  5, data: "2026-09-21", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: true,  avaliacao: true },
-  { n:  6, data: "2026-09-28", ciclo: 2, titulo: "Do SQL à mão ao SQLAlchemy", pronto: true  },
-  { n:  7, data: "2026-09-30", ciclo: 2, titulo: "CRUD, transações, relacionamentos e migrations", pronto: false },
-  { n:  8, data: "2026-10-01", ciclo: 2, titulo: "Avaliação · Ciclo 2", pronto: false, avaliacao: true },
-  { n:  9, data: "2026-10-05", ciclo: 3, titulo: "Regras de negócio, exceções e documentação da API", pronto: false },
-  { n: 10, data: "2026-10-07", ciclo: 4, titulo: "Cadastro de usuários e proteção de senhas", pronto: false },
-  { n: 11, data: "2026-10-08", ciclo: 4, titulo: "Autenticação e autorização com JWT", pronto: false },
-  { n: 12, data: "2026-10-19", ciclo: 4, titulo: "Segurança da aplicação · Avaliação final", pronto: false, avaliacao: true },
-  { n: 13, data: "2026-10-20", ciclo: 5, titulo: "Integração com API de IA e README de entrega", pronto: false },
-  { n: 14, data: "2026-10-21", ciclo: 5, titulo: "Apresentação individual e retrospectiva", pronto: false }
+  { n:  6, data: "2026-10-01", ciclo: 2, titulo: "SQLAlchemy, CRUD, transações, relacionamentos e migrations", pronto: true  },
+  { n:  7, data: "2026-10-05", ciclo: 3, titulo: "Regras de negócio, exceções e documentação da API", pronto: false },
+  { n:  8, data: "2026-10-07", ciclo: 4, titulo: "Cadastro de usuários e proteção de senhas", pronto: false },
+  { n:  9, data: "2026-10-08", ciclo: 4, titulo: "Autenticação e autorização com JWT", pronto: false },
+  { n: 10, data: "2026-10-19", ciclo: 4, titulo: "Segurança da aplicação · Avaliação final", pronto: false, avaliacao: true },
+  { n: 11, data: "2026-10-20", ciclo: 5, titulo: "Integração com API de IA e README de entrega", pronto: false },
+  { n: 12, data: "2026-10-21", ciclo: 5, titulo: "Apresentação individual e retrospectiva", pronto: false }
 ];
 
 /* encontros da UC4 que contam como aula no diário, mas sem slides:
@@ -32,7 +31,8 @@ window.ENCONTROS_SEM_AULA = [
   { data: "2026-09-09", ciclo: 1, titulo: "Landing page da persona, pendência da UC5" },
   { data: "2026-09-15", ciclo: 1, titulo: "Visita à Senior Sistemas" },
   { data: "2026-09-23", ciclo: 1, titulo: "Avaliação do Ciclo 1, segundo dia", avaliacao: true },
-  { data: "2026-09-24", ciclo: 1, titulo: "Palestra e fim da avaliação do Ciclo 1", avaliacao: true }
+  { data: "2026-09-24", ciclo: 1, titulo: "Palestra e fim da avaliação do Ciclo 1", avaliacao: true },
+  { data: "2026-09-30", ciclo: 2, titulo: "Workshop de Claude" }
 ];
 
 /* aulas extras: paralelas a uma aula do curso, sem número próprio.
@@ -45,10 +45,10 @@ window.EXTRAS = [
 
 window.CICLOS = [
   { n: 1, nome: "O contrato",     aulas: "aulas 1 a 5",   guia: "A tela que eu já fiz precisa de quais dados?" },
-  { n: 2, nome: "A persistência", aulas: "aulas 6 a 8",   guia: "Por que meus dados somem quando eu reinicio o servidor?" },
-  { n: 3, nome: "As regras",      aulas: "aula 9",        guia: "O que o meu sistema não pode deixar acontecer?" },
-  { n: 4, nome: "O acesso",       aulas: "aulas 10 a 12", guia: "Quem pode fazer isso com os dados da minha persona?" },
-  { n: 5, nome: "A entrega",      aulas: "aulas 13 e 14", guia: "Você consegue explicar o que a IA escreveu?" }
+  { n: 2, nome: "A persistência", aulas: "aula 6",        guia: "Por que meus dados somem quando eu reinicio o servidor?" },
+  { n: 3, nome: "As regras",      aulas: "aula 7",        guia: "O que o meu sistema não pode deixar acontecer?" },
+  { n: 4, nome: "O acesso",       aulas: "aulas 8 a 10",  guia: "Quem pode fazer isso com os dados da minha persona?" },
+  { n: 5, nome: "A entrega",      aulas: "aulas 11 e 12", guia: "Você consegue explicar o que a IA escreveu?" }
 ];
 
 /* ============================================================
