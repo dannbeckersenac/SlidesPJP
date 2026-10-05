@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 07 · Migrations, regras de negócio, exceções e documentação · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="7">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 07</p>
+    <h1>O banco muda, a regra recusa, a API se explica</h1>
+    <p class="sub">Antes do intervalo, migrations. Depois, a regra da cartilha ganha nome, erro próprio e documentação.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 3 · As regras</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · DOIS TEMPOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de começar</p>
+    <h2>Hoje também são dois tempos</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><div class="icone">1</div><span class="t">Antes do intervalo</span><span class="d">Migrations. A chave que ficou faltando no banco entra sem apagar nenhuma tabela.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Depois do intervalo</span><span class="d">A regra recusa com um motivo, a rota escolhe o status e a IA rascunha a documentação.</span></div>
+    </div>
+    <p class="dica"><b>O segundo tempo não depende do primeiro.</b> Se a migration travar, chame, mas siga para a regra.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>Duas chaves no desenho, uma no banco</h2>
+    <div class="der">
+      <div class="entidade">
+        <div class="nome">usuarios</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>nome<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>tipo<span class="tipo">VARCHAR(20)</span></div>
+      </div>
+      <span class="liga">1──N</span>
+      <div class="entidade hoje">
+        <div class="nome">tarefas</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>titulo<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>situacao<span class="tipo">VARCHAR(20)</span></div>
+        <div class="col"><span class="chave"></span>itens_feitos<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave">FK</span>solicitante_id<span class="tipo">INT</span></div>
+      </div>
+      <span class="liga">1──N</span>
+      <div class="entidade">
+        <div class="nome">itens_checklist</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>tipo<span class="tipo">VARCHAR(20)</span></div>
+        <div class="col"><span class="chave"></span>descricao<span class="tipo">VARCHAR(200)</span></div>
+        <div class="col"><span class="chave">FK</span>tarefa_id<span class="tipo">INT</span></div>
+      </div>
+    </div>
+    <div class="destaque">A chave do item para a tarefa já está no MySQL. <b>A da tarefa para o usuário, em azul, só está no desenho.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>O modelo mudou, e a tabela não</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/modelos/tarefa.py</div>
+      <pre><span class="kw">from</span> modelos.usuario <span class="kw">import</span> Usuario    <span class="com"># sem ele, a chave não acha usuarios</span>
+
+    solicitante_id = <span class="fn">Column</span>(Integer,
+        <span class="fn">ForeignKey</span>(<span class="str">"usuarios.id"</span>, name=<span class="str">"fk_tarefa_solicitante"</span>), nullable=<span class="kw">False</span>)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Eu dou à tarefa a chave do solicitante, com um nome próprio.</li>
+      <li>No terminal, rodo <code>python criar_tabelas.py</code> de novo. Nenhum erro.</li>
+      <li>No MySQL, <code>SHOW CREATE TABLE tarefas;</code> não tem <code>FOREIGN KEY</code> nenhuma.</li>
+    </ol>
+    <div class="alerta">O <code>create_all</code> só cria a tabela que não existe. <strong>Tabela que já existe, ele não toca.</strong></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · A SAÍDA RUIM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Apagar a tabela resolve, uma vez</h2>
+    <table>
+      <thead><tr><th>O atalho</th><th>O que ele custa</th></tr></thead>
+      <tbody>
+        <tr><td><code>DROP TABLE tarefas</code> e criar de novo</td><td class="neutro">os dados vão junto, e no servidor de verdade eles são de alguém</td></tr>
+        <tr><td><code>ALTER TABLE</code> à mão no seu MySQL</td><td class="neutro">funciona na sua máquina e em nenhuma outra</td></tr>
+        <tr><td>avisar quem clonou o projeto</td><td class="neutro">cada um lembra de um jeito, ou não lembra</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">O código tem o Git para contar o que mudou. <b>O banco não tinha nada.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MIGRATION -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Migration: o commit do banco</h2>
+    <p class="intro">O Git guarda cada mudança do código. A migration guarda cada mudança das tabelas, em ordem.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">O arquivo</span><span class="d">Um <code>.py</code> por mudança, em <code>migracoes/versions/</code>. Vai para o Git.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">A versão</span><span class="d">Uma tabela <code>alembic_version</code> diz em que mudança o banco está.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">O upgrade</span><span class="d">Roda só as mudanças que o banco ainda não tem.</span></div>
+    </div>
+    <p class="dica"><b>Quem faz isso é o Alembic</b>, escrito pelo mesmo autor do SQLAlchemy. Ele compara os modelos com o banco e escreve a mudança.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- COMO O ALEMBIC SABE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Como o Alembic descobre o que mudou</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Lê os modelos</span><span class="d">Pela <code>Base.metadata</code>, o mesmo desenho que o <code>create_all</code> usa.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Olha o banco</span><span class="d">Pergunta ao MySQL que tabelas, colunas e chaves existem.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Escreve a diferença</span><span class="d">Um arquivo com o que falta. Você lê antes de aplicar.</span></div>
+    </div>
+    <p class="dica"><b>O nome disso é autogenerate.</b> Ele acerta tabela, coluna e chave. Não confie nele para trocar nome de coluna: ele lê como apagar uma e criar outra.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A ÁRVORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>O backend ao fim de hoje</h2>
+    <div class="codigo compacto">
+      <pre>backend/            <span class="com"># sem o venv/, o __pycache__ e os arquivos que não mudam</span>
+├── alembic.ini          <span class="com"># a configuração do Alembic. arquivo novo</span>
+├── migracoes/           <span class="com"># pasta nova, criada pelo alembic init</span>
+│   ├── env.py           <span class="com"># onde o Alembic acha os modelos e o banco</span>
+│   └── versions/        <span class="com"># uma migration por arquivo. vai para o Git</span>
+├── modelos/tarefa.py    <span class="com"># ganha a chave do solicitante</span>
+├── main.py              <span class="com"># pode ganhar o tratamento das exceções</span>
+├── rotas/tarefas.py     <span class="com"># traduz a exceção em status</span>
+└── servicos/
+    ├── excecoes.py      <span class="com"># as recusas da regra, com nome. arquivo novo</span>
+    ├── tarefa.py        <span class="com"># levanta a exceção no lugar do None</span>
+    └── item.py          <span class="com"># a regra, numa função com nome próprio</span></pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- CALIBRAGEM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes da mão na massa</p>
+    <h2>Se o seu backend está diferente</h2>
+    <p class="intro">Hoje entram uma pasta e dois arquivos. Antes de criar qualquer coisa, alinhe o que já existe.</p>
+    <ol class="passos curta">
+      <li>Copie o prompt pelo botão abaixo e cole no assistente, com o repositório da cartilha aberto.</li>
+      <li>Leia a lista de diferenças que ele devolve. Até aqui ele não mexeu em nada.</li>
+      <li>Responda <code>pode seguir</code> só se concordar com cada movimento da lista.</li>
+      <li>Rode <code>fastapi dev main.py</code> e abra o <code>/docs</code>. As rotas de antes continuam lá.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-07-estrutura.md">copiar o prompt que alinha a estrutura</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
+    <h2>O Alembic entra no projeto</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no terminal do backend/, com o venv ativo</div>
+      <pre>pip install alembic
+alembic init migracoes</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>backend/</code>, rode <code>pip install alembic</code>.</li>
+      <li>Rode <code>alembic init migracoes</code>, com o nome da pasta em português.</li>
+      <li>Confira no editor: apareceram o <code>alembic.ini</code> e a pasta <code>migracoes/</code>, com o <code>env.py</code> e a <code>versions/</code> vazia.</li>
+      <li>Rode <code>git status</code>. Os arquivos novos aparecem: eles vão para o Git, porque não têm senha.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
+    <h2>O Alembic conhece os seus modelos</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/migracoes/env.py · no lugar de target_metadata = None</div>
+      <pre><span class="kw">from</span> banco <span class="kw">import</span> Base, engine
+<span class="kw">from</span> modelos <span class="kw">import</span> usuario, tarefa, item   <span class="com"># troque pelos seus três</span>
+target_metadata = Base.metadata</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>migracoes/env.py</code>, troque a linha <code>target_metadata = None</code> pelas três acima.</li>
+      <li>No mesmo arquivo, troque o bloco <code>connectable = engine_from_config(</code>, até o <code>)</code> dele, por <code>connectable = engine</code>.</li>
+      <li>Rode <code>alembic current</code>. Saem duas linhas <code>INFO</code>, sem erro.</li>
+    </ol>
+    <p class="dica"><b>O <code>engine</code> é o do <code>banco.py</code></b>, que já lê o endereço do <code>.env</code>. Assim a senha não vai para o <code>alembic.ini</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>A chave que faltava, no seu modelo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/modelos/ · o modelo da sua principal</div>
+      <pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> Column, Integer, String, Date, ForeignKey
+<span class="kw">from</span> modelos.usuario <span class="kw">import</span> Usuario    <span class="com"># o modelo para onde a chave aponta</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No modelo da principal, importe <code>ForeignKey</code> e o modelo da tabela para onde a chave aponta.</li>
+      <li>Na coluna, acrescente <code>ForeignKey("tabela.id", name="fk_principal_dono")</code>, com os seus nomes.</li>
+      <li>Suba a API com <code>fastapi dev main.py</code> e faça um POST. Volta <code>201</code>, e a tabela ainda não mudou.</li>
+    </ol>
+    <div class="alerta">Sem o <code>name</code>, o Alembic avisa que não sabe desfazer a chave. <strong>Sem o import, o POST volta 500.</strong></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.8b -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <h2>A primeira migration</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">migracoes/versions/…_chave_do_solicitante.py · o que o Alembic escreveu</div>
+      <pre><span class="kw">def</span> <span class="fn">upgrade</span>() -> <span class="kw">None</span>:
+    op.<span class="fn">create_foreign_key</span>(<span class="str">'fk_tarefa_solicitante'</span>, <span class="str">'tarefas'</span>, <span class="str">'usuarios'</span>,
+                          [<span class="str">'solicitante_id'</span>], [<span class="str">'id'</span>])</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode <code>alembic revision --autogenerate -m "chave do solicitante"</code>. Uma linha diz <code>Detected added foreign key</code>.</li>
+      <li>Abra o arquivo novo em <code>migracoes/versions/</code>. O <code>upgrade</code> tem só a mudança que faltava.</li>
+      <li>Rode <code>alembic upgrade head</code>.</li>
+      <li>No MySQL, <code>SHOW CREATE TABLE</code> da principal. Agora a <code>FOREIGN KEY</code> está lá.</li>
+    </ol>
+    <div class="alerta">Erro <code>1452</code> no upgrade? <strong>Algum id não existe na tabela-mãe.</strong> Cadastre com INSERT.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- REFERÊNCIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Os comandos do Alembic</h2>
+    <table>
+      <thead><tr><th>Comando</th><th>Quando usar</th></tr></thead>
+      <tbody>
+        <tr><td><code>alembic revision --autogenerate -m "..."</code></td><td class="neutro">mudou um modelo: escreve a migration</td></tr>
+        <tr><td><code>alembic upgrade head</code></td><td class="neutro">aplica no banco o que ainda falta</td></tr>
+        <tr><td><code>alembic current</code></td><td class="neutro">diz em que migration o banco está</td></tr>
+        <tr><td><code>alembic history</code></td><td class="neutro">lista as migrations, da mais nova para a mais velha</td></tr>
+        <tr><td><code>alembic stamp head</code></td><td class="neutro">marca o banco como em dia, sem rodar nada</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque"><b>Banco do zero, em outra máquina:</b> <code>python criar_tabelas.py</code> e depois <code>alembic stamp head</code>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- ANTES DO INTERVALO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Antes do intervalo</p>
+    <h2>Confira os quatro antes de sair da sala</h2>
+    <ol class="passos">
+      <li><code>alembic current</code> mostra um código seguido de <code>(head)</code>.</li>
+      <li>Em <code>migracoes/versions/</code> há um arquivo, e o <code>upgrade</code> dele tem a sua chave.</li>
+      <li><code>SHOW CREATE TABLE</code> da principal mostra a <code>FOREIGN KEY</code>.</li>
+      <li>No <code>/docs</code>, a lista da principal e o POST respondem como antes.</li>
+    </ol>
+    <div class="destaque">Os quatro funcionando, <b>você está pronto para o segundo tempo.</b> Algum falhou? Chame agora.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- SEGUNDO TEMPO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Depois do intervalo</p>
+    <h1>Segundo tempo</h1>
+    <p class="sub">A regra da cartilha recusa. Hoje ela passa a dizer por quê, e a API passa a contar isso para quem usa.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor do segundo tempo</p>
+    <h2>Dois motivos para recusar, um None só</h2>
+    <ol class="passos">
+      <li>No <code>/docs</code> do exemplo, abro uma tarefa com <code>solicitante_id</code> <code>99</code>, que não existe. Volta <code>422</code>, <code>Solicitante inválido</code>.</li>
+      <li>Abro outra com o <code>2</code>, que existe mas é executor. Volta a mesma mensagem.</li>
+      <li>Apago o <code>if resultado is None</code> da rota e repito. Volta <code>500</code>.</li>
+    </ol>
+    <div class="destaque">O <code>None</code> não diz o motivo. <b>E a rota que esquece de testar ele quebra.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>O serviço recusa sem explicar</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · como ficou no ciclo 2</div>
+      <pre><span class="com"># servicos/tarefa.py</span>
+solicitante = repositorio_usuario.<span class="fn">buscar_por_id</span>(sessao, tarefa.solicitante_id)
+<span class="kw">if</span> solicitante <span class="kw">is None or</span> solicitante.tipo != <span class="str">"solicitante"</span>:
+    <span class="kw">return None</span>                        <span class="com"># dois motivos, uma resposta</span>
+
+<span class="com"># rotas/tarefas.py</span>
+resultado = servico.<span class="fn">criar</span>(sessao, tarefa)
+<span class="kw">if</span> resultado <span class="kw">is None</span>:                <span class="com"># toda rota precisa lembrar disto</span>
+    <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">422</span>, detail=<span class="str">"Solicitante inválido"</span>)</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- PYTHON QUE FALTAVA: TRY -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>try e except: tentar, e saber o que fazer se der erro</h2>
+    <div class="codigo">
+      <div class="arquivo">no terminal, com python</div>
+      <pre><span class="kw">try</span>:
+    <span class="fn">int</span>(<span class="str">"abc"</span>)                    <span class="com"># isto levanta um ValueError</span>
+<span class="kw">except</span> ValueError <span class="kw">as</span> erro:          <span class="com"># pega só esse tipo de erro</span>
+    <span class="fn">print</span>(<span class="str">"Não deu:"</span>, erro)          <span class="com"># e o programa segue, sem quebrar</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal, digite <code>python</code>, cole o código e aperte Enter duas vezes.</li>
+      <li>Aparece <code>Não deu: invalid literal for int()</code>, e não o erro vermelho de sempre.</li>
+    </ol>
+    <p class="dica"><b>O <code>raise</code> você já usa</b> desde a aula 2, com o <code>HTTPException</code>. O <code>except</code> é o outro lado: quem pega.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- PYTHON QUE FALTAVA: EXCEÇÃO PRÓPRIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>Uma exceção com o nome da sua regra</h2>
+    <div class="codigo">
+      <div class="arquivo">no terminal, com python</div>
+      <pre><span class="kw">class</span> <span class="fn">PrazoNoPassado</span>(Exception):  <span class="com"># herda, como o esquema herda de BaseModel</span>
+    <span class="kw">pass</span>
+
+<span class="kw">try</span>:
+    <span class="kw">raise</span> <span class="fn">PrazoNoPassado</span>(<span class="str">"O prazo já passou"</span>)
+<span class="kw">except</span> PrazoNoPassado <span class="kw">as</span> erro:
+    <span class="fn">print</span>(<span class="str">"Recusado:"</span>, erro)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Cole no mesmo terminal. Aparece <code>Recusado: O prazo já passou</code>.</li>
+    </ol>
+    <p class="dica"><b>A classe vazia já basta.</b> O nome diz o motivo, e o texto entre parênteses vira a mensagem.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- CONCEITO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O serviço fala de negócio, a rota fala HTTP</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">O serviço recusa</span><span class="d"><code>raise TarefaConcluida(...)</code>. Não sabe o que é status.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">A rota traduz</span><span class="d"><code>except TarefaConcluida</code> vira <code>409</code>, com a mensagem.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">O front mostra</span><span class="d">O <code>detail</code> chega pronto para a tela.</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Exceção do exemplo</th><th>Status</th><th>Por quê</th></tr></thead>
+      <tbody>
+        <tr><td><code>SolicitanteInvalido</code></td><td class="neutro">422</td><td class="neutro">o dado da requisição não serve</td></tr>
+        <tr><td><code>TarefaConcluida</code></td><td class="neutro">409</td><td class="neutro">o dado serve, a situação da tarefa é que não deixa</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- LEITURA: EXCEÇÕES -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>Cada recusa com o seu motivo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/servicos/tarefa.py</div>
+      <pre><span class="kw">from</span> servicos.excecoes <span class="kw">import</span> SolicitanteInvalido
+
+<span class="kw">def</span> <span class="fn">criar</span>(sessao, tarefa: TarefaCriar):
+    solicitante = repositorio_usuario.<span class="fn">buscar_por_id</span>(sessao, tarefa.solicitante_id)
+    <span class="kw">if</span> solicitante <span class="kw">is None</span>:                           <span class="com"># motivo 1</span>
+        <span class="kw">raise</span> <span class="fn">SolicitanteInvalido</span>(<span class="str">"Não existe usuário com esse id"</span>)
+    <span class="kw">if</span> solicitante.tipo != <span class="str">"solicitante"</span>:             <span class="com"># motivo 2</span>
+        <span class="kw">raise</span> <span class="fn">SolicitanteInvalido</span>(<span class="str">"Só quem é solicitante pode abrir tarefa"</span>)
+    <span class="kw">return</span> repositorio.<span class="fn">salvar</span>(sessao, {<span class="str">"situacao"</span>: <span class="str">"aberta"</span>, <span class="str">"itens_feitos"</span>: <span class="num">0</span>,
+                                       **tarefa.<span class="fn">model_dump</span>()})</pre>
+    </div>
+    <p class="dica"><b>O <code>raise</code> para a função ali mesmo.</b> Nada depois dele roda, e nada é gravado.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- LEITURA: A REGRA COM NOME -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A regra ganha nome próprio</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/servicos/item.py</div>
+      <pre><span class="kw">def</span> <span class="fn">aplicar_item</span>(tarefa, tipo):                 <span class="com"># a regra da cartilha, e só ela</span>
+    <span class="kw">if</span> tarefa.situacao == <span class="str">"concluida"</span>:
+        <span class="kw">raise</span> <span class="fn">TarefaConcluida</span>(<span class="str">"A tarefa já foi concluída e não aceita item novo"</span>)
+    <span class="kw">if</span> tipo == <span class="str">"etapa"</span>:
+        tarefa.itens_feitos += <span class="num">1</span>
+        tarefa.situacao = <span class="str">"em andamento"</span>
+    <span class="kw">else</span>:
+        tarefa.situacao = <span class="str">"concluida"</span>
+<span class="kw">def</span> <span class="fn">lancar</span>(sessao, tarefa, item):
+    <span class="fn">aplicar_item</span>(tarefa, item.tipo)                  <span class="com"># se recusar, nada abaixo roda</span>
+    <span class="kw">return</span> repositorio.<span class="fn">salvar</span>(sessao, {<span class="str">"tarefa_id"</span>: tarefa.id, <span class="str">"data"</span>: <span class="fn">date</span>.<span class="fn">today</span>(),
+                                       **item.<span class="fn">model_dump</span>()})</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 1 de 4</p>
+    <h2>As recusas da sua regra, com nome</h2>
+    <div class="codigo">
+      <div class="arquivo">backend/servicos/excecoes.py · troque pelos motivos da sua cartilha</div>
+      <pre><span class="kw">class</span> <span class="fn">SolicitanteInvalido</span>(Exception):
+    <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="fn">TarefaConcluida</span>(Exception):
+    <span class="kw">pass</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Leia a regra da sua cartilha e liste cada motivo para o serviço recusar.</li>
+      <li>Crie <code>servicos/excecoes.py</code> com uma classe por motivo, com o nome do motivo.</li>
+      <li>No terminal do <code>backend/</code>, rode <code>python -c "import servicos.excecoes"</code>. Nenhuma mensagem.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 2 de 4</p>
+    <h2>O serviço levanta, não devolve None</h2>
+    <ol class="passos">
+      <li>No serviço da regra, importe as exceções de <code>servicos.excecoes</code>.</li>
+      <li>Troque cada <code>return None</code> de recusa por <code>raise</code> com a exceção do motivo e uma frase para a tela.</li>
+      <li>Leve a regra para uma função com o nome dela, como o <code>aplicar_item</code>, e chame essa função no lugar do bloco.</li>
+      <li>Confira que o serviço não importa <code>HTTPException</code> nem escreve número de status.</li>
+    </ol>
+    <div class="alerta">O <code>return None</code> de quando <strong>não encontrou</strong> continua. Não achar não é recusa, e o 404 já tem a sua dependência.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 3 de 4</p>
+    <h2>A rota traduz para HTTP</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/tarefas.py · a rota que lança o item</div>
+      <pre><span class="kw">from</span> servicos.excecoes <span class="kw">import</span> TarefaConcluida
+
+    <span class="kw">try</span>:
+        <span class="kw">return</span> servico_item.<span class="fn">lancar</span>(sessao, tarefa, item)
+    <span class="kw">except</span> TarefaConcluida <span class="kw">as</span> erro:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">409</span>, detail=<span class="fn">str</span>(erro))</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Em cada rota da regra, troque o <code>if resultado is None</code> por um <code>try</code> com um <code>except</code> por exceção.</li>
+      <li>Escolha o status de cada uma, e saiba dizer por que aquele e não outro.</li>
+      <li>No <code>/docs</code>, provoque cada recusa. Volta o status escolhido, com a sua frase no <code>detail</code>.</li>
+      <li>Rode o GET da principal. Nada mudou: a sessão fechou sem commit.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- O ATALHO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O atalho</p>
+    <h2>Traduzir uma vez, no main.py</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/main.py · depois do app = FastAPI()</div>
+      <pre><span class="kw">from</span> fastapi.responses <span class="kw">import</span> JSONResponse
+<span class="kw">from</span> servicos.excecoes <span class="kw">import</span> TarefaConcluida
+
+<span class="fn">@app.exception_handler</span>(TarefaConcluida)       <span class="com"># vale para todas as rotas</span>
+<span class="kw">def</span> <span class="fn">tratar_tarefa_concluida</span>(requisicao, erro):
+    <span class="kw">return</span> <span class="fn">JSONResponse</span>(status_code=<span class="num">409</span>, content={<span class="str">"detail"</span>: <span class="fn">str</span>(erro)})</pre>
+    </div>
+    <div class="destaque">Com ele, a rota não precisa de <code>try</code>. <b>As duas formas funcionam:</b> entregue a que você sabe explicar.</div>
+    <p class="dica"><b>A IA costuma escrever este.</b> Quando a mesma exceção aparece em várias rotas, ele evita repetir o <code>except</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A DOR DA DOCUMENTAÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A última dor de hoje</p>
+    <h2>Abra o seu /docs como se fosse outra pessoa</h2>
+    <ol class="passos">
+      <li>Abra o <code>/docs</code> e leia só os títulos das rotas. Aparece <code>Lancar Item</code>, sem acento e sem explicação.</li>
+      <li>Abra a rota da regra. O <code>409</code> que você acabou de criar não aparece na lista de respostas.</li>
+      <li>Abra o <code>README.md</code> do projeto. Diga se alguém de fora conseguiria rodar a API com ele.</li>
+    </ol>
+    <div class="destaque">Quem vai ler isso é o seu front, o professor na apresentação e <b>você daqui a um mês.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- O QUE O /DOCS ACEITA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O que o /docs sabe mostrar</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/tarefas.py</div>
+      <pre><span class="fn">@router.post</span>(
+    <span class="str">"/{tarefa_id}/itens"</span>, status_code=<span class="num">201</span>, response_model=ItemSaida,
+    summary=<span class="str">"Lançar um item no checklist"</span>,     <span class="com"># o título da rota</span>
+    responses={<span class="num">409</span>: {<span class="str">"description"</span>: <span class="str">"A tarefa já foi concluída"</span>}},  <span class="com"># as recusas</span>
+)
+<span class="kw">def</span> <span class="fn">lancar_item</span>(item: ItemCriar, tarefa=<span class="fn">Depends</span>(tarefa_existente),
+                sessao=<span class="fn">Depends</span>(obter_sessao)):
+    <span class="str">"""Lança uma etapa ou a conclusão. A etapa soma 1 em itens_feitos."""</span>
+    <span class="kw">return</span> servico_item.<span class="fn">lancar</span>(sessao, tarefa, item)</pre>
+    </div>
+    <p class="dica"><b>A docstring, o texto entre <code>"""</code>, vira a descrição.</b> No esquema, o <code>Field</code> aceita <code>description</code> e <code>examples</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- A IA ESCREVE, VOCÊ CONFERE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Documentar com IA</p>
+    <h2>A IA escreve o rascunho. Você confere cada linha</h2>
+    <table>
+      <thead><tr><th>O que a IA costuma inventar</th><th>Como você pega</th></tr></thead>
+      <tbody>
+        <tr><td>um status que a rota nunca devolve</td><td class="neutro">provoque no <code>/docs</code>: se não volta, apague</td></tr>
+        <tr><td>uma validação que não existe</td><td class="neutro">mande o valor errado e veja se volta 422</td></tr>
+        <tr><td>a regra contada do jeito que ela acha</td><td class="neutro">compare frase por frase com a cartilha</td></tr>
+        <tr><td>um passo de instalação a mais</td><td class="neutro">rode o README do zero, numa pasta nova</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">Documentação errada é pior que nenhuma: <b>ela ensina a pessoa a errar.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- MÃO NA MASSA 2.4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 4 de 4</p>
+    <h2>O rascunho da documentação</h2>
+    <ol class="passos curta">
+      <li>Copie o prompt pelo botão e cole no assistente, com o repositório da cartilha aberto.</li>
+      <li>Ele devolve o rascunho das rotas e do README, com <code>?</code> no que deduziu, e para.</li>
+      <li>Provoque no <code>/docs</code> cada status de erro que ele listou. O que não volta, peça para tirar.</li>
+      <li>Responda <code>pode seguir</code>. Ele grava, e você apaga cada <code>?</code> só depois de conferir a linha.</li>
+      <li>Abra o <code>/docs</code>. Cada rota tem título em português, descrição e as recusas da regra.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-07-documentacao.md">copiar o prompt da documentação</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 07</p>
+    <h2>A regra que se explica</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">A segunda chave estrangeira no banco, por uma migration em <code>migracoes/versions/</code>.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">A regra da cartilha numa função com nome próprio, e cada recusa com a sua exceção em <code>servicos/excecoes.py</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Cada recusa traduzida em status pela rota. No README, <b>por que aquele status</b> e não outro.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O <code>/docs</code> e o README conferidos linha a linha, com o banco do zero e as recusas da regra.</span></div>
+    </div>
+    <div class="acoes">
+      <a class="btn" href="../prompts/aula-07-regras.md" download="REGRAS_AULA7.md">baixar o REGRAS_AULA7.md</a>
+    </div>
+    <p class="dica"><b>Entrega no repositório da cartilha</b> até o começo da próxima aula.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 7</h2>
+    <ul class="recap">
+      <li>O <code>create_all</code> não altera tabela. <b>A migration</b> guarda cada mudança do banco, em ordem.</li>
+      <li>O Alembic compara os modelos com o banco e escreve a diferença. <b>Você lê antes do upgrade.</b></li>
+      <li>A regra mora numa função com nome. <b>Cada recusa é uma exceção</b>, com o motivo no nome.</li>
+      <li>O serviço fala de negócio, <b>a rota fala HTTP</b>: o <code>except</code> escolhe o status.</li>
+      <li>A IA rascunha a documentação. <b>Você prova cada linha</b> no <code>/docs</code> antes de entregar.</li>
+    </ul>
+    <p class="proximo"><b>Próxima aula:</b> qualquer um troca o id na requisição e mexe no que é dos outros. A API passa a saber quem é você.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

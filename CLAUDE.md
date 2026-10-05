@@ -260,7 +260,7 @@ arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de ca
 | 4 | `servicos/<recurso>.py` e `repositorios/<recurso>.py`, no singular, mais o `__init__.py` vazio em cada pasta; `.env`, `.env.exemplo` e `configuracao.py` na raiz do `backend/` |
 | 5 | nada novo: a aula é de front e de entrega |
 | 6 | `banco.py` (`engine`, `Sessao`, `Base`, `obter_sessao`) e `criar_tabelas.py` na raiz; `modelos/<recurso>.py` no singular, um para cada uma das três entidades, com o `__init__.py`; `URL_DO_BANCO` no `.env` e no `.env.exemplo`, e a chave no `configuracao.py` |
-| 7 | `alembic.ini` e `migracoes/` (com `env.py` e `versions/`), do `alembic init migracoes` |
+| 7 | `alembic.ini` e `migracoes/` (com `env.py` e `versions/`), do `alembic init migracoes`; `servicos/excecoes.py`, com uma classe por motivo de recusa da regra |
 | 8 em diante | definir ao criar a aula, no mesmo padrão |
 
 **Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
