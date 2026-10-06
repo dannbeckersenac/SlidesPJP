@@ -119,8 +119,8 @@ const AULAS = `
 10-01 back
 10-05 back
 10-07 back
-10-08 back
-10-19 back *
+10-08 back *
+10-19 back
 10-20 back
 10-21 back
 10-22 devops
@@ -171,7 +171,11 @@ const NOTAS = `
 09-24 palestra na primeira metade do encontro e fim da avaliação do Ciclo 1 na segunda
 09-28 aula extra: o ambiente de agentes com o Paseo, montado em sala; a aula 6 passou para 01/10
 09-30 Workshop de Claude, no horário de aula
-10-01 aula 6, com o conteúdo de duas aulas; a avaliação do Ciclo 2 saiu, e fica só a avaliação final, em 19/10
+10-01 aula 6, com o conteúdo de duas aulas; a avaliação do Ciclo 2 saiu
+10-07 aula 8, com o conteúdo de duas aulas: senhas protegidas antes do intervalo, login com JWT e perfis depois
+10-08 metade do encontro para aplicar senhas, JWT e perfis na cartilha, e a outra metade para a avaliação, com a entrega do projeto no Teams
+10-19 aula 9: o projeto até aqui, reforço dos perfis e documentação com IA; a avaliação que era nesta data passou para 08/10
+10-21 apresentação individual de fechamento
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

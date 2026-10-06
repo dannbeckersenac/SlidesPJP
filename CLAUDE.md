@@ -27,7 +27,7 @@ O docente precisa conseguir abrir um arquivo e editar um slide no meio de uma au
 | Curso | Desenvolvimento Web com IA — Senac Blumenau |
 | Turma | 2026.10.78 (noturna, 18h–22h) |
 | Unidade | UC4 — Back-end de Projetos Web |
-| Carga | 72h · 18 encontros de 4h · 12 aulas com conteúdo (ver "Remanejamento", abaixo) |
+| Carga | 72h · 18 encontros de 4h · 11 aulas com conteúdo (ver "Remanejamento", abaixo) |
 | Docente | Daniel Becker Bortoluzzi |
 | Idioma | **Português do Brasil, sempre.** Código, comentários, nomes de variáveis, tudo. |
 
@@ -56,15 +56,17 @@ Os números abaixo já são os das aulas depois do remanejamento:
 
 - **SA1** — aulas 1 a 7 — indicadores 1 e 2 (camada de acesso a dados com ORM; estruturas
   back-end integradas à camada visual).
-- **SA2** — aulas 8 a 12 — indicador 3 (autenticação, protocolos de segurança, privacidade)
+- **SA2** — aulas 8 a 11 — indicador 3 (autenticação, protocolos de segurança, privacidade)
   e a habilidade de usar IA para acelerar o desenvolvimento.
-- **Avaliações nas aulas 5 e 10** (21/09 e 19/10). A do ciclo 1 ocupa também os encontros
-  de 23 e 24/09, que não têm slides. A do ciclo 2, que seria em 01/10, foi retirada pelo docente
-  (veja o remanejamento). Não invente avaliação em outra aula.
+- **Avaliações em 21/09 (aula 5) e 08/10.** A do ciclo 1 ocupa também os encontros de 23 e 24/09,
+  que não têm slides. A de 08/10 é um encontro sem slides: metade do tempo para aplicar senhas, JWT e
+  perfis na cartilha, metade para a avaliação, com a entrega do projeto no Teams. A do ciclo 2, que
+  seria em 01/10, foi retirada pelo docente, e a final saiu de 19/10 (veja o remanejamento). O 21/10
+  é a apresentação individual de fechamento. Não invente avaliação em outra aula.
 
 ### Remanejamento de setembro de 2026
 
-O PTD previa 18 aulas em 18 encontros. Seis encontros da UC4 ficaram sem aula do conteúdo:
+O PTD previa 18 aulas em 18 encontros. Sete encontros da UC4 ficaram sem aula do conteúdo:
 
 - **09/09:** a turma terminou a landing page da persona, que tinha ficado pendente na UC5.
   A aula 1 foi dada em 10/09.
@@ -75,13 +77,15 @@ O PTD previa 18 aulas em 18 encontros. Seis encontros da UC4 ficaram sem aula do
 - **28/09:** a turma montou em sala o ambiente de agentes com o Paseo. Virou a aula extra
   `extra-paseo.html`, com slides próprios.
 - **30/09:** Workshop de Claude, no horário de aula. A aula 6 foi dada em 01/10.
+- **08/10:** prática de senhas, JWT e perfis na primeira metade, e avaliação na segunda, com a entrega
+  do projeto no Teams. O conteúdo de 07 e 08/10 virou a aula 8, dada em 07/10.
 
-Todos contam como encontro no diário. Os cinco sem slides ficam em `ENCONTROS_SEM_AULA`, no
+Todos contam como encontro no diário. Os seis sem slides ficam em `ENCONTROS_SEM_AULA`, no
 `aulas.js`, e o índice os mostra na lista do ciclo sem número e sem link; o de 28/09 aparece como a
-aula extra. No `cronograma/dados.js`, o 23 e o 24/09 são marcados como avaliação, e os encontros
+aula extra. No `cronograma/dados.js`, o 23 e o 24/09 e o 08/10 são marcados como avaliação, e os encontros
 diferentes do previsto ganham uma nota.
 
-Sobraram 12 aulas. O docente decidiu:
+Sobraram 11 aulas. O docente decidiu:
 
 - As aulas 1, 2 e 3 só mudaram de data. Os slides delas não mudam por causa disto.
 - As antigas aulas 6 (modelagem e SQL à mão) e 7 (SQLAlchemy) viraram a aula 6. A turma já
@@ -91,11 +95,23 @@ Sobraram 12 aulas. O docente decidiu:
   intervalo, e CRUD, transação, relacionamentos, filtro e paginação depois. A aula tem 51 slides por isso.
 - As migrations foram para o primeiro tempo da aula 7 (05/10). O segundo tempo é o de regras de
   negócio, exceções e documentação da API, e a documentação é gerada com IA e revisada pelo aluno.
-- A avaliação do ciclo 2 saiu. Fica só a avaliação final, em 19/10.
+- A avaliação do ciclo 2 saiu.
+- As antigas aulas de cadastro com senha e de JWT viraram a aula 8 (07/10), em dois tempos: senha
+  protegida antes do intervalo; login com JWT, cadeado no `/docs`, perfis e a tela de login no React
+  depois. A avaliação foi para 08/10, antes da semana parada de 12 a 16/10.
+- A aula 9 (19/10) revisa o projeto da cartilha até ali, reforça os perfis se precisar e ensina a
+  documentação: o README, a pasta `.docs/`, como gerar com IA e como conduzir a IA a anotar o que vai
+  sendo feito.
+- A aula 10 (20/10) volta ao briefing e planeja um módulo novo: um agente de LLM com o Gemini, com a
+  chave gratuita do Google AI Studio. O professor desenvolve o módulo no exemplo dele; a turma não
+  precisa ter o módulo funcionando. A ênfase é o planejamento: retomar o gerenciamento de projeto da
+  UC5 e sair com um roadmap feito com a IA.
+- A aula 11 (21/10) é a apresentação individual: a cartilha, as telas, o login com cada perfil, o
+  README, e o briefing com o plano do módulo de IA. Tudo em localhost.
 - As antigas aulas 11 (regras de negócio) e 12 (consolidação e documentação) viraram a aula 7.
-- O Docker saiu da UC4 e vai para a UC2 (DevOps). O README de entrega foi para a aula 11, junto
-  com a integração com IA, que passou para depois da avaliação final.
-- A avaliação final continua em 19/10. A parcial do ciclo 1 foi para 21 e 23/09.
+- O Docker saiu da UC4 e vai para a UC2 (DevOps). OWASP, CORS restrito e dado sensível em log, que
+  eram da antiga aula de segurança, ficam como reforço na aula 9, se houver tempo.
+- A parcial do ciclo 1 foi para 21 e 23/09.
 
 Numa referência a aula futura dentro de um slide, prefira o ciclo ("no ciclo 4") ao número da
 aula. O ciclo não muda se a numeração mudar de novo.
@@ -119,7 +135,7 @@ Exemplos de como isso já está montado, para você seguir o mesmo padrão:
 | 6 | derrubar o `uvicorn` ao vivo e ver os dados sumirem; gravar com SQL à mão e sentir o trabalho | o ORM |
 | 6, segundo tempo | a regra muda a tarefa e o banco não fica sabendo | a sessão por requisição |
 | 7, primeiro tempo | a chave nova no modelo, e o `create_all` não altera a tabela que já existe | a migration |
-| 8 | um `DELETE` disparado do celular do professor derruba os dados | autenticação |
+| 8 | a Júlia abre tarefa no nome do Paulo e lança a conclusão sem ser executora; a senha gravada como chegou | o hash, o JWT e os perfis |
 
 Corolários:
 
@@ -166,7 +182,7 @@ trecho do curso o exemplo não muda.
 | Aulas | O exemplo dos slides | Entidades |
 |---|---|---|
 | 1 a 5 | o **cardápio digital** que emite pedidos | item do cardápio, pedido, item do pedido |
-| 6 a 12 | o **controle de tarefas por checklist** | usuário, tarefa, item do checklist |
+| 6 a 11 | o **controle de tarefas por checklist** | usuário, tarefa, item do checklist |
 
 O controle de tarefas é a **cartilha do professor**, escrita no mesmo molde das dos alunos em
 `docente/cartilhas/professor.md`. Ele entra na aula 6 porque é quando a turma começa a resolver a
@@ -193,7 +209,7 @@ Houve **dois sorteios**, e o segundo manda:
   O projeto dela foi o treino do ciclo 1 e fica no repositório antigo do aluno, como referência.
 - **Aula 5 em diante, a cartilha.** Cinco cartilhas para dez alunos, cada uma sorteada para **dois** alunos, que
   resolvem o mesmo problema separados. A cartilha vira o projeto do aluno, num repositório novo, até
-  a aula 12. A ideia é comparar como os dois pensaram, e a apresentação pergunta isso.
+  a aula 11. A ideia é comparar como os dois pensaram, e a apresentação pergunta isso.
 
 **As cartilhas são exclusivas do professor.** Elas moram em `docente/cartilhas/`, pasta que está no
 `.gitignore`: nunca vão para o repositório nem para o GitHub Pages, e quem clona este repositório não
@@ -207,7 +223,7 @@ citar nome, negócio ou regra de cartilha.
 o docente resolve no quadro, um passo à frente da turma. A regra dela não é igual à de nenhuma
 cartilha sorteada, de propósito. Da aula 6 em diante ela também é o exemplo dos slides (seção 4).
 
-**O trabalho é individual da aula 1 à 12**: cada aluno tem o seu repositório e entrega sozinho. Os
+**O trabalho é individual da aula 1 à 11**: cada aluno tem o seu repositório e entrega sozinho. Os
 dois alunos da mesma cartilha não são dupla nem equipe. Não escreva "em equipe", "em dupla",
 "repositório da equipe" nem "outra equipe" em slide algum. Os slides mostram o exemplo do
 professor; o exercício manda aplicar na cartilha.
@@ -239,7 +255,7 @@ repo-do-aluno/
 **Estrutura interna do backend, ensinada a partir da aula 4:** `router` → `service` → `repository`.
 A rota não acessa banco; o service não sabe que existe SQL.
 
-**Fatiar por camada é escolha, não consenso, e a aula 11 diz isso em voz alta.** O FastAPI não
+**Fatiar por camada é escolha, não consenso, e a aula 9 diz isso em voz alta.** O FastAPI não
 prescreve estrutura. A documentação oficial para em `routers/` e não tem serviço nem repositório; o
 template do próprio Tiangolo vai da rota direto para um `crud.py`, sem camada de serviço; e o
 `fastapi-best-practices`, o mais citado da comunidade, recomenda fatiar por domínio
@@ -261,7 +277,8 @@ arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de ca
 | 5 | nada novo: a aula é de front e de entrega |
 | 6 | `banco.py` (`engine`, `Sessao`, `Base`, `obter_sessao`) e `criar_tabelas.py` na raiz; `modelos/<recurso>.py` no singular, um para cada uma das três entidades, com o `__init__.py`; `URL_DO_BANCO` no `.env` e no `.env.exemplo`, e a chave no `configuracao.py` |
 | 7 | `alembic.ini` e `migracoes/` (com `env.py` e `versions/`), do `alembic init migracoes`; `servicos/excecoes.py`, com uma classe por motivo de recusa da regra |
-| 8 em diante | definir ao criar a aula, no mesmo padrão |
+| 8 | `seguranca.py` na raiz (hash e token); `rotas/usuarios.py` e `rotas/autenticacao.py`; `esquemas/usuario.py` e `servicos/usuario.py`; `email` e `senha_hash` no modelo do usuário, por migration; `CHAVE_DO_TOKEN` no `.env` |
+| 9 em diante | definir ao criar a aula, no mesmo padrão |
 
 **Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
 A palavra **modelo** fica para a classe do SQLAlchemy, na aula 6. Não misture nos slides.
@@ -310,6 +327,27 @@ para a aula 6 e retirados antes de ela ser dada: estão no commit `00c85be`, pro
 - A primeira migration é só a diferença, porque as tabelas vieram do `create_all`. Banco do zero:
   `python criar_tabelas.py` e `alembic stamp head`.
 
+**O que a aula 8 decidiu, testado na montagem** (FastAPI 0.142, pwdlib 0.3 com argon2, PyJWT 2.15,
+e um front Vite + React rodando contra a API):
+
+- `seguranca.py` na raiz, sem nada do FastAPI. O `ler_token` devolve `None` para token falso ou
+  vencido, e o serviço tem `usuario_do_token`, para a dependência da rota não importar o `jwt`.
+- O `email` não leva `unique=True`: sem nome, a restrição faz o autogenerate escrever um `downgrade`
+  com `drop_constraint(None, ...)`, que quebra (testado). O e-mail repetido é barrado no serviço, com
+  a exceção `EmailEmUso` e o 409, no padrão da aula 7.
+- `email` e `senha_hash` aceitam `NULL`, porque a tabela já tem os usuários da lista fixa. Eles ficam
+  sem senha e não entram; a turma cadastra os perfis de novo pelo `POST /usuarios`.
+- O cadastro monta o dicionário campo a campo. O `**usuario.model_dump()` levaria `senha` para o modelo,
+  que não tem essa coluna.
+- O `sub` do JWT precisa ser texto (o PyJWT recusa número). O token vale 60 minutos.
+- O `TarefaCriar` perde o `solicitante_id`: o dono vem do token. Mandar o campo no corpo é ignorado.
+- Uma função `exigir_<perfil>` por perfil, e não uma fábrica de dependências, que pediria função que
+  devolve função. A conferência do dono fica na `tarefa_existente`, com 403.
+- O `/login` lê formulário: no React, o corpo é `new URLSearchParams(...)` e o fetch põe o
+  `Content-Type` sozinho. O CORS com `allow_headers=["*"]` já libera o `Authorization`.
+- O `App` guarda o token num `useState` iniciado pelo `localStorage`, busca o `/usuarios/eu` num
+  `useEffect` com `[token]`, e volta ao login apagando o token se a resposta não for `ok`.
+
 **O `from_attributes` não é obrigatório.** A versão anterior deste arquivo dizia que o esquema de
 saída precisava de `model_config = ConfigDict(from_attributes=True)` para o `response_model` ler do
 modelo. Testado na montagem da aula 6 (FastAPI 0.141, Pydantic 2.13, SQLAlchemy 2.0): o FastAPI já
@@ -332,18 +370,17 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 5 | consumo completo pelo React: os três estados da tela, `resposta.ok`, `throw` dentro do `.then` e `.catch`, POST com `method`, `Content-Type` e `JSON.stringify`; sorteio das cartilhas *(avaliação: a cartilha de ponta a ponta, com a entrega no começo da aula 6; a avaliação continua em 23 e 24/09, encontros sem slides)* |
 | 6 | **primeiro tempo:** modelagem curta e DER, `CREATE TABLE`, `INSERT` e `SELECT` com `mysql.connector` como a dor; SQLAlchemy 2 com `mysql+mysqlconnector`: `create_engine`, `sessionmaker`, `DeclarativeBase`, modelo com `Column`, tipos (`Integer`, `String(n)`, `Date`) e restrições (`primary_key`, `nullable`), `create_all` num `criar_tabelas.py`; no repositório, sessão aberta e fechada em cada função, `scalars(select())`, `get`, `add`, `commit`, `refresh`; objeto no lugar de dicionário (`registro.campo`). **Segundo tempo:** `with` e `yield`, sessão por requisição via `Depends`, CRUD completo (`delete` só na tabela de referência), transação num commit só, rollback por sessão fechada sem commit; `ForeignKey`, `relationship`, `join`, `where`, `order_by`, `limit`, `offset`, `Query(ge=)` |
 | 7 | **primeiro tempo:** migrations com Alembic (`init`, `env.py`, `revision --autogenerate`, `upgrade head`, `stamp head`), `ForeignKey` com `name=`. **Segundo tempo:** regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto), gerada com IA e revisada pelo aluno |
-| 8 | entidade usuário, hash de senha, segredo fora do código |
-| 9 | JWT, `OAuth2PasswordBearer`, `Depends(get_current_user)`, autorização por dono do recurso |
-| 10 | OWASP aplicado, CORS restrito, dado sensível em log *(avaliação final: indicador 3)* |
-| 11 | chamada a API de LLM, higienização de input, timeout, falha, custo; README de entrega; convenções de estrutura de projeto, para reconhecer o que a IA gera |
-| 12 | apresentação individual, retrospectiva |
+| 8 | **primeiro tempo:** hash e não criptografia, argon2 com `pwdlib`, sal, cadastro com `email` e `senha_hash` por migration, esquema de saída sem senha. **Segundo tempo:** JWT (`sub`, `exp`, assinatura `HS256`) com PyJWT, `CHAVE_DO_TOKEN` no `.env`, `datetime`/`timedelta`, `OAuth2PasswordRequestForm = Depends()`, `OAuth2PasswordBearer`, `obter_usuario_atual`, 401 e 403, o dono vindo do token, `exigir_<perfil>`, conferência do dono; no React, `URLSearchParams`, `localStorage`, cabeçalho `Authorization` e a tela escolhida pelo perfil *(08/10: prática e avaliação, sem slides)* |
+| 9 | o projeto da cartilha até aqui, reforço dos perfis, README e pasta `.docs/` gerados com IA, a IA anotando o que foi feito; convenções de estrutura de projeto, para reconhecer o que a IA gera |
+| 10 | volta ao briefing, planejamento de funcionalidade e roadmap com IA, integração com LLM (Gemini, chave gratuita do Google AI Studio), demonstração no exemplo do professor |
+| 11 | apresentação individual |
 
 Docker não entra na UC4: vai para a UC2. Não use em slide nem em `regras`.
 
 **Armadilhas frequentes:**
-- Usar `async def` antes da aula 11 sem necessidade. Até lá, `def` normal — o FastAPI resolve.
+- Usar `async def` antes da aula 10 sem necessidade. Até lá, `def` normal — o FastAPI resolve.
 - Usar ORM ou banco antes da aula 6. Antes disso é **lista em memória**, e isso é proposital.
-- Proteger rota antes da aula 9.
+- Proteger rota antes da aula 8.
 - Usar `allow_origins=["*"]` em qualquer slide. Isso é apresentado explicitamente como erro na aula 3.
 
 ---
@@ -357,8 +394,8 @@ Agrupamento pedagógico, alinhado com as avaliações do PTD. Cada ciclo fecha c
 | 1 | 1 a 5 | O contrato | A tela que eu já fiz precisa de quais dados? |
 | 2 | 6 | A persistência | Por que meus dados somem quando eu reinicio o servidor? |
 | 3 | 7 | As regras | O que o meu sistema não pode deixar acontecer? |
-| 4 | 8 a 10 | O acesso | Quem pode fazer isso com os dados da minha persona? |
-| 5 | 11 e 12 | A entrega | Você consegue explicar o que a IA escreveu? |
+| 4 | 8 | O acesso | Quem pode fazer isso com os dados da minha persona? |
+| 5 | 9 a 11 | A entrega | Você consegue explicar o que a IA escreveu? |
 
 ---
 
@@ -385,7 +422,7 @@ index.html              índice, montado em JS a partir do manifesto
 .nojekyll               necessário para o GitHub Pages
 assets/css/slides.css   o sistema visual inteiro
 assets/css/navegacao.css  barra do topo, capa e tema claro/escuro do índice e do cronograma
-assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 12 aulas e os encontros sem aula
+assets/js/aulas.js      MANIFESTO — datas, títulos, ciclos das 11 aulas e os encontros sem aula
 assets/js/slides.js     navegação por teclado, escala, barra inferior, rodapé dos slides
 assets/js/tema.js       troca de tema do índice e do cronograma, com a escolha guardada no navegador
 aulas/aula-NN.html      uma página por aula
