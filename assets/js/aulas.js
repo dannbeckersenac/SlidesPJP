@@ -18,7 +18,7 @@ window.AULAS = [
   { n:  5, data: "2026-09-21", ciclo: 1, titulo: "Integração com o front-end · Entrega do Ciclo 1", pronto: true,  avaliacao: true },
   { n:  6, data: "2026-10-01", ciclo: 2, titulo: "SQLAlchemy, CRUD, transações e relacionamentos", pronto: true  },
   { n:  7, data: "2026-10-05", ciclo: 3, titulo: "Migrations, regras de negócio, exceções e documentação da API", pronto: true  },
-  { n:  8, data: "2026-10-07", ciclo: 4, titulo: "Senhas protegidas, login com JWT e perfis", pronto: false },
+  { n:  8, data: "2026-10-07", ciclo: 4, titulo: "Senhas protegidas, login com JWT e perfis", pronto: true  },
   { n:  9, data: "2026-10-19", ciclo: 5, titulo: "O projeto até aqui, perfis e documentação com IA", pronto: false },
   { n: 10, data: "2026-10-20", ciclo: 5, titulo: "Do briefing ao módulo de IA: planejamento e Gemini", pronto: false },
   { n: 11, data: "2026-10-21", ciclo: 5, titulo: "Apresentação individual", pronto: false }

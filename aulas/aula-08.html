@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 08 · Senhas protegidas, login com JWT e perfis · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="8">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 08</p>
+    <h1>Quem é você, e o que você pode</h1>
+    <p class="sub">Antes do intervalo, o cadastro com a senha protegida. Depois, o login, o cadeado no /docs e a tela de cada perfil.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 4 · O acesso</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · DOIS TEMPOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de começar</p>
+    <h2>Mais uma aula em dois tempos</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><div class="icone">1</div><span class="t">Antes do intervalo</span><span class="d">O usuário ganha e-mail e senha. A senha vai para o banco de um jeito que nem você consegue ler.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Depois do intervalo</span><span class="d">O login entrega um token. As rotas pedem o token, e cada perfil só faz o que é dele.</span></div>
+    </div>
+    <p class="dica"><b>O próximo encontro é a avaliação.</b> Metade do tempo para aplicar isto na cartilha, metade para a entrega.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>A API acredita em qualquer número</h2>
+    <ol class="passos">
+      <li>No <code>/docs</code> do exemplo, eu sou a Júlia. Abro uma tarefa com <code>solicitante_id</code> <code>3</code>, que é o Paulo. Volta <code>201</code>.</li>
+      <li>Rodo o GET da lista com <code>solicitante_id=3</code>. Vejo as tarefas do Paulo.</li>
+      <li>Lanço a conclusão numa tarefa dele, sem ser executor. Volta <code>201</code>.</li>
+    </ol>
+    <div class="destaque">A API não sabe quem está do outro lado. <b>Quem digita o número vira aquela pessoa.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>O usuário não tem como provar quem é</h2>
+    <div class="der">
+      <div class="entidade">
+        <div class="nome">usuarios, hoje</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>nome<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>tipo<span class="tipo">VARCHAR(20)</span></div>
+      </div>
+      <span class="liga">→</span>
+      <div class="entidade hoje">
+        <div class="nome">usuarios, no intervalo</div>
+        <div class="col"><span class="chave">PK</span>id<span class="tipo">INT</span></div>
+        <div class="col"><span class="chave"></span>nome<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>tipo<span class="tipo">VARCHAR(20)</span></div>
+        <div class="col"><span class="chave"></span>email<span class="tipo">VARCHAR(100)</span></div>
+        <div class="col"><span class="chave"></span>senha_hash<span class="tipo">VARCHAR(255)</span></div>
+      </div>
+    </div>
+    <div class="destaque">Para provar quem é, a pessoa precisa de algo que só ela sabe. <b>A senha.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · A SEGUNDA DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A segunda dor de hoje</p>
+    <h2>E se a senha for gravada como chegou?</h2>
+    <table>
+      <thead><tr><th>id</th><th>nome</th><th>email</th><th>senha</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td class="neutro">Júlia</td><td class="neutro">julia@tarefacerta.com</td><td class="neutro">julia2026</td></tr>
+        <tr><td>5</td><td class="neutro">Marcos</td><td class="neutro">marcos@tarefacerta.com</td><td class="neutro">marcos2026</td></tr>
+      </tbody>
+    </table>
+    <div class="alerta">Quem lê o banco lê a senha: você, um colega, um backup esquecido, um vazamento. <strong>E a Júlia usa a mesma senha no e-mail dela.</strong></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · HASH, NÃO CRIPTOGRAFIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Hash, e não criptografia</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><div class="icone">1</div><span class="t">Criptografia: um cofre</span><span class="d">Fecha com uma chave e abre com ela. Quem tem a chave lê a senha. Se a chave vaza, vazam todas.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Hash: a impressão digital</span><span class="d">Confere se é a mesma pessoa, mas não reconstrói a pessoa. Não tem chave, não tem volta.</span></div>
+    </div>
+    <div class="destaque">O banco guarda a digital da senha. <b>Nem você, olhando a tabela, descobre qual era.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · COMO O LOGIN CONFERE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Então como o login confere?</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">No cadastro</span><span class="d">A senha vira digital, e só a digital vai para o banco.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">No login</span><span class="d">A senha digitada passa pela mesma máquina de digital.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">A comparação</span><span class="d">As duas digitais batem? Então a senha é a mesma.</span></div>
+    </div>
+    <p class="dica"><b>Esqueci a senha?</b> Por isso nenhum sistema sério manda a sua senha por e-mail: ele não tem. Ele manda um link para criar outra.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · O SAL E A LENTIDÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Não serve qualquer hash</h2>
+    <table>
+      <thead><tr><th>O problema</th><th>O que o argon2 faz</th></tr></thead>
+      <tbody>
+        <tr><td>MD5 e SHA-256 são rápidos: dá para testar bilhões de senhas por segundo</td><td class="neutro">é lento de propósito, e gasta memória a cada conta</td></tr>
+        <tr><td>a mesma senha daria a mesma digital, e quem descobre uma descobre todas iguais</td><td class="neutro">mistura um <b>sal</b> sorteado: a mesma senha dá digitais diferentes</td></tr>
+        <tr><td>o sal precisaria ficar guardado em algum lugar</td><td class="neutro">o sal vai dentro do próprio hash, no texto que o banco guarda</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>O argon2 venceu a competição de hash de senha de 2015.</b> É o que a biblioteca usa por padrão.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · ÁRVORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura do projeto</p>
+    <h2>O backend ao fim de hoje</h2>
+    <div class="codigo compacto">
+      <pre>backend/            <span class="com"># sem o venv/, o __pycache__ e os arquivos que não mudam</span>
+├── .env                 <span class="com"># ganha a CHAVE_DO_TOKEN</span>
+├── seguranca.py         <span class="com"># hash da senha e token. arquivo novo</span>
+├── main.py              <span class="com"># liga os routers novos</span>
+├── modelos/usuario.py   <span class="com"># ganha email e senha_hash, por migration</span>
+├── esquemas/usuario.py  <span class="com"># entrada com senha, saída sem. arquivo novo</span>
+├── rotas/
+│   ├── autenticacao.py  <span class="com"># o /login e quem pode o quê. arquivo novo</span>
+│   ├── usuarios.py      <span class="com"># o cadastro. arquivo novo</span>
+│   └── tarefas.py       <span class="com"># passa a pedir o token</span>
+├── servicos/usuario.py  <span class="com"># cadastrar e autenticar. arquivo novo</span>
+└── repositorios/usuario.py  <span class="com"># ganha buscar_por_email e salvar</span></pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · CALIBRAGEM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes da mão na massa</p>
+    <h2>Se o seu backend está diferente</h2>
+    <p class="intro">Hoje entram seis arquivos. Antes de criar qualquer um, alinhe o que já existe.</p>
+    <ol class="passos curta">
+      <li>Copie o prompt pelo botão abaixo e cole no assistente, com o repositório da cartilha aberto.</li>
+      <li>Leia a lista de diferenças que ele devolve. Até aqui ele não mexeu em nada.</li>
+      <li>Responda <code>pode seguir</code> só se concordar com cada movimento da lista.</li>
+      <li>Rode <code>fastapi dev main.py</code> e abra o <code>/docs</code>. As rotas de antes continuam lá.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-08-estrutura.md">copiar o prompt que alinha a estrutura</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 5</p>
+    <h2>A mesma senha, duas digitais</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no terminal do backend/, com python</div>
+      <pre><span class="kw">from</span> pwdlib <span class="kw">import</span> PasswordHash
+hasher = PasswordHash.<span class="fn">recommended</span>()       <span class="com"># o argon2, com as configurações recomendadas</span>
+a = hasher.<span class="fn">hash</span>(<span class="str">"julia2026"</span>)
+b = hasher.<span class="fn">hash</span>(<span class="str">"julia2026"</span>)
+<span class="fn">print</span>(a == b, hasher.<span class="fn">verify</span>(<span class="str">"julia2026"</span>, a), hasher.<span class="fn">verify</span>(<span class="str">"julia2027"</span>, a))</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>backend/</code>, com o venv ativo, rode <code>pip install "pwdlib[argon2]"</code>.</li>
+      <li>Digite <code>python</code> e cole o código acima.</li>
+      <li>Aparece <code>False True False</code>: digitais diferentes, e mesmo assim a senha certa confere.</li>
+      <li>Digite <code>print(a)</code>. O texto começa com <code>$argon2id$</code>, e o sal está no meio dele.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 5</p>
+    <h2>O usuário ganha e-mail e senha</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/modelos/usuario.py · depois da coluna tipo</div>
+      <pre>    email = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">100</span>))           <span class="com"># o login</span>
+    senha_hash = <span class="fn">Column</span>(<span class="fn">String</span>(<span class="num">255</span>))      <span class="com"># a digital, nunca a senha</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No modelo do usuário da sua cartilha, acrescente as duas colunas.</li>
+      <li>No terminal, rode <code>alembic revision --autogenerate -m "email e senha do usuario"</code>.</li>
+      <li>Rode <code>alembic upgrade head</code>.</li>
+      <li>No MySQL, <code>DESCRIBE usuarios;</code> mostra as duas colunas, aceitando <code>NULL</code>.</li>
+    </ol>
+    <p class="dica"><b>Por que aceitam vazio?</b> A tabela já tem usuários sem senha. Eles ficam lá, e só não conseguem entrar.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 5</p>
+    <h2>Um arquivo só para a segurança</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/seguranca.py</div>
+      <pre><span class="kw">from</span> pwdlib <span class="kw">import</span> PasswordHash
+hasher = PasswordHash.<span class="fn">recommended</span>()
+
+<span class="kw">def</span> <span class="fn">gerar_hash</span>(senha: <span class="kw">str</span>):                    <span class="com"># no cadastro</span>
+    <span class="kw">return</span> hasher.<span class="fn">hash</span>(senha)
+<span class="kw">def</span> <span class="fn">verificar_senha</span>(senha: <span class="kw">str</span>, senha_hash: <span class="kw">str</span>):  <span class="com"># no login: True ou False</span>
+    <span class="kw">return</span> hasher.<span class="fn">verify</span>(senha, senha_hash)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>seguranca.py</code> do lado do <code>banco.py</code>, com o código acima.</li>
+      <li>Rode <code>python -c "import seguranca; print(seguranca.gerar_hash('teste1234'))"</code>. Sai um <code>$argon2id$</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · LEITURA: ESQUEMAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A senha entra, mas nunca sai</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/esquemas/usuario.py</div>
+      <pre><span class="kw">class</span> <span class="fn">UsuarioCriar</span>(BaseModel):                         <span class="com"># o que o cadastro recebe</span>
+    nome: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">2</span>, max_length=<span class="num">100</span>)
+    email: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">5</span>, max_length=<span class="num">100</span>)
+    senha: <span class="kw">str</span> = <span class="fn">Field</span>(min_length=<span class="num">8</span>, max_length=<span class="num">72</span>)    <span class="com"># a senha, só na entrada</span>
+    tipo: <span class="kw">str</span> = <span class="fn">Field</span>(pattern=<span class="str">"^(solicitante|executor)$"</span>)
+<span class="kw">class</span> <span class="fn">UsuarioSaida</span>(BaseModel):                         <span class="com"># o que a API devolve</span>
+    id: <span class="kw">int</span>
+    nome: <span class="kw">str</span>
+    email: <span class="kw">str</span> | <span class="kw">None</span>                                    <span class="com"># os antigos não têm</span>
+    tipo: <span class="kw">str</span>                                            <span class="com"># sem senha e sem hash</span></pre>
+    </div>
+    <p class="dica"><b>O esquema de saída é o filtro:</b> a rota devolve o objeto inteiro, e o hash não sai.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · LEITURA: SERVIÇO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O cadastro troca a senha pela digital</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/servicos/usuario.py</div>
+      <pre><span class="kw">def</span> <span class="fn">cadastrar</span>(sessao, usuario: UsuarioCriar):
+    <span class="kw">if</span> repositorio.<span class="fn">buscar_por_email</span>(sessao, usuario.email) <span class="kw">is not None</span>:
+        <span class="kw">raise</span> <span class="fn">EmailEmUso</span>(<span class="str">"Já existe um usuário com esse e-mail"</span>)   <span class="com"># o padrão da aula 7</span>
+    <span class="kw">return</span> repositorio.<span class="fn">salvar</span>(sessao, {
+        <span class="str">"nome"</span>: usuario.nome,
+        <span class="str">"email"</span>: usuario.email,
+        <span class="str">"tipo"</span>: usuario.tipo,
+        <span class="str">"senha_hash"</span>: <span class="fn">gerar_hash</span>(usuario.senha),        <span class="com"># a senha nunca chega ao banco</span>
+    })</pre>
+    </div>
+    <p class="dica"><b>Aqui não dá para usar o <code>**usuario.model_dump()</code>.</b> Ele levaria o campo <code>senha</code> para o modelo, que não tem essa coluna.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · MÃO NA MASSA 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 5</p>
+    <h2>Esquema, repositório e serviço</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/repositorios/usuario.py · from sqlalchemy import select no topo</div>
+      <pre><span class="kw">def</span> <span class="fn">buscar_por_email</span>(sessao, email: <span class="kw">str</span>):
+    consulta = <span class="fn">select</span>(Usuario).<span class="fn">where</span>(Usuario.email == email)
+    <span class="kw">return</span> sessao.<span class="fn">scalars</span>(consulta).<span class="fn">first</span>()    <span class="com"># o primeiro, ou None</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>esquemas/usuario.py</code> no molde da leitura, com os perfis da sua cartilha no <code>pattern</code>.</li>
+      <li>No repositório do usuário, acrescente o <code>buscar_por_email</code> acima e um <code>salvar</code> no molde dos outros.</li>
+      <li>Em <code>servicos/excecoes.py</code>, crie a <code>EmailEmUso</code>.</li>
+      <li>Crie o <code>servicos/usuario.py</code> com o <code>cadastrar</code> da leitura. O terminal do <code>fastapi dev</code> não mostra erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · MÃO NA MASSA 5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 5</p>
+    <h2>A rota do cadastro</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/usuarios.py · com os imports de sempre</div>
+      <pre>router = <span class="fn">APIRouter</span>()
+
+<span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>, response_model=UsuarioSaida)
+<span class="kw">def</span> <span class="fn">cadastrar_usuario</span>(usuario: UsuarioCriar, sessao=<span class="fn">Depends</span>(obter_sessao)):
+    <span class="kw">try</span>:
+        <span class="kw">return</span> servico.<span class="fn">cadastrar</span>(sessao, usuario)
+    <span class="kw">except</span> EmailEmUso <span class="kw">as</span> erro:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">409</span>, detail=<span class="fn">str</span>(erro))</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>main.py</code>, ligue o router com <code>prefix="/usuarios"</code>.</li>
+      <li>No <code>/docs</code>, cadastre um usuário de cada perfil. Volta <code>201</code>, sem senha na resposta.</li>
+      <li>No MySQL, <code>SELECT email, senha_hash FROM usuarios;</code> mostra só <code>$argon2id$</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · ANTES DO INTERVALO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Antes do intervalo</p>
+    <h2>Confira os quatro antes de sair da sala</h2>
+    <ol class="passos">
+      <li><code>alembic current</code> termina em <code>(head)</code>, e a tabela tem <code>email</code> e <code>senha_hash</code>.</li>
+      <li>O POST de <code>/usuarios</code> volta <code>201</code>, e a resposta não tem senha.</li>
+      <li>O mesmo e-mail de novo volta <code>409</code>, com a sua frase.</li>
+      <li>No MySQL, nenhuma senha legível. Só digitais <code>$argon2id$</code>.</li>
+    </ol>
+    <div class="destaque">Os quatro funcionando, <b>você está pronto para o login.</b> Algum falhou? Chame agora.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · SEGUNDO TEMPO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Depois do intervalo</p>
+    <h1>Segundo tempo</h1>
+    <p class="sub">A senha está protegida. Agora a API passa a saber quem fez cada requisição, e o que essa pessoa pode fazer.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor do segundo tempo</p>
+    <h2>O HTTP não lembra de ninguém</h2>
+    <p class="intro">Cada requisição chega como se fosse a primeira. A API não guarda quem entrou há um minuto.</p>
+    <table>
+      <thead><tr><th>A saída ingênua</th><th>O que ela custa</th></tr></thead>
+      <tbody>
+        <tr><td>mandar e-mail e senha em toda requisição</td><td class="neutro">a senha viaja o tempo todo, e o front precisa guardar ela</td></tr>
+        <tr><td>conferir a senha em toda requisição</td><td class="neutro">o argon2 é lento de propósito: cada clique esperaria por ele</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">Precisa de algo que prove quem é <b>sem levar a senha junto.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · A PULSEIRA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O token é a pulseira do evento</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Na entrada</span><span class="d">Você mostra o documento uma vez: o login, com e-mail e senha.</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">A pulseira</span><span class="d">Sai com o seu número, a hora em que vence e um lacre que ninguém copia.</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Em cada porta</span><span class="d">Você só mostra a pulseira. A porta confere o lacre, e não o documento.</span></div>
+    </div>
+    <p class="dica"><b>A pulseira vence.</b> O token do exemplo vale uma hora. Depois, novo login.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · JWT POR DENTRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O JWT por dentro: três partes e dois pontos</h2>
+    <p class="intro"><code>eyJhbGciOiJIUzI1NiJ9</code> . <code>eyJzdWIiOiI0IiwiZXhwIjoxNzkxMzA1NzE3fQ</code> . <code>h7vX9f8h6Ds8</code></p>
+    <table>
+      <thead><tr><th>Parte</th><th>O que tem</th></tr></thead>
+      <tbody>
+        <tr><td>cabeçalho</td><td class="neutro">o algoritmo da assinatura: <code>HS256</code></td></tr>
+        <tr><td>conteúdo</td><td class="neutro"><code>{"sub": "4", "exp": 1791305717}</code>: quem é, e quando vence</td></tr>
+        <tr><td>assinatura</td><td class="neutro">o lacre, feito com a chave secreta que só a API tem</td></tr>
+      </tbody>
+    </table>
+    <div class="alerta">O conteúdo é só codificado, <strong>qualquer um lê.</strong> Nunca ponha senha no token. O que impede a falsificação é a assinatura.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · AUTENTICAÇÃO E AUTORIZAÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Duas perguntas, dois status</h2>
+    <table>
+      <thead><tr><th></th><th>A pergunta</th><th>Quando falha</th></tr></thead>
+      <tbody>
+        <tr><td><b>Autenticação</b></td><td class="neutro">quem é você?</td><td class="neutro"><code>401</code>: sem token, token falso ou vencido</td></tr>
+        <tr><td><b>Autorização</b></td><td class="neutro">você pode fazer isto?</td><td class="neutro"><code>403</code>: sei quem você é, e a resposta é não</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">A Júlia logada tentando lançar um item: <b>sabemos quem é, e ela não pode.</b> É <code>403</code>, não <code>401</code>.</div>
+    <p class="dica"><b>Na pulseira:</b> sem pulseira, você nem entra no evento. Com a pulseira verde, você não entra no camarim.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 24 · MÃO NA MASSA 2.1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 1 de 7</p>
+    <h2>A chave do lacre fica fora do código</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no terminal do backend/ · gera 64 caracteres sorteados</div>
+      <pre>python -c "import secrets; print(secrets.token_hex(32))"</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal, rode <code>pip install pyjwt</code> e depois o comando acima.</li>
+      <li>No <code>.env</code>, acrescente <code>CHAVE_DO_TOKEN=</code> com o texto que saiu.</li>
+      <li>No <code>.env.exemplo</code>, a mesma chave sem valor.</li>
+      <li>No <code>configuracao.py</code>, acrescente <code>"chave_do_token": os.getenv("CHAVE_DO_TOKEN"),</code></li>
+      <li>Rode <code>git status</code>. O <code>.env</code> não aparece.</li>
+    </ol>
+    <p class="dica"><b>Quem tem esta chave fabrica pulseira de qualquer um.</b> Ela é o segredo mais importante do projeto.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25 · LEITURA: FABRICAR O TOKEN -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>Fabricar a pulseira</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/seguranca.py · os imports no topo, a função no fim</div>
+      <pre><span class="kw">from</span> datetime <span class="kw">import</span> datetime, timedelta, timezone   <span class="com"># data com hora, e uma duração</span>
+<span class="kw">import</span> jwt
+<span class="kw">from</span> configuracao <span class="kw">import</span> obter_configuracao
+configuracao = <span class="fn">obter_configuracao</span>()
+
+<span class="kw">def</span> <span class="fn">criar_token</span>(usuario_id: <span class="kw">int</span>):
+    validade = datetime.<span class="fn">now</span>(timezone.utc) + <span class="fn">timedelta</span>(minutes=<span class="num">60</span>)  <span class="com"># agora mais uma hora</span>
+    dados = {<span class="str">"sub"</span>: <span class="kw">str</span>(usuario_id), <span class="str">"exp"</span>: validade}         <span class="com"># quem é, e quando vence</span>
+    <span class="kw">return</span> jwt.<span class="fn">encode</span>(dados, configuracao[<span class="str">"chave_do_token"</span>], algorithm=<span class="str">"HS256"</span>)</pre>
+    </div>
+    <p class="dica"><b><code>sub</code> e <code>exp</code> são nomes do padrão JWT.</b> O <code>sub</code> precisa ser texto, por isso o <code>str</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25b · LEITURA: CONFERIR O TOKEN -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>Conferir a pulseira</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/seguranca.py · depois do criar_token</div>
+      <pre><span class="kw">def</span> <span class="fn">ler_token</span>(token: <span class="kw">str</span>):
+    <span class="kw">try</span>:
+        dados = jwt.<span class="fn">decode</span>(token, configuracao[<span class="str">"chave_do_token"</span>], algorithms=[<span class="str">"HS256"</span>])
+    <span class="kw">except</span> jwt.InvalidTokenError:          <span class="com"># lacre falso, ou pulseira vencida</span>
+        <span class="kw">return None</span>
+    <span class="kw">return</span> <span class="kw">int</span>(dados[<span class="str">"sub"</span>])                <span class="com"># o id de quem fez a requisição</span></pre>
+    </div>
+    <div class="destaque">O <code>decode</code> confere o lacre e a validade antes de devolver. <b>Se alguém mudar uma letra do conteúdo, a assinatura não bate.</b></div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 26 · MÃO NA MASSA 2.2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A porta de entrada: o /login</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/autenticacao.py · from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm</div>
+      <pre>router = <span class="fn">APIRouter</span>()
+esquema_oauth = <span class="fn">OAuth2PasswordBearer</span>(tokenUrl=<span class="str">"login"</span>)   <span class="com"># onde fica o login</span>
+<span class="fn">@router.post</span>(<span class="str">"/login"</span>, response_model=Token)
+<span class="kw">def</span> <span class="fn">login</span>(formulario: OAuth2PasswordRequestForm = <span class="fn">Depends</span>(),
+          sessao=<span class="fn">Depends</span>(obter_sessao)):
+    usuario = servico_usuario.<span class="fn">autenticar</span>(sessao, formulario.username,
+                                         formulario.password)
+    <span class="kw">if</span> usuario <span class="kw">is None</span>:                             <span class="com"># e-mail ou senha: a mesma resposta</span>
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">401</span>, detail=<span class="str">"E-mail ou senha incorretos"</span>)
+    <span class="kw">return</span> {<span class="str">"access_token"</span>: <span class="fn">criar_token</span>(usuario.id), <span class="str">"token_type"</span>: <span class="str">"bearer"</span>}</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 27 · LEITURA: O LOGIN -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 2 de 7</p>
+    <h2>Três peças novas no /login</h2>
+    <table>
+      <thead><tr><th>A peça</th><th>O que ela faz</th></tr></thead>
+      <tbody>
+        <tr><td><code>OAuth2PasswordRequestForm</code></td><td class="neutro">lê um formulário com <code>username</code> e <code>password</code>. O seu <code>username</code> é o e-mail</td></tr>
+        <tr><td><code>= Depends()</code>, vazio</td><td class="neutro">o FastAPI monta o formulário a partir da requisição, como faz com o esquema</td></tr>
+        <tr><td><code>OAuth2PasswordBearer</code></td><td class="neutro">procura o <code>Authorization: Bearer ...</code> e entrega o token. Sem ele, <code>401</code></td></tr>
+      </tbody>
+    </table>
+    <ol class="passos curta">
+      <li>No <code>servicos/usuario.py</code>, o <code>autenticar</code>: devolve <code>None</code> se a senha não confere.</li>
+      <li>Em <code>esquemas/usuario.py</code>, o <code>Token</code> com <code>access_token</code> e <code>token_type</code>, os dois <code>str</code>.</li>
+      <li>Crie o <code>rotas/autenticacao.py</code> da leitura e ligue no <code>main.py</code>, sem <code>prefix</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 28 · MÃO NA MASSA 2.3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>Quem está fazendo a requisição?</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/servicos/usuario.py e rotas/autenticacao.py</div>
+      <pre><span class="kw">def</span> <span class="fn">usuario_do_token</span>(sessao, token: <span class="kw">str</span>):             <span class="com"># no serviço</span>
+    usuario_id = <span class="fn">ler_token</span>(token)
+    <span class="kw">if</span> usuario_id <span class="kw">is None</span>:
+        <span class="kw">return None</span>
+    <span class="kw">return</span> repositorio.<span class="fn">buscar_por_id</span>(sessao, usuario_id)
+
+<span class="kw">def</span> <span class="fn">obter_usuario_atual</span>(token: <span class="kw">str</span> = <span class="fn">Depends</span>(esquema_oauth),   <span class="com"># na rota</span>
+                        sessao=<span class="fn">Depends</span>(obter_sessao)):
+    usuario = servico_usuario.<span class="fn">usuario_do_token</span>(sessao, token)
+    <span class="kw">if</span> usuario <span class="kw">is None</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">401</span>, detail=<span class="str">"Token inválido ou vencido"</span>)
+    <span class="kw">return</span> usuario</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 29 · O CADEADO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 3 de 7</p>
+    <h2>O cadeado do Swagger</h2>
+    <ol class="passos">
+      <li>Acrescente as duas funções da leitura, cada uma no seu arquivo, com o import do <code>ler_token</code> no serviço.</li>
+      <li>Em <code>rotas/usuarios.py</code>, o <code>GET /eu</code> com <code>usuario=Depends(obter_usuario_atual)</code>, devolvendo o <code>usuario</code>.</li>
+      <li>No <code>/docs</code>, rode o <code>GET /usuarios/eu</code>. Volta <code>401</code>, <code>Not authenticated</code>.</li>
+      <li>Clique em <code>Authorize</code>: o e-mail em <code>username</code>, a senha em <code>password</code>. Rode de novo: <code>200</code>, com você.</li>
+    </ol>
+    <p class="dica"><b>Abra o curl que o /docs mostra.</b> Lá está o <code>Authorization: Bearer eyJ...</code>, que o Swagger mandou por você.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 30 · O DONO VEM DO TOKEN -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O dono vem do token, não do corpo</h2>
+    <div class="comparacao">
+      <div class="lado ruim">
+        <div class="rotulo">Antes: quem digita o número</div>
+        <div class="codigo compacto"><pre><span class="kw">class</span> <span class="fn">TarefaCriar</span>(BaseModel):
+    titulo: <span class="kw">str</span>
+    descricao: <span class="kw">str</span>
+    prazo: date
+    solicitante_id: <span class="kw">int</span></pre></div>
+      </div>
+      <div class="lado bom">
+        <div class="rotulo">Agora: quem está logado</div>
+        <div class="codigo compacto"><pre><span class="com"># o esquema perde o solicitante_id</span>
+<span class="com"># e o serviço preenche com o token</span>
+<span class="str">"solicitante_id"</span>: usuario.id,</pre></div>
+      </div>
+    </div>
+    <div class="destaque">Campo que diz quem é você <b>não pode vir do corpo da requisição.</b> O corpo, qualquer um escreve.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 31 · MÃO NA MASSA 2.4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 4 de 7</p>
+    <h2>As rotas passam a pedir a pulseira</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/rotas/tarefas.py · a rota que cria</div>
+      <pre><span class="fn">@router.post</span>(<span class="str">""</span>, status_code=<span class="num">201</span>, response_model=TarefaSaida)
+<span class="kw">def</span> <span class="fn">criar_tarefa</span>(tarefa: TarefaCriar, usuario=<span class="fn">Depends</span>(obter_usuario_atual),
+                 sessao=<span class="fn">Depends</span>(obter_sessao)):
+    <span class="kw">return</span> servico.<span class="fn">criar</span>(sessao, tarefa, usuario)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Em cada rota que lê ou grava dado da cartilha, acrescente <code>usuario=Depends(obter_usuario_atual)</code>.</li>
+      <li>No esquema de entrada, apague o campo do dono. No serviço, preencha com <code>usuario.id</code>.</li>
+      <li>No <code>/docs</code>, sem <code>Authorize</code>, as rotas voltam <code>401</code>.</li>
+      <li>Logado, crie um registro. O dono é você, mesmo mandando outro número no corpo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 32 · LEITURA: PERFIS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>Cada perfil, a sua porta</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/autenticacao.py e rotas/tarefas.py</div>
+      <pre><span class="kw">def</span> <span class="fn">exigir_executor</span>(usuario=<span class="fn">Depends</span>(obter_usuario_atual)):   <span class="com"># depende da outra</span>
+    <span class="kw">if</span> usuario.tipo != <span class="str">"executor"</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">403</span>, detail=<span class="str">"Só o executor pode fazer isso"</span>)
+    <span class="kw">return</span> usuario
+<span class="com"># dentro da tarefa_existente, depois do 404: a tarefa de outra pessoa</span>
+    <span class="kw">if</span> usuario.tipo == <span class="str">"solicitante"</span> <span class="kw">and</span> tarefa.solicitante_id != usuario.id:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="num">403</span>, detail=<span class="str">"Esta tarefa não é sua"</span>)
+
+<span class="com"># no serviço que lista: a solicitante vê as dela, o executor vê a fila</span>
+    <span class="kw">if</span> usuario.tipo == <span class="str">"solicitante"</span>:
+        <span class="kw">return</span> repositorio.<span class="fn">listar</span>(sessao, usuario.id, situacao, pagina)
+    <span class="kw">return</span> repositorio.<span class="fn">listar</span>(sessao, <span class="kw">None</span>, situacao, pagina)</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 33 · MÃO NA MASSA 2.5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 5 de 7</p>
+    <h2>Os dois perfis da sua cartilha</h2>
+    <ol class="passos">
+      <li>Liste as rotas da cartilha e escreva, ao lado de cada uma, qual perfil pode usar.</li>
+      <li>Crie uma função <code>exigir_</code> por perfil, no molde da leitura, e troque o <code>obter_usuario_atual</code> por ela nessas rotas.</li>
+      <li>Onde o registro tem dono, confira o dono e devolva <code>403</code> para os outros.</li>
+      <li>No <code>/docs</code>, logado com o perfil errado, a rota volta <code>403</code>. Com o certo, volta o de sempre.</li>
+    </ol>
+    <p class="dica"><b>No exemplo, o cadastro deixa escolher o perfil.</b> Num sistema de verdade, quem dá o perfil de executor é alguém que já é administrador.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 34 · JAVASCRIPT QUE FALTAVA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">JavaScript que faltava</p>
+    <h2>Formulário e gaveta do navegador</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no console do navegador, com F12</div>
+      <pre><span class="kw">const</span> corpo = <span class="kw">new</span> <span class="fn">URLSearchParams</span>({ username: <span class="str">"julia@tarefacerta.com"</span>, password: <span class="str">"x"</span> });
+corpo.<span class="fn">toString</span>();                       <span class="com">// "username=julia%40tarefacerta.com&amp;password=x"</span>
+
+localStorage.<span class="fn">setItem</span>(<span class="str">"token"</span>, <span class="str">"eyJ..."</span>);  <span class="com">// guarda, e sobrevive ao F5</span>
+localStorage.<span class="fn">getItem</span>(<span class="str">"token"</span>);           <span class="com">// devolve "eyJ..."</span>
+localStorage.<span class="fn">removeItem</span>(<span class="str">"token"</span>);        <span class="com">// é assim que se faz o sair</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abra o seu front, aperte <code>F12</code> e vá em <code>Console</code>.</li>
+      <li>Cole uma linha por vez. O <code>getItem</code> devolve o que o <code>setItem</code> guardou.</li>
+    </ol>
+    <p class="dica"><b>O /login lê formulário, não JSON.</b> Por isso o corpo é <code>URLSearchParams</code>, e o fetch põe o <code>Content-Type</code> sozinho.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 35 · MÃO NA MASSA 2.6 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 6 de 7</p>
+    <h2>A tela de login</h2>
+    <div class="codigo compacto">
+      <pre><span class="kw">const</span> corpo = <span class="kw">new</span> <span class="fn">URLSearchParams</span>({ username: email, password: senha });
+<span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/login"</span>, { method: <span class="str">"POST"</span>, body: corpo })
+  .<span class="fn">then</span>((resposta) => {
+    <span class="kw">if</span> (!resposta.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"e-mail ou senha incorretos"</span>);
+    <span class="kw">return</span> resposta.<span class="fn">json</span>();
+  })
+  .<span class="fn">then</span>((dados) => {
+    localStorage.<span class="fn">setItem</span>(<span class="str">"token"</span>, dados.access_token);   <span class="com">// guarda a pulseira</span>
+    <span class="fn">aoEntrar</span>(dados.access_token);                        <span class="com">// avisa o App</span>
+  })
+  .<span class="fn">catch</span>((problema) => <span class="fn">setMensagem</span>(problema.message));</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Crie o <code>Login</code>, que recebe <code>aoEntrar</code> por props, com os estados <code>email</code>, <code>senha</code> e <code>mensagem</code>.</li>
+      <li>Ponha o fetch na função do botão. Senha errada mostra a mensagem.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 36 · LEITURA: O APP PEDE QUEM É -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A pulseira vai no cabeçalho</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no App · token e usuario são dois useState</div>
+      <pre><span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (!token) <span class="kw">return</span>;                                 <span class="com">// sem pulseira, nada a buscar</span>
+  <span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/usuarios/eu"</span>, {
+    headers: { Authorization: <span class="str">"Bearer "</span> + token },     <span class="com">// o que o /docs fazia</span>
+  })
+    .<span class="fn">then</span>((resposta) => {
+      <span class="kw">if</span> (!resposta.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"pulseira vencida"</span>);
+      <span class="kw">return</span> resposta.<span class="fn">json</span>();
+    })
+    .<span class="fn">then</span>((dados) => <span class="fn">setUsuario</span>(dados))
+    .<span class="fn">catch</span>(() => { localStorage.<span class="fn">removeItem</span>(<span class="str">"token"</span>); <span class="fn">setToken</span>(<span class="kw">null</span>); });
+}, [token]);                                      <span class="com">// roda de novo se o token mudar</span></pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 36b · MÃO NA MASSA 2.7 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · passo 7 de 7</p>
+    <h2>Cada perfil cai na sua tela</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">no App · troque Fila e MinhasTarefas pelas telas da sua cartilha</div>
+      <pre><span class="kw">const</span> [token, setToken] = <span class="fn">useState</span>(localStorage.<span class="fn">getItem</span>(<span class="str">"token"</span>));
+<span class="kw">const</span> [usuario, setUsuario] = <span class="fn">useState</span>(<span class="kw">null</span>);
+
+<span class="kw">if</span> (!token) <span class="kw">return</span> &lt;<span class="fn">Login</span> aoEntrar={setToken} /&gt;;
+<span class="kw">if</span> (!usuario) <span class="kw">return</span> &lt;<span class="fn">p</span>&gt;Carregando&lt;/<span class="fn">p</span>&gt;;
+<span class="kw">if</span> (usuario.tipo === <span class="str">"executor"</span>) <span class="kw">return</span> &lt;<span class="fn">Fila</span> /&gt;;
+<span class="kw">return</span> &lt;<span class="fn">MinhasTarefas</span> /&gt;;</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>App</code>, os dois estados no topo e o <code>useEffect</code> do slide anterior logo abaixo.</li>
+      <li>Troque o <code>return</code> do <code>App</code> pelas quatro saídas acima.</li>
+      <li>Em todo fetch das telas, o mesmo <code>headers</code> com o <code>Authorization</code>.</li>
+      <li>Entre com cada perfil. Cada um cai na sua tela, e a lista mostra só o que é dele.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 37 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 08</p>
+    <h2>Cada um entra, e cada um no seu lugar</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">O cadastro com a senha em hash. No README, <b>por que hash e não criptografia.</b></span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">O <code>/login</code> com JWT, a chave no <code>.env</code> e o dono vindo do token, não do corpo.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Os dois perfis da cartilha. No README, uma tabela com cada rota, quem pode e o status para quem não pode.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">No front, a tela de login, o token em todo fetch e cada perfil caindo na sua tela.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-08-ataque.md">copiar o prompt que tenta entrar sem pulseira</button>
+      <a class="btn" href="../prompts/aula-08-regras.md" download="REGRAS_AULA8.md">baixar o REGRAS_AULA8.md</a>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 38 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 8</h2>
+    <ul class="recap">
+      <li>Senha não se guarda. Guarda-se <b>o hash</b>, que confere mas não volta.</li>
+      <li>O argon2 é lento de propósito e usa <b>sal</b>: a mesma senha, digitais diferentes.</li>
+      <li>O token é a pulseira: <b>qualquer um lê</b>, ninguém falsifica sem a chave do <code>.env</code>.</li>
+      <li><code>401</code> é "quem é você?". <code>403</code> é <b>"sei quem é, e não pode"</b>.</li>
+      <li>Quem é o dono vem do token. <b>O corpo da requisição qualquer um escreve.</b></li>
+    </ul>
+    <p class="proximo"><b>Próximo encontro:</b> metade do tempo para aplicar isto na cartilha, e a outra metade é a avaliação do que você construiu até aqui.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
