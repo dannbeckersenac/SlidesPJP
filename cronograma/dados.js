@@ -172,10 +172,11 @@ const NOTAS = `
 09-28 aula extra: o ambiente de agentes com o Paseo, montado em sala; a aula 6 passou para 01/10
 09-30 Workshop de Claude, no horário de aula
 10-01 aula 6, com o conteúdo de duas aulas; a avaliação do Ciclo 2 saiu
-10-07 aula 8, com o conteúdo de duas aulas: senhas protegidas antes do intervalo, login com JWT e perfis depois
+10-07 aula 8: senhas protegidas; o login com JWT e os perfis não couberam e passaram para 19/10
 10-08 metade do encontro para aplicar senhas, JWT e perfis na cartilha, e a outra metade para a avaliação, com a entrega do projeto no Teams
-10-19 aula 9: o projeto até aqui, reforço dos perfis e documentação com IA; a avaliação que era nesta data passou para 08/10
-10-21 apresentação individual de fechamento
+10-19 aula 9: recapitulação, o login com JWT e os perfis, e a documentação com IA; a avaliação que era nesta data passou para 08/10
+10-20 aula 10: o briefing atualizado e o plano do módulo de IA, sem código
+10-21 revisão, tempo de ajustes e apresentação individual de fechamento
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

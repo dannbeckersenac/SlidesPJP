@@ -19,9 +19,9 @@ window.AULAS = [
   { n:  6, data: "2026-10-01", ciclo: 2, titulo: "SQLAlchemy, CRUD, transações e relacionamentos", pronto: true  },
   { n:  7, data: "2026-10-05", ciclo: 3, titulo: "Migrations, regras de negócio, exceções e documentação da API", pronto: true  },
   { n:  8, data: "2026-10-07", ciclo: 4, titulo: "Senhas protegidas, login com JWT e perfis", pronto: true  },
-  { n:  9, data: "2026-10-19", ciclo: 5, titulo: "O projeto até aqui, perfis e documentação com IA", pronto: false },
-  { n: 10, data: "2026-10-20", ciclo: 5, titulo: "Do briefing ao módulo de IA: planejamento e Gemini", pronto: false },
-  { n: 11, data: "2026-10-21", ciclo: 5, titulo: "Apresentação individual", pronto: false }
+  { n:  9, data: "2026-10-19", ciclo: 5, titulo: "Recapitulação, login com JWT e perfis, e a documentação", pronto: true  },
+  { n: 10, data: "2026-10-20", ciclo: 5, titulo: "Do briefing ao módulo de IA: ideias, protótipo e roadmap", pronto: false },
+  { n: 11, data: "2026-10-21", ciclo: 5, titulo: "Revisão, ajustes e apresentação individual", pronto: false }
 ];
 
 /* encontros da UC4 que contam como aula no diário, mas sem slides:
