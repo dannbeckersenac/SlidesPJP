@@ -98,16 +98,20 @@ Sobraram 11 aulas. O docente decidiu:
 - A avaliação do ciclo 2 saiu.
 - As antigas aulas de cadastro com senha e de JWT viraram a aula 8 (07/10), em dois tempos: senha
   protegida antes do intervalo; login com JWT, cadeado no `/docs`, perfis e a tela de login no React
-  depois. A avaliação foi para 08/10, antes da semana parada de 12 a 16/10.
-- A aula 9 (19/10) revisa o projeto da cartilha até ali, reforça os perfis se precisar e ensina a
-  documentação: o README, a pasta `.docs/`, como gerar com IA e como conduzir a IA a anotar o que vai
-  sendo feito.
-- A aula 10 (20/10) volta ao briefing e planeja um módulo novo: um agente de LLM com o Gemini, com a
-  chave gratuita do Google AI Studio. O professor desenvolve o módulo no exemplo dele; a turma não
-  precisa ter o módulo funcionando. A ênfase é o planejamento: retomar o gerenciamento de projeto da
-  UC5 e sair com um roadmap feito com a IA.
-- A aula 11 (21/10) é a apresentação individual: a cartilha, as telas, o login com cada perfil, o
-  README, e o briefing com o plano do módulo de IA. Tudo em localhost.
+  depois. A avaliação foi para 08/10, antes da semana parada de 12 a 16/10. **O segundo tempo não
+  coube no encontro** e foi dado no primeiro tempo da aula 9: os slides dele estão nas duas aulas.
+- A aula 9 (19/10) abre com um resumão do backend (camadas, status, ciclos) e uma checagem de onde o
+  projeto de cada aluno está, faz o login com JWT, os perfis e a tela de login no React, e depois do
+  intervalo ensina a documentação: o README de entrega, a pasta `.docs/` (o diário de obra) e como
+  conduzir a IA a ler a `.docs/` antes e atualizar depois de cada conversa.
+- A aula 10 (20/10) é uma oficina curta, sem código: explorar o briefing para planejar uma funcionalidade
+  com agente ou multiagentes integrados via API (Claude, Gemini, OpenAI ou outro provedor), conduzir
+  as perguntas, escolher a ideia, construir o prompt e testar em três casos. Depois, atualizar o
+  briefing com a decisão marcada como planejada e, ao final, colocar o MVP e as tarefas no roadmap.
+  Os 12 slides priorizam a conversa, os papéis e ferramentas dos agentes e os prompts prontos. Da UC5, a turma conhece MVP e roadmap.
+- A aula 11 (21/10) é revisão, tempo de ajustes e a apresentação individual de até 10 minutos: a
+  cartilha, o sistema rodando com o login de cada perfil, uma rota por dentro, o briefing e o plano
+  do módulo de IA. Tudo em localhost. O módulo de IA não precisa funcionar.
 - As antigas aulas 11 (regras de negócio) e 12 (consolidação e documentação) viraram a aula 7.
 - O Docker saiu da UC4 e vai para a UC2 (DevOps). OWASP, CORS restrito e dado sensível em log, que
   eram da antiga aula de segurança, ficam como reforço na aula 9, se houver tempo.
@@ -278,7 +282,8 @@ arquivo mostra a árvore inteira antes da mão na massa e oferece o prompt de ca
 | 6 | `banco.py` (`engine`, `Sessao`, `Base`, `obter_sessao`) e `criar_tabelas.py` na raiz; `modelos/<recurso>.py` no singular, um para cada uma das três entidades, com o `__init__.py`; `URL_DO_BANCO` no `.env` e no `.env.exemplo`, e a chave no `configuracao.py` |
 | 7 | `alembic.ini` e `migracoes/` (com `env.py` e `versions/`), do `alembic init migracoes`; `servicos/excecoes.py`, com uma classe por motivo de recusa da regra |
 | 8 | `seguranca.py` na raiz (hash e token); `rotas/usuarios.py` e `rotas/autenticacao.py`; `esquemas/usuario.py` e `servicos/usuario.py`; `email` e `senha_hash` no modelo do usuário, por migration; `CHAVE_DO_TOKEN` no `.env` |
-| 9 em diante | definir ao criar a aula, no mesmo padrão |
+| 9 | nada novo no `backend/`. Na raiz do repositório, a pasta `.docs/` com `README.md`, `arquitetura.md`, `decisoes.md`, `proximos-passos.md` e `roadmap.md`, e o README de entrega |
+| 10 e 11 | nada novo no código. A `.docs/` ganha o `ia.md` (ficha, pedido e três testes) e o módulo de IA no `roadmap.md`; o `docs/BRIEFING.md` ganha as mudanças e a funcionalidade planejada |
 
 **Esquema e modelo não são sinônimos aqui.** Classe Pydantic é **esquema** e mora em `esquemas/`.
 A palavra **modelo** fica para a classe do SQLAlchemy, na aula 6. Não misture nos slides.
@@ -371,9 +376,9 @@ introduz. Consulte antes de escrever qualquer linha de código num slide.
 | 6 | **primeiro tempo:** modelagem curta e DER, `CREATE TABLE`, `INSERT` e `SELECT` com `mysql.connector` como a dor; SQLAlchemy 2 com `mysql+mysqlconnector`: `create_engine`, `sessionmaker`, `DeclarativeBase`, modelo com `Column`, tipos (`Integer`, `String(n)`, `Date`) e restrições (`primary_key`, `nullable`), `create_all` num `criar_tabelas.py`; no repositório, sessão aberta e fechada em cada função, `scalars(select())`, `get`, `add`, `commit`, `refresh`; objeto no lugar de dicionário (`registro.campo`). **Segundo tempo:** `with` e `yield`, sessão por requisição via `Depends`, CRUD completo (`delete` só na tabela de referência), transação num commit só, rollback por sessão fechada sem commit; `ForeignKey`, `relationship`, `join`, `where`, `order_by`, `limit`, `offset`, `Query(ge=)` |
 | 7 | **primeiro tempo:** migrations com Alembic (`init`, `env.py`, `revision --autogenerate`, `upgrade head`, `stamp head`), `ForeignKey` com `name=`. **Segundo tempo:** regras de domínio na camada de serviço, exceções de domínio → HTTP, documentação do contrato (`/docs` e README do projeto), gerada com IA e revisada pelo aluno |
 | 8 | **primeiro tempo:** hash e não criptografia, argon2 com `pwdlib`, sal, cadastro com `email` e `senha_hash` por migration, esquema de saída sem senha. **Segundo tempo:** JWT (`sub`, `exp`, assinatura `HS256`) com PyJWT, `CHAVE_DO_TOKEN` no `.env`, `datetime`/`timedelta`, `OAuth2PasswordRequestForm = Depends()`, `OAuth2PasswordBearer`, `obter_usuario_atual`, 401 e 403, o dono vindo do token, `exigir_<perfil>`, conferência do dono; no React, `URLSearchParams`, `localStorage`, cabeçalho `Authorization` e a tela escolhida pelo perfil *(08/10: prática e avaliação, sem slides)* |
-| 9 | o projeto da cartilha até aqui, reforço dos perfis, README e pasta `.docs/` gerados com IA, a IA anotando o que foi feito; convenções de estrutura de projeto, para reconhecer o que a IA gera |
-| 10 | volta ao briefing, planejamento de funcionalidade e roadmap com IA, integração com LLM (Gemini, chave gratuita do Google AI Studio), demonstração no exemplo do professor |
-| 11 | apresentação individual |
+| 9 | **primeiro tempo:** resumão do backend e o segundo tempo da aula 8, que não coube (JWT, `/login`, cadeado, perfis, login no React). **Segundo tempo:** README de entrega, `.docs/` como diário de obra, a IA lendo a `.docs/` antes e anotando depois, convenção por camada e por assunto, para reconhecer o que a IA gera |
+| 10 | sem código: oportunidades no briefing para uma funcionalidade com agente ou multiagentes via API, condução da conversa, papéis e ferramentas dos agentes, instruções testadas em três casos, briefing atualizado e integração planejada no roadmap ao final |
+| 11 | revisão contra a lista de entrega, tempo de ajustes, apresentação individual de até 10 minutos |
 
 Docker não entra na UC4: vai para a UC2. Não use em slide nem em `regras`.
 

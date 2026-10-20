@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 10 · Da ideia ao plano com IA · UC4</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-aula="10">
+<div class="palco">
+
+<!-- 1 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC4 · Back-end de Projetos Web · Aula 10</p>
+    <h1>Da ideia ao plano com IA</h1>
+    <p class="sub">Vamos usar o briefing para encontrar uma funcionalidade com agentes de IA. Depois, definir a integração, atualizar o briefing e incluir o plano no roadmap.</p>
+  </div>
+  <div class="rodape"><span>Ciclo 5 · A entrega</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Para começar</p>
+    <h2>O pedido está claro para você?</h2>
+    <div class="comparacao">
+      <div class="lado ruim"><div class="rotulo">Pedido vago</div><div class="codigo compacto"><pre>Adicione IA ao meu sistema de tarefas.</pre></div></div>
+      <div class="lado bom"><div class="rotulo">Uma conversa para começar</div><div class="codigo compacto"><pre>Leia meu briefing e encontre oportunidades
+para integrar um agente de IA ao sistema.
+Que problema ele resolveria e para quem?
+Discuta comigo antes de propor código.</pre></div></div>
+    </div>
+    <p class="dica">Teste os dois pedidos no projeto do professor. Compare o que a IA entendeu sobre o problema e o usuário.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Na prática · 1 de 5</p>
+    <h2>Explore o briefing com a IA</h2>
+    <ol class="passos">
+      <li>Baixe as regras abaixo e salve como <code>REGRAS.md</code> na raiz do seu projeto.</li>
+      <li>Abra o repositório no assistente. Cole o prompt de discussão pelo botão abaixo.</li>
+      <li>Peça que a IA aponte problemas do briefing que um agente poderia ajudar a resolver.</li>
+      <li>Discuta duas ou três opções de integração. Escolha uma e explique o benefício para o usuário.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-10-ideias.md">copiar o prompt de discussão</button>
+      <a class="btn" href="../prompts/aula-10-regras.md" download="REGRAS_AULA10.md">baixar o REGRAS_AULA10.md</a>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Como conduzir a conversa</p>
+    <h2>Não aceite a primeira proposta sem discutir</h2>
+    <table>
+      <thead><tr><th>Se a resposta...</th><th>Continue com...</th></tr></thead>
+      <tbody>
+        <tr><td>ficou genérica</td><td class="neutro">Que parte do briefing justifica esse agente? Mostre um exemplo de uso.</td></tr>
+        <tr><td>ficou grande demais</td><td class="neutro">Um agente resolve? O que justifica usar vários?</td></tr>
+        <tr><td>inventou uma regra</td><td class="neutro">Onde isso está na cartilha? Pergunte antes de assumir.</td></tr>
+        <tr><td>parece boa</td><td class="neutro">O que acontece se a IA errar ou não responder?</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Peça que a IA desenhe o caminho: o que o usuário faz, o que o agente consulta e o que volta para a tela.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Planejando a funcionalidade</p>
+    <h2>Um agente ou mais de um?</h2>
+    <p class="intro">Um agente usa um modelo de IA para realizar uma tarefa e pode consultar ferramentas do sistema.</p>
+    <table>
+      <thead><tr><th>No exemplo do professor</th><th>Como poderia funcionar</th></tr></thead>
+      <tbody>
+        <tr><td>Um agente</td><td class="neutro">consulta a tarefa e os itens existentes para sugerir o checklist</td></tr>
+        <tr><td>Multiagentes</td><td class="neutro">um propõe as etapas; outro revisa e aponta lacunas para o executor</td></tr>
+        <tr><td>Integração</td><td class="neutro">o backend chama a API de Claude, Gemini, OpenAI ou outro provedor</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Discuta se separar os papéis traz benefício. No exemplo, o executor continua conferindo as sugestões antes de gravar.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Na prática · 2 de 5</p>
+    <h2>Agora, construa o prompt com a IA</h2>
+    <ol class="passos">
+      <li>Na mesma conversa do assistente, cole o prompt de construção pelo botão abaixo.</li>
+      <li>Confira se o rascunho explica o contexto, a tarefa, o formato e os limites da resposta.</li>
+      <li>Peça ajustes: o que ficou vago? Que informação falta para a IA responder?</li>
+      <li>Guarde a versão revisada em <code>.docs/ia.md</code>. Ela será usada no teste do próximo passo.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-10-prompt.md">copiar o prompt de construção</button>
+    </div>
+    <p class="dica">Defina o papel do agente, os dados que recebe, as ferramentas que pode usar e quando precisa pedir confirmação.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Exemplo do professor</p>
+    <h2>O que o botão pediria à IA?</h2>
+    <p class="intro">O executor clica em “sugerir etapas”. O backend envia a descrição da tarefa à IA e mostra as sugestões para ele conferir.</p>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo de instrução que o backend enviaria ao provedor de IA</div>
+      <pre>Sugira de 3 a 6 etapas para o checklist desta tarefa.
+Responda com uma etapa por linha, começando com um verbo.
+Se faltar informação, peça mais detalhes em vez de inventar.
+Tarefa: Trocar o toner da impressora que está imprimindo falhado.</pre>
+    </div>
+    <p class="dica">Hoje, cole esse pedido num chat para avaliar as sugestões. A chamada pelo backend e o botão entram no roadmap.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Na prática · 3 de 5</p>
+    <h2>Teste e ajuste o pedido</h2>
+    <ol class="passos">
+      <li>Abra Claude, Gemini ou ChatGPT. Teste as instruções com dados fictícios de uma situação da cartilha.</li>
+      <li>Teste uma entrada vaga e outra fora do assunto. Confira se a IA respeita os limites.</li>
+      <li>Volte ao assistente com as respostas. Diga o que não serviu e peça um ajuste no prompt.</li>
+      <li>Teste de novo. Registre os três casos, os resultados e o prompt final em <code>.docs/ia.md</code>.</li>
+    </ol>
+    <p class="dica">Use dados fictícios. Se uma resposta estiver errada, explique o erro ao assistente em vez de pedir apenas para melhorar.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Na prática · 4 de 5</p>
+    <h2>Atualize o briefing com a decisão</h2>
+    <ol class="passos">
+      <li>Na conversa do assistente, cole o prompt do briefing pelo botão abaixo.</li>
+      <li>Confira as diferenças entre o briefing e o sistema atual. Explique por que o projeto mudou.</li>
+      <li>Revise a proposta: benefício, papel de cada agente, dados acessados, provedor e limites.</li>
+      <li>Responda <code>pode seguir</code>. Confira as seções novas em <code>docs/BRIEFING.md</code>, com a ideia marcada como planejada.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-10-briefing.md">copiar o prompt do briefing</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Na prática · 5 de 5</p>
+    <h2>Por último, coloque no roadmap</h2>
+    <ol class="passos">
+      <li>Cole o prompt do roadmap no assistente. Ele usa o briefing e o <code>.docs/ia.md</code> para propor as tarefas.</li>
+      <li>Confira o MVP: a menor versão que ajuda o usuário. Deixe as melhorias para depois.</li>
+      <li>Inclua a chamada à API, as ferramentas dos agentes, a revisão humana e como testar as falhas.</li>
+      <li>Responda <code>pode seguir</code>. Confira o plano em <code>.docs/roadmap.md</code> e faça o commit dos documentos.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/aula-10-roadmap.md">copiar o prompt do roadmap</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Entrega da aula 10</p>
+    <h2>O que você vai apresentar</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">A funcionalidade com IA: benefício para o usuário e por que usar um agente ou vários.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">O <code>.docs/ia.md</code> com o fluxo dos agentes, a integração proposta, as instruções e os três testes.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">O <code>docs/BRIEFING.md</code> atualizado, com a funcionalidade descrita como planejada.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O <code>.docs/roadmap.md</code> com o MVP e as próximas tarefas. O módulo fica para implementar depois.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Para fechar</p>
+    <h2>Você consegue explicar o plano?</h2>
+    <ul class="recap">
+      <li>Que problema do briefing a integração com IA resolve?</li>
+      <li>Qual é o papel de cada agente? Por que essa divisão?</li>
+      <li>Como o backend usa o provedor e as ferramentas planejadas?</li>
+      <li>O briefing deixa claro o que existe e o que está planejado?</li>
+      <li>Qual é a primeira tarefa do roadmap?</li>
+    </ul>
+    <p class="proximo"><b>Próximo encontro:</b> ajustes finais e apresentação individual do projeto.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
