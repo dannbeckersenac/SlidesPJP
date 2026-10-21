@@ -1,0 +1,242 @@
+/* =========================================================
+   Hackathon Jovem Programador 2026
+   Folha da página do regulamento
+
+   A barra do topo, a capa, o tema e o rodapé vêm de
+   ../assets/css/navegacao.css, comum às páginas de navegação.
+   As cores próprias saem do logo do evento.
+
+   Sumário
+   1. Tokens
+   2. Capa
+   3. Seções e cartões
+   4. Inscrições
+   5. A semana
+   6. Entregas e regras
+   7. Nota e exemplo
+   8. Final e letras miúdas
+   9. PDF
+   10. Animação, responsivo e impressão
+   ========================================================= */
+
+/* ---------- 1. Tokens ---------- */
+:root{
+  --hk-roxo:#A78BFA;
+  --hk-violeta:#7B2FF7;
+  --hk-magenta:#E05CC0;
+  --hk-rosa:#F2708F;
+  --hk-fundo:#1E0745;
+  --hk-ok:#3DDC97;
+  --hk-gradiente:linear-gradient(100deg,var(--hk-violeta),var(--hk-magenta) 60%,var(--hk-rosa));
+  --bg:
+    radial-gradient(1000px 600px at 85% -10%, rgba(123,47,247,.24), transparent 60%),
+    radial-gradient(800px 520px at 0% 10%, rgba(224,92,192,.10), transparent 60%),
+    #080D19;
+}
+[data-tema="claro"]{
+  --hk-roxo:#6B2BD9;
+  --hk-violeta:#6514EC;
+  --hk-magenta:#B02D92;
+  --hk-rosa:#C9345E;
+  --hk-ok:#0A8F60;
+  --bg:
+    radial-gradient(1000px 600px at 85% -10%, rgba(101,20,236,.12), transparent 60%),
+    radial-gradient(800px 520px at 0% 10%, rgba(176,45,146,.07), transparent 60%),
+    #F6F8FC;
+}
+a{color:var(--hk-roxo)}
+
+/* ---------- 2. Capa ---------- */
+.hk-hero h1 em{
+  color:transparent;background:var(--hk-gradiente);
+  -webkit-background-clip:text;background-clip:text;
+}
+.hk-hero-grade{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:40px;align-items:center}
+.hk-hero .lede{max-width:52ch}
+.hk-hero .stats{margin-top:34px}
+.hk-hero .stats b{white-space:nowrap}
+
+.hk-logo{
+  position:relative;border-radius:22px;padding:42px 34px;
+  background:
+    radial-gradient(120% 90% at 50% 40%, #3A0E86 0%, var(--hk-fundo) 70%);
+  border:1px solid rgba(167,139,250,.35);
+  box-shadow:0 30px 70px rgba(43,11,94,.45);
+  overflow:hidden;isolation:isolate;
+}
+.hk-logo::before{
+  content:"";position:absolute;inset:-40%;z-index:-1;
+  background:conic-gradient(from 0deg,transparent 0 60%,rgba(242,112,143,.35) 72%,transparent 84%);
+  animation:hk-giro 9s linear infinite;
+}
+.hk-logo img{display:block;width:100%;height:auto;animation:hk-flutua 6s ease-in-out infinite}
+@keyframes hk-giro{to{transform:rotate(360deg)}}
+@keyframes hk-flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.btn-sec{
+  display:inline-flex;align-items:center;gap:10px;
+  font:600 14.5px/1 var(--corpo);text-decoration:none;
+  color:var(--texto);background:var(--painel);border:1px solid var(--linha-2);
+  border-radius:12px;padding:13px 18px;cursor:pointer;
+  transition:transform .16s,border-color .16s,background .16s;
+}
+.btn-sec:hover{transform:translateY(-2px);border-color:var(--hk-roxo);background:var(--painel-2)}
+.btn-sec svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hk-hero .btn-principal{background:var(--hk-gradiente);border-color:transparent;color:#fff}
+
+/* ---------- 3. Seções e cartões ---------- */
+.hk-sec{padding:52px 0 0;scroll-margin-top:80px}
+.hk-sec h3{font-family:var(--display);font-weight:500;font-size:17px;letter-spacing:-.01em;margin:0 0 6px;line-height:1.25}
+.hk-nota{margin:16px 0 0;color:var(--suave);font-size:14px;max-width:80ch}
+
+.hk-cartoes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.hk-cartao{border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);padding:20px 18px}
+.hk-cartao p{margin:0;color:var(--suave);font-size:14px}
+.hk-ic{
+  display:inline-flex;width:40px;height:40px;border-radius:11px;margin-bottom:14px;
+  align-items:center;justify-content:center;background:var(--hk-gradiente);color:#fff;
+}
+.hk-ic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- 4. Inscrições ---------- */
+.hk-linha{
+  list-style:none;margin:0;padding:22px 18px 18px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;
+  border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);
+}
+.hk-linha::before{
+  content:"";position:absolute;left:30px;right:30px;top:30px;height:2px;
+  background:linear-gradient(90deg,var(--hk-violeta),var(--hk-rosa));opacity:.45;
+}
+.hk-marco{position:relative;padding-top:26px;display:flex;flex-direction:column;gap:3px}
+.hk-marco .pt{
+  position:absolute;top:0;left:4px;width:18px;height:18px;border-radius:50%;
+  background:var(--ink);border:2px solid var(--linha-2);
+}
+.hk-marco.feito .pt{background:var(--hk-roxo);border-color:var(--hk-roxo)}
+.hk-marco.agora .pt{background:var(--hk-rosa);border-color:var(--hk-rosa);box-shadow:0 0 0 6px color-mix(in srgb,var(--hk-rosa) 25%,transparent);animation:hk-pulso 1.8s ease-in-out infinite}
+@keyframes hk-pulso{50%{box-shadow:0 0 0 11px color-mix(in srgb,var(--hk-rosa) 0%,transparent)}}
+.hk-marco time{font:700 20px/1.1 var(--display);letter-spacing:-.02em}
+.hk-marco time small{font:400 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--suave-2);margin-left:4px}
+.hk-marco.agora time small{color:var(--hk-rosa);font-weight:700}
+.hk-marco b{font-weight:600;font-size:15px}
+.hk-marco > span:last-child{color:var(--suave);font-size:13.4px}
+
+/* ---------- 5. A semana ---------- */
+.hk-legenda{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:12.5px;color:var(--suave)}
+.hk-legenda span{display:inline-flex;align-items:center;gap:7px}
+.hk-legenda i{width:11px;height:11px;border-radius:3px;display:block}
+.hk-legenda i.aovivo,.hk-dia li.aovivo{--c:var(--hk-roxo)}
+.hk-legenda i.entrega,.hk-dia li.entrega{--c:var(--hk-rosa)}
+.hk-legenda i.final,.hk-dia li.final{--c:#F5B83D}
+[data-tema="claro"] .hk-legenda i.final,[data-tema="claro"] .hk-dia li.final{--c:#A96B00}
+.hk-legenda i{background:var(--c)}
+
+.hk-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.hk-dia{border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);padding:14px 12px;min-width:0}
+.hk-dia header{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--linha)}
+.hk-dia header b{font:700 21px/1 var(--display);letter-spacing:-.02em}
+.hk-dia header span{font:400 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--suave-2)}
+.hk-dia ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.hk-dia li{border-left:3px solid var(--c);padding:2px 0 2px 9px;font-size:13.2px;line-height:1.38}
+.hk-dia li time{display:block;font:700 11px/1.5 var(--mono);color:var(--c)}
+.hk-dia.hoje{border-color:var(--hk-rosa);box-shadow:0 0 0 1px var(--hk-rosa)}
+.hk-dia.passou{opacity:.55}
+
+/* ---------- 6. Entregas e regras ---------- */
+.hk-entregas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.hk-entrega{position:relative;border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);padding:18px 16px 16px;overflow:hidden}
+.hk-entrega::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--hk-gradiente)}
+.hk-entrega .num{
+  display:inline-block;font:700 13px/1 var(--mono);padding:7px 9px;border-radius:8px;
+  background:color-mix(in srgb,var(--hk-violeta) 22%,transparent);color:var(--hk-roxo);margin-bottom:12px;
+}
+.hk-entrega time{display:block;font:400 11.5px/1.4 var(--mono);color:var(--suave-2);margin-bottom:6px}
+.hk-entrega h3{font-size:16px}
+.hk-entrega p{margin:8px 0 0;font-size:12.8px;color:var(--suave)}
+.hk-entrega.dura .num{background:color-mix(in srgb,var(--hk-rosa) 22%,transparent);color:var(--hk-rosa)}
+
+.hk-regras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.hk-regra{border:1px dashed var(--linha-2);border-radius:var(--r);padding:18px}
+.hk-regra p{margin:0;color:var(--suave);font-size:14px}
+.hk-regra p b{color:var(--texto)}
+.hk-arquivo{
+  display:inline-block;margin-top:12px;font:700 14px/1 var(--mono);
+  padding:10px 12px;border-radius:9px;background:var(--painel-2);border:1px solid var(--linha);color:var(--texto);
+}
+
+/* ---------- 7. Nota e exemplo ---------- */
+.hk-nota-grade{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;align-items:start}
+.hk-criterios{list-style:none;margin:0;padding:6px 18px;border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);counter-reset:crit}
+.hk-criterios li{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--linha);counter-increment:crit}
+.hk-criterios li > div{display:flex;flex-direction:column}
+.hk-criterios li > div b::before{content:counter(crit) ". ";color:var(--hk-roxo);font-family:var(--mono)}
+.hk-criterios li > div span{color:var(--suave);font-size:13.4px}
+.hk-criterios li.total{border-bottom:0}
+.hk-criterios li.total > div b::before{content:none}
+.hk-criterios li.total strong{font:700 30px/1 var(--display);color:transparent;background:var(--hk-gradiente);-webkit-background-clip:text;background-clip:text}
+.escala{display:flex;gap:4px;flex:none}
+.escala i{width:14px;height:22px;border-radius:4px;background:var(--hk-gradiente);opacity:.85}
+
+.hk-conta{border:1px solid color-mix(in srgb,var(--hk-rosa) 45%,transparent);background:color-mix(in srgb,var(--hk-rosa) 7%,transparent);border-radius:var(--r);padding:20px}
+.hk-conta p{margin:0;color:var(--suave);font-size:14px}
+.hk-conta p b{color:var(--texto)}
+.hk-exemplo{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.hk-exemplo > div{display:flex;flex-direction:column;align-items:center;text-align:center}
+.hk-exemplo b{font:700 40px/1 var(--display);letter-spacing:-.03em}
+.hk-exemplo span{font:400 10.5px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--suave-2);max-width:16ch;margin-top:6px}
+.hk-exemplo .op{font:500 30px/1 var(--display);color:var(--suave-2)}
+.hk-exemplo .neg b{color:var(--hk-rosa)}
+.hk-exemplo .res b{color:var(--hk-ok)}
+
+/* ---------- 8. Final e letras miúdas ---------- */
+.hk-final{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hk-final li{display:flex;gap:14px;border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);padding:18px}
+.hk-final time{font:700 15px/1.2 var(--mono);color:#F5B83D;min-width:58px;flex:none}
+[data-tema="claro"] .hk-final time{color:#A96B00}
+.hk-final b{display:block;font-family:var(--display);font-weight:500;font-size:17px;margin-bottom:4px}
+.hk-final span{color:var(--suave);font-size:14px}
+
+.hk-miudas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px}
+.hk-miudas li{font-size:14.4px;color:var(--suave);padding:10px 0 10px 16px;border-bottom:1px solid var(--linha);position:relative}
+.hk-miudas li::before{content:"";position:absolute;left:0;top:18px;width:6px;height:6px;border-radius:2px;background:var(--hk-gradiente)}
+.hk-miudas b{color:var(--texto);font-weight:600}
+
+/* ---------- 9. PDF ---------- */
+.hk-pdf-acoes{display:flex;gap:10px;flex-wrap:wrap}
+.hk-pdf{border:1px solid var(--linha);border-radius:var(--r);overflow:hidden;background:var(--painel)}
+.hk-pdf object{display:block;width:100%;height:min(88vh,1100px);border:0}
+.hk-pdf-falha{padding:24px;margin:0;color:var(--suave)}
+
+/* ---------- 10. Animação, responsivo e impressão ---------- */
+/* as seções entram de baixo quando chegam na tela; a classe hk-anima só existe com JS */
+.hk-anima .hk-sec .wrap > *{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.hk-anima .hk-sec.visivel .wrap > *{opacity:1;transform:none}
+.hk-anima .hk-sec.visivel .wrap > *:nth-child(2){transition-delay:.08s}
+.hk-anima .hk-sec.visivel .wrap > *:nth-child(3){transition-delay:.16s}
+.hk-anima .hk-sec.visivel .wrap > *:nth-child(4){transition-delay:.24s}
+
+@media (max-width:1100px){
+  .hk-semana{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .hk-entregas{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .hk-hero-grade{grid-template-columns:1fr;gap:26px}
+  .hk-logo{max-width:440px;padding:28px 24px}
+  .hk-linha{grid-template-columns:1fr 1fr}
+  .hk-linha::before{display:none}
+  .hk-nota-grade,.hk-final,.hk-regras{grid-template-columns:1fr}
+  .hk-miudas{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .hk-semana{grid-template-columns:1fr 1fr}
+  .hk-entregas{grid-template-columns:1fr}
+  .hk-linha{grid-template-columns:1fr}
+  .btn-sec{width:100%;justify-content:center}
+  .abas a{padding:0 8px}
+}
+@media print{
+  .hk-pdf,.hk-pdf-acoes,.hk-logo::before{display:none}
+  .hk-anima .hk-sec .wrap > *{opacity:1;transform:none}
+  .hk-dia,.hk-entrega,.hk-cartao,.hk-regra{break-inside:avoid}
+}

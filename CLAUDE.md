@@ -434,12 +434,13 @@ aulas/aula-NN.html      uma página por aula
 prompts/aula-NN-*.md    prompts e regras que a turma copia ou baixa do slide
 docente/                fora do Git: as cartilhas e a página de sorteio, só na máquina do professor
 cronograma/             o calendário do ano inteiro, das seis UCs, página à parte
+hackathon/              o hackathon do fim do ano: página do regulamento, apresentação e o PDF
 ```
 
-**O índice e o cronograma são as duas páginas de navegação** e dividem o mesmo cabeçalho: a barra
-do topo (marca, as abas `Slides da UC4` e `Cronograma do ano`, botão de tema), a capa e o rodapé
-vêm de `navegacao.css`, e o tema claro/escuro de `tema.js`. A linha de cima da barra é o mesmo HTML
-nas duas páginas: mexeu numa, mexa na outra. O que é só do cronograma (filtros, calendário) fica em
+**O índice, o cronograma e a página do hackathon são as páginas de navegação** e dividem o mesmo
+cabeçalho: a barra do topo (marca, as abas `Slides da UC4`, `Cronograma do ano` e `Hackathon`, botão
+de tema), a capa e o rodapé vêm de `navegacao.css`, e o tema claro/escuro de `tema.js`. A linha de
+cima da barra é o mesmo HTML nas três páginas: mexeu numa, mexa nas outras. O que é só do cronograma (filtros, calendário) fica em
 `cronograma/estilos.css`; o que é só do índice fica no `<style>` do `index.html`.
 
 Essas duas páginas seguem o visual do cronograma (Space Grotesk, IBM Plex Sans), não o dos slides.
@@ -450,6 +451,12 @@ navegação leem dali e formatam para `09/09` na tela. Nunca escreva data dentro
 
 O calendário do ano tem a sua própria fonte, `cronograma/dados.js`, que cobre as seis unidades.
 As duas listas precisam bater: mexeu numa data da UC4 num arquivo, mexa no outro.
+
+**O hackathon** (`hackathon/`) não é aula da UC4 e fica fora do ledger. É um evento do programa, em
+equipes de 4 a 7, e por isso "equipe" vale ali. A agenda, as entregas e os prazos do regulamento vivem
+em `hackathon/dados.js`, que a página `hackathon/index.html` e a seção do hackathon no cronograma leem.
+A apresentação (`hackathon/apresentacao.html`) tem o texto à mão e usa a identidade do evento, com as
+cores do logo, em vez do template das aulas: mudou o regulamento, confira as duas.
 
 **Aula extra** é uma página paralela a uma aula do curso, sem número próprio e fora do ledger: a
 primeira é `aulas/extra-paseo.html`, de 28/09, que monta o ambiente de agentes com o Paseo. Ela vive

@@ -12,6 +12,7 @@
    7. Calendário
    8. Marcos
    9. Barra de detalhe
+   10. Seção do hackathon
    ========================================================= */
 
 /* ---------- 1. Preparo dos dados ---------- */
@@ -61,6 +62,16 @@ const notaPorData = Object.fromEntries(
     return [`${ANO}-${dia}`, texto];
   })
 );
+
+/* hackathon: a agenda de cada dia e os prazos de inscrição vêm de
+   ../hackathon/dados.js; sem aquele arquivo, o cronograma segue sem eles */
+const HK = window.HACKATHON || null;
+const hackPorData = {};
+const prazoHack = {};
+if (HK) {
+  HK.agenda.forEach(e => (hackPorData[e.data] = hackPorData[e.data] || []).push(e));
+  HK.inscricoes.forEach(m => (prazoHack[m.data] = m));
+}
 
 /* data de hoje no fuso local, sem passar por UTC */
 const agora = new Date();
@@ -285,9 +296,16 @@ for (let m = MES_INICIAL; m <= MES_FINAL; m++) {
       cel.setAttribute("aria-label", `${d} de ${MESES[m - 1]}: ${pausa.nome}`);
     }
 
+    const prazo = prazoHack[iso];
+    if (prazo) {
+      cel.classList.add("prazo-hk");
+      cel.setAttribute("aria-label",
+        (cel.getAttribute("aria-label") || `${d} de ${MESES[m - 1]}`) + `, hackathon: ${prazo.titulo}`);
+    }
+
     if (iso === hojeISO) cel.classList.add("hoje");
 
-    if (aula || pausa) {
+    if (aula || pausa || prazo) {
       cel.tabIndex = 0;
       cel.setAttribute("role", "button");
       cel.addEventListener("click", () => selecionar(iso));
@@ -335,6 +353,14 @@ cartaoMarcos("Começo de cada unidade", Object.keys(UC).map(chave => {
   };
 }));
 
+if (HK) {
+  cartaoMarcos("Hackathon", HK.inscricoes.map(m => ({
+    data: diaMes(m.data), titulo: m.titulo
+  })).concat(HK.entregas.map(e => ({
+    data: diaMes(e.data), uc: "hack", titulo: `Entrega ${e.n}`, sub: `até ${e.hora}`
+  }))));
+}
+
 cartaoMarcos("Feriados e pausas", pausas.map(p => ({
   data: diaMes(p.data), titulo: p.nome, sub: p.tipo === "evento" ? "turma em evento" : ""
 })));
@@ -370,6 +396,11 @@ function selecionar(iso, opcoes = {}) {
     dTitulo.textContent = visita.local;
     dSub.textContent =
       `${UC[aula.uc].sigla} ${aula.n} de ${UC[aula.uc].total} · 4 horas · ${visita.nota}`;
+  } else if (aula && aula.uc === "hack") {
+    detalhe.style.setProperty("--c", "var(--hack)");
+    dTitulo.textContent = `${UC.hack.nome} · dia ${aula.n} de ${UC.hack.total}`;
+    dSub.textContent = "On-line, pelo Teams" + (hackPorData[iso] || [])
+      .map(e => ` · ${e.hora}: ${e.titulo.charAt(0).toLowerCase() + e.titulo.slice(1)}`).join("");
   } else if (aula) {
     detalhe.style.setProperty("--c", `var(--${aula.uc})`);
     dTitulo.textContent = UC[aula.uc].nome;
@@ -381,8 +412,17 @@ function selecionar(iso, opcoes = {}) {
     detalhe.style.setProperty("--c", "var(--suave)");
     dTitulo.textContent = pausa.nome;
     dSub.textContent = pausa.tipo === "evento" ? "Sem aula: turma em evento" : "Sem aula";
+  } else if (prazoHack[iso]) {
+    detalhe.style.setProperty("--c", "var(--hack)");
+    dTitulo.textContent = "Hackathon";
+    dSub.textContent = "Sem aula";
   } else {
     return;
+  }
+
+  /* dia de aula que também é prazo do hackathon: o prazo vai junto */
+  if (prazoHack[iso]) {
+    dSub.textContent += ` · Hackathon: ${prazoHack[iso].titulo.toLowerCase()}, ${prazoHack[iso].sub}`;
   }
 
   detalhe.classList.add("aberto");
@@ -404,3 +444,25 @@ document.addEventListener("keydown", e => {
 
 /* ao abrir a página, se hoje for dia de aula, já mostra o detalhe sem rolar a tela */
 if (aulaHoje) selecionar(hojeISO);
+
+/* ---------- 10. Seção do hackathon ---------- */
+
+/* uma faixa com os dias do evento; o detalhe de cada um abre no calendário */
+const hackDias = document.getElementById("hackDias");
+if (HK && hackDias) {
+  hackDias.innerHTML = Object.keys(hackPorData).sort().map(iso => {
+    const itens = hackPorData[iso];
+    const tipos = [...new Set(itens.map(e => e.tipo))];
+    return `<li class="${iso === hojeISO ? "hoje" : iso < hojeISO ? "passou" : ""}">
+      <button type="button" data-data="${iso}">
+        <b>${diaMes(iso)}</b>
+        <span>${DOW[(new Date(ANO, +iso.slice(5, 7) - 1, +iso.slice(8)).getDay() + 6) % 7]}</span>
+        <i>${tipos.map(t => `<em class="${t}"></em>`).join("")}</i>
+        <small>${itens.length} ${itens.length === 1 ? "item" : "itens"}</small>
+      </button></li>`;
+  }).join("");
+  hackDias.addEventListener("click", e => {
+    const b = e.target.closest("button[data-data]");
+    if (b) selecionar(b.dataset.data, { rolar: true, piscar: true });
+  });
+}

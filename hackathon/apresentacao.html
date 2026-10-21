@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hackathon Jovem Programador 2026 · Como vai funcionar</title>
+<meta name="description" content="Apresentação do regulamento do Hackathon Jovem Programador 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="apresentacao.css">
+</head>
+<body>
+
+<!-- fundo animado, atrás de todos os slides -->
+<div class="fundo" aria-hidden="true">
+  <span class="bolha b1"></span><span class="bolha b2"></span><span class="bolha b3"></span>
+  <span class="grade"></span>
+  <svg class="seta s1" viewBox="0 0 60 100"><path d="M50 10 L14 50 L50 90"/></svg>
+  <svg class="seta s2" viewBox="0 0 60 100"><path d="M10 10 L46 50 L10 90"/></svg>
+</div>
+
+<div class="progresso" aria-hidden="true"><i id="progresso"></i></div>
+
+<main class="deck" id="deck">
+
+  <!-- ===================== 1. capa ===================== -->
+  <section class="slide capa" data-titulo="Capa">
+    <div class="capa-logo a zoom" style="--i:0"><img src="logo-hackathon-2026.png" alt="Hackathon Jovem Programador 2026"></div>
+    <p class="capa-sub a" style="--i:2">Como vai funcionar</p>
+    <ul class="pilulas a" style="--i:3">
+      <li>28/11 a 05/12</li>
+      <li>on-line, pelo Teams</li>
+      <li>equipes de 4 a 7</li>
+    </ul>
+    <p class="capa-conta a" style="--i:4" id="contagem">faltam alguns dias para a abertura</p>
+    <p class="capa-rodape a" style="--i:5">Senac Santa Catarina · SEPROSC · Programa Jovem Programador 2026</p>
+  </section>
+
+  <!-- ===================== 2. o que é ===================== -->
+  <section class="slide" data-titulo="O que é">
+    <p class="olho a" style="--i:0">O evento</p>
+    <h2 class="a" style="--i:1">O que vocês vão<br><em>fazer no hackathon</em></h2>
+    <p class="intro a" style="--i:2">Vocês desenvolvem uma solução para os problemas apresentados no evento. As entregas incluem a validação do problema, o MVP e o pitch.</p>
+    <div class="cartoes c3">
+      <div class="card a" style="--i:3">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></span>
+        <b>Facultativo</b>
+        <span>Atividade extracurricular. Participa quem quiser, estando matriculado.</span>
+      </div>
+      <div class="card a" style="--i:4">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M20 12l-8 8-9-9V4h7z"/><circle cx="7.5" cy="7.5" r="1.4"/></svg></span>
+        <b>Gratuito</b>
+        <span>A inscrição não custa nada. Inscrever é aceitar o regulamento.</span>
+      </div>
+      <div class="card a" style="--i:5">
+        <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+        <b>100% on-line</b>
+        <span>Tudo acontece no Microsoft Teams. A final passa também no YouTube.</span>
+      </div>
+    </div>
+    <p class="rodape-txt a" style="--i:6">O evento também trabalha a gestão do tempo e a pesquisa em equipe a distância.</p>
+  </section>
+
+  <!-- ===================== 3. números ===================== -->
+  <section class="slide" data-titulo="Em números">
+    <p class="olho a" style="--i:0">Em números</p>
+    <h2 class="a" style="--i:1">Equipe, oficinas e avaliação</h2>
+    <div class="numeros">
+      <div class="num a zoom" style="--i:2"><b><span data-contar="4">4</span> a <span data-contar="7">7</span></b><span>pessoas por equipe</span></div>
+      <div class="num a zoom" style="--i:3"><b data-contar="4">4</b><span>oficinas ao vivo</span></div>
+      <div class="num a zoom" style="--i:4"><b data-contar="5">5</b><span>entregas obrigatórias</span></div>
+      <div class="num a zoom" style="--i:5"><b data-contar="25">25</b><span>pontos possíveis</span></div>
+      <div class="num a zoom" style="--i:6"><b data-contar="10">10</b><span>equipes na final</span></div>
+      <div class="num a zoom" style="--i:7"><b><span data-contar="3">3</span> min</b><span>de pitch</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. equipe ===================== -->
+  <section class="slide" data-titulo="A equipe">
+    <p class="olho a" style="--i:0">Antes de tudo</p>
+    <h2 class="a" style="--i:1">Montem a equipe de vocês</h2>
+    <div class="pessoas a" style="--i:2" aria-label="de 4 a 7 pessoas">
+      <span class="p cheia" style="--k:0"></span><span class="p cheia" style="--k:1"></span>
+      <span class="p cheia" style="--k:2"></span><span class="p cheia" style="--k:3"></span>
+      <span class="p vaga" style="--k:4"></span><span class="p vaga" style="--k:5"></span>
+      <span class="p vaga" style="--k:6"></span>
+      <div class="pessoas-rot"><span class="min">mínimo 4</span><span class="max">até 7</span></div>
+    </div>
+    <ul class="lista">
+      <li class="a" style="--i:4"><b>A inscrição é da equipe</b>, de 4 a 7 pessoas, e só pelo site do evento.</li>
+      <li class="a" style="--i:5"><b>Dá para trocar integrantes</b>, desde que a equipe continue entre 4 e 7.</li>
+      <li class="a" style="--i:6"><b>A troca é avisada pelo mentor-anjo</b> da unidade, até 25/11.</li>
+      <li class="a" style="--i:7"><b>Troca depois do prazo</b>, ou equipe fora do limite, fica para a comissão organizadora avaliar.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== 5. inscrições ===================== -->
+  <section class="slide" data-titulo="Inscrições">
+    <p class="olho a" style="--i:0">Inscrições</p>
+    <h2 class="a" style="--i:1">Inscrições de 20/10 a 19/11</h2>
+    <div class="trilho a" style="--i:2" id="trilhoInscricoes">
+      <div class="trilho-linha"><i></i></div>
+      <span class="aqui" id="aqui"><b>hoje</b></span>
+      <ol>
+        <li data-data="2026-10-20"><time>20/10</time><b>Abrem</b><span>as inscrições</span></li>
+        <li data-data="2026-11-19"><time>19/11</time><b>Fecham</b><span>último dia para inscrever a equipe</span></li>
+        <li data-data="2026-11-25"><time>25/11</time><b>Troca</b><span>prazo para o mentor-anjo avisar a troca</span></li>
+        <li data-data="2026-11-26"><time>26/11</time><b>Análise</b><span>comissão e mentores-anjo</span></li>
+      </ol>
+    </div>
+    <a class="link-grande a" style="--i:4" href="https://www.jovemprogramador.com.br/hackathon" target="_blank" rel="noopener">
+      <span>inscrição só aqui</span>
+      jovemprogramador.com.br/hackathon
+    </a>
+  </section>
+
+  <!-- ===================== 6. a semana ===================== -->
+  <section class="slide" data-titulo="A semana">
+    <p class="olho a" style="--i:0">28/11 a 05/12</p>
+    <h2 class="a" style="--i:1">A semana do hackathon</h2>
+    <div class="semana">
+      <div class="dia a" style="--i:2"><header><b>28</b><span>sáb · nov</span></header>
+        <i class="v">09h abertura</i><i class="v">14h desafios</i><i class="v">15h oficina Design Thinking</i></div>
+      <div class="dia a" style="--i:3"><header><b>30</b><span>seg · nov</span></header>
+        <i class="e">19h25 entrega 1</i><i class="v">19h30 oficina validação</i></div>
+      <div class="dia a" style="--i:4"><header><b>01</b><span>ter · dez</span></header>
+        <i class="e">19h25 entrega 2</i><i class="v">19h30 oficina MVP</i></div>
+      <div class="dia a" style="--i:5"><header><b>02</b><span>qua · dez</span></header>
+        <i class="e">19h25 entrega 3</i><i class="v">19h30 oficina pitch</i></div>
+      <div class="dia a" style="--i:6"><header><b>03</b><span>qui · dez</span></header>
+        <i class="e">22h entrega 4 pitch gravado</i></div>
+      <div class="dia a" style="--i:7"><header><b>04</b><span>sex · dez</span></header>
+        <i class="e">22h entrega 5 solução</i></div>
+      <div class="dia final a" style="--i:8"><header><b>05</b><span>sáb · dez</span></header>
+        <i class="f">09h finalistas</i><i class="f">09h30 final ao vivo</i><i class="f">premiação</i></div>
+    </div>
+    <div class="mentoria a" style="--i:9"><i></i><span>mentorias com profissionais, a semana inteira</span></div>
+    <div class="legenda a" style="--i:10"><span class="v">ao vivo no Teams</span><span class="e">prazo de entrega</span><span class="f">final</span></div>
+  </section>
+
+  <!-- ===================== 7. abertura ===================== -->
+  <section class="slide" data-titulo="Abertura">
+    <p class="olho a" style="--i:0">Sábado, 28/11</p>
+    <h2 class="a" style="--i:1">A programação de 28/11</h2>
+    <div class="agenda">
+      <div class="bloco a esq" style="--i:2"><time>09h às 12h</time><b>Abertura</b><span>Acesso à agenda dos mentores e informações complementares.</span></div>
+      <div class="bloco a esq" style="--i:3"><time>14h às 15h</time><b>Apresentação dos problemas/desafios</b><span>Os problemas/desafios são apresentados neste horário.</span></div>
+      <div class="bloco a esq" style="--i:4"><time>15h às 16h</time><b>Oficina Ferramentas e Design Thinking</b><span>A primeira oficina do evento.</span></div>
+    </div>
+    <p class="destaque a" style="--i:5">Conselho do professor. Acompanhem a abertura para saber como agendar as mentorias.</p>
+  </section>
+
+  <!-- ===================== 8. oficina hoje, entrega amanhã ===================== -->
+  <section class="slide" data-titulo="Oficina e entrega">
+    <p class="olho a" style="--i:0">Leitura do cronograma</p>
+    <h2 class="a" style="--i:1">Oficinas e <em>prazos de entrega</em></h2>
+    <div class="cadeia">
+      <div class="elo a esq" style="--i:2"><span class="of"><small>28/11 · 15h às 16h</small>Ferramentas e Design Thinking</span><span class="flecha"></span><span class="en"><small>30/11 · 19h25</small>E1 · Matriz CSD e definição do desafio</span></div>
+      <div class="elo a esq" style="--i:3"><span class="of"><small>30/11 · 19h30 às 21h</small>Validação de problema</span><span class="flecha"></span><span class="en"><small>01/12 · 19h25</small>E2 · Validação do problema</span></div>
+      <div class="elo a esq" style="--i:4"><span class="of"><small>01/12 · 19h30 às 21h</small>Modelo de Negócios / MVP</span><span class="flecha"></span><span class="en"><small>02/12 · 19h25</small>E3 · Modelo de negócio - MVP</span></div>
+      <div class="elo a esq" style="--i:5"><span class="of"><small>02/12 · 19h30 às 21h</small>Pitch</span><span class="flecha"></span><span class="en"><small>03/12 · 22h</small>E4 · Pitch gravado</span></div>
+    </div>
+    <p class="dica a" style="--i:6">As setas são uma aproximação pelos temas, inferida do cronograma. As entregas 1 a 3 vencem às 19h25.</p>
+  </section>
+
+  <!-- ===================== 9. mentorias ===================== -->
+  <section class="slide" data-titulo="Mentorias">
+    <p class="olho a" style="--i:0">Mentorias com profissionais</p>
+    <h2 class="a" style="--i:1">Mentorias, de 28/11 a 05/12</h2>
+    <p class="intro a" style="--i:2">Vocês podem agendar mentorias conforme a disponibilidade dos profissionais.</p>
+    <ol class="passos">
+      <li class="a" style="--i:3"><b>Na abertura</b>, vocês recebem o acesso à agenda de disponibilidade dos mentores.</li>
+      <li class="a" style="--i:4"><b>A equipe agenda</b> conforme a agenda de disponibilidade dos mentores.</li>
+      <li class="a" style="--i:5"><b>Levem a pergunta pronta.</b> Contem o que vocês tentaram e onde travaram.</li>
+    </ol>
+    <p class="dica a" style="--i:6">O terceiro passo não está no regulamento. É conselho de professor.</p>
+  </section>
+
+  <!-- ===================== 10. as cinco entregas ===================== -->
+  <section class="slide" data-titulo="As entregas">
+    <p class="olho a" style="--i:0">Entregas parciais e evolutivas</p>
+    <h2 class="a" style="--i:1">Cinco entregas, <em>todas obrigatórias</em></h2>
+    <ol class="entregas">
+      <li class="a esq" style="--i:2"><span class="n">E1</span><b>Matriz CSD e definição do desafio</b><time>seg 30/11 · 19h25</time></li>
+      <li class="a esq" style="--i:3"><span class="n">E2</span><b>Validação do problema</b><time>ter 01/12 · 19h25</time></li>
+      <li class="a esq" style="--i:4"><span class="n">E3</span><b>Modelo de negócio - MVP</b><time>qua 02/12 · 19h25</time></li>
+      <li class="a esq dura" style="--i:5"><span class="n">E4</span><b>Gravação do pitch, 3 minutos</b><time>qui 03/12 · 22h</time></li>
+      <li class="a esq dura" style="--i:6"><span class="n">E5</span><b>Apresentação da solução, os arquivos</b><time>sex 04/12 · 22h</time></li>
+    </ol>
+    <p class="alerta a" style="--i:7">Vocês precisam fazer todas as entregas para concorrer à final.</p>
+  </section>
+
+  <!-- ===================== 11. como entregar ===================== -->
+  <section class="slide" data-titulo="Como entregar">
+    <p class="olho a" style="--i:0">Como entregar</p>
+    <h2 class="a" style="--i:1">Arquivos das entregas 4 e 5</h2>
+    <div class="arquivo a zoom" style="--i:2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/></svg>
+      <span class="digita">Time T1 - Entrega E2</span>
+    </div>
+    <p class="legenda-arq a" style="--i:3"><b>T1</b> é o número da equipe. <b>E2</b> é o número da entrega.</p>
+    <div class="cartoes c3">
+      <div class="card a" style="--i:4"><b>Vale a primeira</b><span>Postou duas vezes, pela mesma pessoa ou por outra da equipe? Só a primeira conta.</span></div>
+      <div class="card a" style="--i:5"><b>O relógio é o do Forms</b><span>O horário que vale é o registrado pelo Forms na hora da postagem.</span></div>
+      <div class="card a" style="--i:6"><b>Conferir é com vocês</b><span>Vocês conferem se a postagem foi feita corretamente e dentro do prazo.</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== 12. o relógio ===================== -->
+  <section class="slide" data-titulo="Atrasos">
+    <p class="olho a" style="--i:0">Atraso</p>
+    <h2 class="a" style="--i:1">O que acontece depois das 19h25</h2>
+    <p class="rotulo-relogio a" style="--i:2">Entregas 1, 2 e 3</p>
+    <div class="relogio a" style="--i:2">
+      <div class="faixa ok"><b>no prazo</b><span>até 19h25</span></div>
+      <div class="faixa menos"><b>−2 pontos</b><span>após 19h25 até 23h59 do dia</span></div>
+      <div class="faixa fora"><b>não vale</b><span>depois das 23h59</span></div>
+    </div>
+    <p class="rotulo-relogio a" style="--i:4">Entregas 4 e 5</p>
+    <div class="relogio r2 a" style="--i:4">
+      <div class="faixa ok"><b>no prazo</b><span>até 22h</span></div>
+      <div class="faixa fora"><b>Cumpram o horário</b><span>é o que exige o item 17</span></div>
+    </div>
+    <p class="dica a" style="--i:6">O desconto é de 2 pontos por entrega atrasada. Atrasar a 1 e a 3 custa 4 pontos.</p>
+  </section>
+
+  <!-- ===================== 13. a nota ===================== -->
+  <section class="slide" data-titulo="Critérios">
+    <p class="olho a" style="--i:0">Avaliação</p>
+    <h2 class="a" style="--i:1">Cinco critérios, de 0 a 5</h2>
+    <p class="intro curta a" style="--i:2">Entrega 4. Zero é “não aplicado”. Cinco é excelente.</p>
+    <ul class="criterios">
+      <li class="a" style="--i:3"><b>Validação do problema</b><span class="q">o problema foi validado pela equipe?</span><span class="bar"><i></i></span><em>5</em></li>
+      <li class="a" style="--i:4"><b>Validação do MVP</b><span class="q">rodaram o MVP e coletaram feedback? Evidências no pitch.</span><span class="bar"><i></i></span><em>5</em></li>
+      <li class="a" style="--i:5"><b>Viabilidade</b><span class="q">a solução pode ser desenvolvida?</span><span class="bar"><i></i></span><em>5</em></li>
+      <li class="a" style="--i:6"><b>Impacto / Relevância</b><span class="q">muda para melhor a realidade do setor?</span><span class="bar"><i></i></span><em>5</em></li>
+      <li class="a" style="--i:7"><b>Pitch</b><span class="q">a apresentação é clara e bem feita?</span><span class="bar"><i></i></span><em>5</em></li>
+    </ul>
+    <p class="total a" style="--i:8">Total possível <b data-contar="25">25</b></p>
+  </section>
+
+  <!-- ===================== 14. exemplo ===================== -->
+  <section class="slide" data-titulo="Exemplo">
+    <p class="olho a" style="--i:0">O exemplo do regulamento</p>
+    <h2 class="a" style="--i:1">O atraso sai da média</h2>
+    <div class="conta">
+      <div class="parcela a zoom" style="--i:2"><b data-contar="22">22</b><span>média no pitch</span></div>
+      <div class="sinal a" style="--i:3">−</div>
+      <div class="parcela neg a zoom" style="--i:4"><b>2</b><span>a entrega 1 atrasou</span></div>
+      <div class="sinal a" style="--i:5">=</div>
+      <div class="parcela res a zoom" style="--i:6"><b data-contar="20" data-de="22">20</b><span>média que vale para a classificação</span></div>
+    </div>
+    <p class="destaque a" style="--i:7">O desconto entra na média após a avaliação da entrega 4. A classificação usa a média com os descontos.</p>
+  </section>
+
+  <!-- ===================== 15. a final ===================== -->
+  <section class="slide" data-titulo="A final">
+    <p class="olho a" style="--i:0">05/12 · 09h às 12h · Teams e YouTube</p>
+    <h2 class="a" style="--i:1">A final, ao vivo</h2>
+    <div class="final-grade">
+      <ol class="final-linha">
+        <li class="a esq" style="--i:2"><time>09h</time><div><b>Os 10 finalistas</b><span>maiores médias, já com os descontos, entre quem fez as 5 entregas</span></div></li>
+        <li class="a esq" style="--i:3"><time>09h30</time><div><b>Pitch de até 3 minutos</b><span>para os jurados, pelos cinco critérios do Quadro 4</span></div></li>
+        <li class="a esq" style="--i:4"><time>depois</time><div><b>Resultado e premiação</b><span>após definição dos jurados. Vencem as 3 maiores médias. A comissão organizadora decide empates.</span></div></li>
+      </ol>
+      <div class="podio a" style="--i:5" aria-label="pódio com primeiro, segundo e terceiro lugar">
+        <div class="deg d2"><span>2º</span></div>
+        <div class="deg d1"><span>1º</span></div>
+        <div class="deg d3"><span>3º</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 16. letras miúdas ===================== -->
+  <section class="slide" data-titulo="Letras miúdas">
+    <p class="olho a" style="--i:0">O que vocês aceitam ao se inscrever</p>
+    <h2 class="a" style="--i:1">Direitos, imagem e conduta</h2>
+    <div class="cartoes c3 miudas">
+      <div class="card a" style="--i:2"><b>Original</b><span>A proposta precisa ser original, inovadora e alinhada ao tema.</span></div>
+      <div class="card a" style="--i:3"><b>Direitos autorais</b><span>O item 21 exige titularidade exclusiva dos elementos usados. Cópia sem autorização pode causar exclusão.</span></div>
+      <div class="card a" style="--i:4"><b>Imagem e nome</b><span>Vocês autorizam o uso de imagem e nome de forma gratuita e irrevogável, por tempo indeterminado.</span></div>
+      <div class="card a" style="--i:5"><b>10 anos</b><span>Vocês autorizam a divulgação dos trabalhos por 10 anos, no Brasil e no exterior.</span></div>
+      <div class="card a" style="--i:6"><b>Dados pessoais</b><span>Vocês ou seu representante legal consentem com o tratamento de dados pelo Senac SC, nos termos da LGPD.</span></div>
+      <div class="card a" style="--i:7"><b>Conduta</b><span>Comportamento inadequado pode causar desclassificação. O evento não cria vínculo de emprego.</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== 17. para fazer agora ===================== -->
+  <section class="slide" data-titulo="Para fazer agora">
+    <p class="olho a" style="--i:0">Para fazer agora</p>
+    <h2 class="a" style="--i:1">O que vocês precisam organizar</h2>
+    <ol class="passos">
+      <li class="a" style="--i:2"><b>Conversem com a turma</b> e formem uma equipe de 4 a 7 pessoas.</li>
+      <li class="a" style="--i:3"><b>Inscrevam a equipe</b> no site do evento até 19/11.</li>
+      <li class="a" style="--i:4"><b>Leiam o regulamento inteiro.</b> São seis páginas, e inscrever é aceitar todas.</li>
+      <li class="a" style="--i:5"><b>Reservem a agenda.</b> Sábado 28/11 de manhã e à tarde, 30/11 a 02/12 à noite e sábado 05/12 de manhã.</li>
+      <li class="a" style="--i:6"><b>Ficou dúvida?</b> Escrevam para contato@jovemprogramador.com.br.</li>
+    </ol>
+    <div class="botoes a" style="--i:7">
+      <a class="btn cheio" href="regulamento-hackathon-pjp-2026.pdf" download="Regulamento Hackathon PJP 2026.pdf">baixar o regulamento em PDF</a>
+      <a class="btn" href="https://www.jovemprogramador.com.br/hackathon" target="_blank" rel="noopener">abrir o site das inscrições</a>
+    </div>
+  </section>
+
+  <!-- ===================== 18. encerramento ===================== -->
+  <section class="slide capa fim" data-titulo="Encerramento">
+    <div class="capa-logo menor a zoom" style="--i:0"><img src="logo-hackathon-2026.png" alt="Hackathon Jovem Programador 2026"></div>
+    <p class="capa-sub a" style="--i:2">Nos vemos em 28/11, às 9h.</p>
+    <p class="capa-rodape a" style="--i:3">Dúvidas: contato@jovemprogramador.com.br</p>
+  </section>
+
+</main>
+
+<!-- barra inferior: some sozinha quando o mouse para -->
+<nav class="barra" id="barra" aria-label="Navegação da apresentação">
+  <a class="b-voltar" href="index.html" title="Voltar para a página do hackathon">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>regulamento</span>
+  </a>
+  <div class="b-meio">
+    <button type="button" id="bAnt" aria-label="Slide anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <span id="contador">1 / 18</span>
+    <button type="button" id="bProx" aria-label="Próximo slide"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+  <div class="b-dir">
+    <a href="regulamento-hackathon-pjp-2026.pdf" download="Regulamento Hackathon PJP 2026.pdf" title="Baixar o regulamento em PDF">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg><span>PDF</span>
+    </a>
+    <button type="button" id="bTela" title="Tela cheia (F)" aria-label="Tela cheia">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+</nav>
+
+<script src="apresentacao.js"></script>
+</body>
+</html>

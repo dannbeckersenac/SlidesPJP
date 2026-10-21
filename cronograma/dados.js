@@ -74,7 +74,7 @@ const UC = {
     nome: "Hackathon final",
     ch: 0,
     faltas: 0,
-    desc: "Sete dias seguidos de projeto integrador, aplicando tudo o que foi construído ao longo do ano."
+    desc: "Maratona on-line pelo Teams, de 28/11 a 05/12, em equipes de 4 a 7. Participação facultativa e gratuita. São cinco entregas obrigatórias para concorrer à final. Confiram os prazos na página do hackathon."
   }
 };
 
