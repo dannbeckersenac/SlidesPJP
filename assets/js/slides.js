@@ -14,6 +14,9 @@
   var atual = 0;
   var total = slides.length;
   var aulaAtual = Number(document.body.dataset.aula || 0);
+  /* página da UC2: <body data-uc="2" data-aula="1">, com a lista própria */
+  var uc2 = document.body.dataset.uc === "2" && window.UC2;
+  var listaDeAulas = uc2 ? window.UC2.aulas : window.AULAS;
   /* página de aula extra: <body data-aula="6" data-extra="paseo"> */
   var extra = (window.EXTRAS || []).filter(function (e) { return e.chave === document.body.dataset.extra; })[0] || null;
 
@@ -144,8 +147,9 @@
      A capa mantém o rodapé escrito no HTML. Todos os outros recebem
      a paginação à esquerda e a identificação da aula à direita. ----- */
   function rodapes() {
-    var meta = (window.AULAS || []).filter(function (a) { return a.n === aulaAtual; })[0] || {};
-    var etiqueta = (extra ? "Extra da aula " : "Aula ") + String(aulaAtual).padStart(2, "0") +
+    var meta = (listaDeAulas || []).filter(function (a) { return a.n === aulaAtual; })[0] || {};
+    var etiqueta = (uc2 ? window.UC2.sigla + " · " : "") +
+                   (extra ? "Extra da aula " : "Aula ") + String(aulaAtual).padStart(2, "0") +
                    (meta.ciclo ? " · Ciclo " + meta.ciclo : "");
     slides.forEach(function (s, k) {
       if (k === 0) return;
@@ -160,9 +164,9 @@
      O seletor e as setas listam só as aulas já liberadas. Quem decide é
      o window.liberada de aulas.js, que respeita a data e o modo docente. ----- */
   var barra = document.getElementById("barra");
-  if (barra && window.AULAS) {
-    var meta = window.AULAS.filter(function (a) { return a.n === aulaAtual; })[0] || {};
-    var abertas = window.AULAS.filter(function (a) {
+  if (barra && listaDeAulas) {
+    var meta = listaDeAulas.filter(function (a) { return a.n === aulaAtual; })[0] || {};
+    var abertas = listaDeAulas.filter(function (a) {
       return window.liberada ? window.liberada(a) : a.pronto;
     });
     var idx = abertas.map(function (a) { return a.n; }).indexOf(aulaAtual);
@@ -179,7 +183,7 @@
       (extra ? '<a href="aula-' + pad(aulaAtual) + '.html">← aula ' + pad(aulaAtual) + '</a>' :
         (idx > 0 ? '<a href="aula-' + pad(abertas[idx - 1].n) + '.html">← aula anterior</a>' : "") +
         (idx > -1 && idx < abertas.length - 1 ? '<a href="aula-' + pad(abertas[idx + 1].n) + '.html">próxima aula →</a>' : "")) +
-      (window.PREVIEW ? "" : '<a href="../index.html">índice</a>') +
+      (window.PREVIEW ? "" : '<a href="../index.html' + (uc2 ? '#uc2' : '') + '">índice</a>') +
       '<button type="button" id="baixar-pdf" title="Abre a impressão. No destino, escolha Salvar como PDF.">baixar PDF</button>' +
       '<span class="contador" id="contador"></span>';
 

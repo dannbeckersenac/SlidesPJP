@@ -38,8 +38,9 @@ Isto define o que pode e o que não pode ser assumido como conhecido:
 - **Curso anterior (Python):** variáveis, tipos, condicionais, laços, listas, funções, POO
   (classes, `__init__`, `self`, listas de objetos), MySQL via `mysql.connector`, `.env`,
   `.gitignore`, fluxo Git/GitHub.
-- **UC1** metodologias ágeis · **UC2** DevOps e controle de versão · **UC3** desenvolvimento
-  apoiado por IA (assistentes de código, revisão, documentação) · **UC5** front-end React.
+- **UC1** metodologias ágeis · **UC5** front-end React. A **UC2** (DevOps) veio depois da UC4, de 22
+  a 29/10, e tem slides neste repositório, em `uc2/`, com o `uc2/CLAUDE.md` próprio. A **UC3**
+  (desenvolvimento apoiado por IA) vem depois da UC2.
 - **A UC5 veio ANTES da UC4 nesta turma.** O front-end de cada aluno **já existe** e é o
   cliente real da API que ele vai construir aqui. Não trate o React como exercício futuro.
 
@@ -435,6 +436,7 @@ prompts/aula-NN-*.md    prompts e regras que a turma copia ou baixa do slide
 docente/                fora do Git: as cartilhas e a página de sorteio, só na máquina do professor
 cronograma/             o calendário do ano inteiro, das seis UCs, página à parte
 hackathon/              o hackathon do fim do ano: página do regulamento, apresentação e o PDF
+uc2/                    os slides da UC2, com o CLAUDE.md dela; o manifesto é o window.UC2, no aulas.js
 ```
 
 **O índice, o cronograma e a página do hackathon são as páginas de navegação** e dividem o mesmo

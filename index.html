@@ -68,7 +68,7 @@
       <nav class="abas" aria-label="Páginas do curso">
         <a href="index.html" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4"/></svg>
-          <span>Slides<span class="aba-longo"> da UC4</span></span>
+          <span>Slides<span class="aba-longo"> das aulas</span></span>
         </a>
         <a href="cronograma/index.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
@@ -120,12 +120,25 @@
   </div>
 </header>
 
-<!-- ============ aulas, por ciclo ============ -->
-<section class="aulas-sec">
+<!-- ============ UC2, a unidade em andamento ============ -->
+<section class="aulas-sec" id="uc2">
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <h2>As aulas</h2>
+        <h2>UC2 · Práticas DevOps em Projetos Web</h2>
+        <p>Cinco encontros de 4 horas, de 22 a 29/10. O caso é o projeto da cartilha de cada aluno, saindo do localhost para a produção. Cada aula abre às 18h do dia do encontro.</p>
+      </div>
+    </div>
+    <div class="ciclos"><ul class="aulas" id="listaUc2"></ul></div>
+  </div>
+</section>
+
+<!-- ============ UC4, aulas por ciclo ============ -->
+<section class="aulas-sec" id="uc4">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>UC4 · Back-end de Projetos Web</h2>
         <p>Cada aula abre às 18h do dia do encontro. Os slides navegam com as setas do teclado.</p>
       </div>
     </div>
@@ -145,24 +158,35 @@
   (function () {
     var pad = function (n) { return String(n).padStart(2, "0"); };
     var agora = new Date();
-    var endereco = function (a) { return a.arquivo ? "aulas/" + a.arquivo : "aulas/aula-" + pad(a.n) + ".html"; };
+    var aulasUc2 = window.UC2 ? window.UC2.aulas : [];
+    var endereco = function (a) {
+      if (aulasUc2.indexOf(a) > -1) return "uc2/aula-" + pad(a.n) + ".html";
+      return a.arquivo ? "aulas/" + a.arquivo : "aulas/aula-" + pad(a.n) + ".html";
+    };
+    /* "Aula 01", ou "Aula 01 da UC2"; com minuscula, para o meio da frase */
+    var nomeDaAula = function (a, minuscula) {
+      return (minuscula ? "aula " : "Aula ") + pad(a.n) + (aulasUc2.indexOf(a) > -1 ? " da UC2" : "");
+    };
     var ehHoje = function (a) { return window.aberturaDaAula(a).toDateString() === agora.toDateString(); };
 
     if (window.MODO_DOCENTE) document.getElementById("avisoDocente").hidden = false;
 
     /* ---------- capa: botão da aula e números ---------- */
 
-    var liberadas = window.AULAS.filter(window.liberada);
+    /* as duas UCs numa lista só, pela data: a UC2 vem depois da UC4 */
+    var todas = window.AULAS.concat(aulasUc2);
+    var liberadas = todas.filter(window.liberada);
     var ultima = liberadas[liberadas.length - 1];
     /* no modo docente uma aula futura já pode estar liberada: a próxima é a primeira que ainda não está */
-    var proxima = window.AULAS.find(function (a) { return !window.liberada(a) && window.aberturaDaAula(a) > agora; });
+    var proxima = todas.find(function (a) { return !window.liberada(a) && window.aberturaDaAula(a) > agora; });
 
-    document.getElementById("stLiberadas").textContent = liberadas.length + "/" + window.AULAS.length;
+    /* os números da capa são os da UC4 */
+    document.getElementById("stLiberadas").textContent = window.AULAS.filter(window.liberada).length + "/" + window.AULAS.length;
     if (proxima) document.getElementById("stProxima").textContent = window.dataCurta(proxima.data);
 
     var quandoProxima = !proxima ? ""
       : ehHoje(proxima)
-        ? "A aula " + pad(proxima.n) + " abre hoje, às " + window.LIBERA_HORA + "h."
+        ? "A " + nomeDaAula(proxima, true) + " abre hoje, às " + window.LIBERA_HORA + "h."
         : "A próxima abre em " + window.dataCurta(proxima.data) + ", às " + window.LIBERA_HORA + "h.";
 
     var btnAula = document.getElementById("btnAula");
@@ -172,7 +196,7 @@
       btnAula.hidden = false;
       document.getElementById("rotuloAula").textContent =
         ehHoje(ultima) ? "Abrir a aula de hoje" : "Abrir a última aula liberada";
-      notaAula.textContent = "Aula " + pad(ultima.n) + ", " + ultima.titulo + ". " + quandoProxima;
+      notaAula.textContent = nomeDaAula(ultima) + ", " + ultima.titulo + ". " + quandoProxima;
     } else {
       notaAula.textContent = quandoProxima;
     }
@@ -225,6 +249,20 @@
              '”</p></div><ul class="aulas">' + itens + '</ul></section>';
     }).join("");
     document.getElementById("lista").innerHTML = html;
+
+    document.getElementById("listaUc2").innerHTML = aulasUc2.map(function (a) {
+      var e = estado(a);
+      var aberta = window.liberada(a);
+      var cls = "aula" + (aberta ? "" : " indisponivel") + (a.avaliacao ? " aval" : "");
+      var conteudo =
+        '<span class="n">' + pad(a.n) + '</span>' +
+        '<span class="data">' + window.dataCurta(a.data) + '</span>' +
+        '<span class="t">' + a.titulo + '</span>' +
+        '<span class="estado' + e.cls + '">' + e.txt + '</span>';
+      return aberta
+        ? '<li><a class="' + cls + '" href="' + endereco(a) + '">' + conteudo + '</a></li>'
+        : '<li><div class="' + cls + '">' + conteudo + '</div></li>';
+    }).join("");
   })();
 </script>
 

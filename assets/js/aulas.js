@@ -43,6 +43,22 @@ window.EXTRAS = [
     titulo: "Extra · Agentes de graça com o Paseo", pronto: true }
 ];
 
+/* ============================================================
+   UC2 · Práticas DevOps em Projetos Web.
+   Cinco encontros, de 22 a 29/10. Os slides ficam em uc2/,
+   e cada página leva data-uc="2" no <body>: o slides.js lê
+   esta lista em vez da AULAS. Aula entra aqui quando o
+   docente aprova o plano dela.
+   ============================================================ */
+
+window.UC2 = {
+  sigla: "UC2",
+  nome: "Práticas DevOps em Projetos Web",
+  aulas: [
+    { n: 1, data: "2026-10-22", titulo: "Onde o seu sistema mora: cliente, servidor e o Docker", pronto: true }
+  ]
+};
+
 window.CICLOS = [
   { n: 1, nome: "O contrato",     aulas: "aulas 1 a 5",   guia: "A tela que eu já fiz precisa de quais dados?" },
   { n: 2, nome: "A persistência", aulas: "aula 6",        guia: "Por que meus dados somem quando eu reinicio o servidor?" },

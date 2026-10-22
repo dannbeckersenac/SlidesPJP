@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 01 · Onde o seu sistema mora · UC2</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="2" data-aula="1">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC2 · Práticas DevOps em Projetos Web · Aula 01</p>
+    <h1>Onde o seu sistema mora</h1>
+    <p class="sub">O projeto da UC4 roda na sua máquina e em nenhuma outra. Hoje a gente entende por quê, desenha a saída e instala o Docker.</p>
+  </div>
+  <div class="rodape"><span>Do servidor à entrega contínua</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · MAPA DA UC -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde a gente vai chegar</p>
+    <h2>Do localhost à produção</h2>
+    <p class="intro">O caso da UC2 é o projeto da sua cartilha. Ele funciona na sua máquina, e a unidade inteira é o caminho dele até o ar.</p>
+    <table>
+      <thead><tr><th>O assunto</th><th>A pergunta que ele responde</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cliente e servidor</strong></td><td class="neutro">Onde o seu sistema mora?</td></tr>
+        <tr><td><strong>Servidor web e nuvem</strong></td><td class="neutro">Quem atende quando o seu notebook está desligado?</td></tr>
+        <tr><td><strong>Versões em colaboração</strong></td><td class="neutro">Quem mudou isso, e por quê?</td></tr>
+        <tr><td><strong>Entrega contínua</strong></td><td class="neutro">Quem confere antes de ir para o ar?</td></tr>
+        <tr><td><strong>Monitoramento</strong></td><td class="neutro">Como saber que caiu antes do usuário?</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · ATIVIDADE SEM ORIENTAÇÃO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Antes de qualquer explicação · 20 minutos</p>
+    <h2>Como o app que você usa todo dia funciona?</h2>
+    <p class="intro">Em grupos de 3 ou 4. Escolham um: Netflix, Spotify, iFood, Uber, WhatsApp ou Instagram. Sem pesquisar e sem IA.</p>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">No papel, desenhe o que roda <b>no celular</b> de quem usa.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Desenhe o que roda <b>nos computadores da empresa</b>. Quantos são?</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Ligue com setas: o que viaja pela rede quando você aperta o play ou faz o pedido.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Marque onde ficam os dados e o que para de funcionar se uma parte cair.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · RODADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Rodada</p>
+    <h2>Cada grupo, dois minutos</h2>
+    <ol class="passos">
+      <li>Mostre o desenho para a turma. Quem fala é quem menos falou no grupo.</li>
+      <li>Diga onde ficam os dados: no celular, na empresa ou nos dois.</li>
+      <li>Diga o que acontece com o usuário se o computador da empresa desligar.</li>
+      <li>Responda uma pergunta da turma. "Não sei" é resposta válida.</li>
+    </ol>
+    <div class="destaque">Guarde o papel. No fim do primeiro tempo, ele volta com nome em cada caixa.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>Mande o seu sistema para alguém usar</h2>
+    <div class="comparacao">
+      <div class="lado"><div class="rotulo">o que o professor mandou no Teams</div><div class="codigo compacto"><pre>Testem o Tarefa Certa:
+http://localhost:5173</pre></div></div>
+      <div class="lado ruim"><div class="rotulo">o que a turma viu</div><div class="codigo compacto"><pre>Não é possível acessar esse site
+localhost recusou a conexão.
+ERR_CONNECTION_REFUSED</pre></div></div>
+    </div>
+    <div class="alerta">O link funciona na máquina do professor e em nenhuma outra. <strong>O sistema ainda não mora em lugar nenhum</strong> além de um notebook.</div>
+    <p class="dica"><b>Tente com o seu:</b> mande o link do projeto da sua cartilha para o colega do lado. O resultado é o mesmo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>Três programas, uma máquina, um usuário</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">React</span><span class="d">o Vite, na porta 5173, com <code>npm run dev</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">FastAPI</span><span class="d">o uvicorn, na porta 8000, com <code>fastapi dev</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">MySQL</span><span class="d">o banco, na porta 3306, ligado com o computador</span></div>
+    </div>
+    <p class="intro">É assim que o Tarefa Certa, o projeto do professor, terminou a UC4. O projeto da sua cartilha tem as mesmas três peças.</p>
+    <p class="dica"><b>Por que não resolve:</b> as três peças conversam entre si, mas só dentro do notebook. O único usuário possível é quem está sentado na frente dele.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · ANALOGIA -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">A analogia de hoje</p>
+    <h2>A rede é uma rua cheia de prédios</h2>
+    <table>
+      <thead><tr><th>Na rua</th><th>Na rede</th></tr></thead>
+      <tbody>
+        <tr><td>o prédio</td><td>uma máquina: o seu notebook, um servidor</td></tr>
+        <tr><td>o endereço do prédio</td><td>o IP</td></tr>
+        <tr><td>a sala, com o número na porta</td><td>a porta: 8000, 5173, 3306</td></tr>
+        <tr><td>"aqui dentro deste prédio"</td><td>localhost, ou 127.0.0.1</td></tr>
+        <tr><td>o nome salvo na agenda do celular</td><td>o domínio, que o DNS traduz em IP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · CLIENTE E SERVIDOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Cliente pede, servidor atende</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><div class="icone">C</div><span class="t">Cliente</span><span class="d">Quem toma a iniciativa: o navegador, o app do celular. Bate na porta de uma sala e espera.</span></div>
+      <div class="cartao"><div class="icone">S</div><span class="t">Servidor</span><span class="d">Um programa parado numa porta, esperando alguém bater. Atende, responde e volta a esperar.</span></div>
+    </div>
+    <div class="destaque">Servidor é um papel, não um tipo de computador. O seu notebook já é servidor: o uvicorn está esperando na porta 8000.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · IP -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O endereço do prédio</p>
+    <h2>O IP da sua máquina</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · no Windows</div>
+      <pre>ipconfig
+
+<span class="com"># Adaptador Ethernet:</span>
+<span class="com">#    Endereço IPv4. . . . . . . : 192.168.0.23</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abra um terminal e rode <code>ipconfig</code>. No Linux é <code>ip -4 addr</code>.</li>
+      <li>Ache a linha <code>Endereço IPv4</code> do adaptador que está ligado na rede.</li>
+      <li>Anote o número. Ele é o endereço do seu prédio dentro da rede do laboratório.</li>
+    </ol>
+    <p class="dica"><b>Repare:</b> todo IP que começa com <code>192.168</code> só vale dentro desta rede. De casa, ninguém chega nele.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · PORTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O número da sala</p>
+    <h2>Uma máquina, vários programas, cada um na sua porta</h2>
+    <table>
+      <thead><tr><th>Porta</th><th>Quem costuma atender</th></tr></thead>
+      <tbody>
+        <tr><td><strong>80</strong></td><td class="neutro">site em HTTP, sem cadeado</td></tr>
+        <tr><td><strong>443</strong></td><td class="neutro">site em HTTPS, com cadeado</td></tr>
+        <tr><td><strong>5173</strong></td><td class="neutro">o Vite, servindo o React em desenvolvimento</td></tr>
+        <tr><td><strong>8000</strong></td><td class="neutro">o uvicorn, servindo a sua API</td></tr>
+        <tr><td><strong>3306</strong></td><td class="neutro">o MySQL</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>Duas salas com o mesmo número não existem:</b> subir a API duas vezes dá erro de porta em uso.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · 127.0.0.1 E 0.0.0.0 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>A sua API só atende quem está dentro</h2>
+    <div class="comparacao">
+      <div class="lado"><div class="rotulo">o padrão do fastapi dev</div><div class="codigo"><pre>fastapi dev main.py
+<span class="com"># Server started at</span>
+<span class="com">#   http://127.0.0.1:8000</span>
+
+<span class="com"># o colega, pelo seu IP:</span>
+<span class="com"># ERR_CONNECTION_REFUSED</span></pre></div></div>
+      <div class="lado"><div class="rotulo">aberta para a rede</div><div class="codigo"><pre>fastapi dev main.py --host 0.0.0.0
+<span class="com"># Server started at</span>
+<span class="com">#   http://0.0.0.0:8000</span>
+
+<span class="com"># o colega, pelo seu IP:</span>
+<span class="com"># {"status":"ok"}</span></pre></div></div>
+    </div>
+    <p class="dica"><b>Na rua de prédios:</b> <code>127.0.0.1</code> é a sala que só atende o interfone de dentro. <code>0.0.0.0</code> atende também quem chega pela rua.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 3</p>
+    <h2>Abra a sua API para a rede do laboratório</h2>
+    <ol class="passos">
+      <li>No terminal do <code>backend/</code>, pare o servidor com <code>Ctrl+C</code>.</li>
+      <li>Suba de novo com <code>fastapi dev main.py --host 0.0.0.0</code>.</li>
+      <li>Passe o seu IP para o colega do lado.</li>
+      <li>O colega abre <code>http://SEU-IP:8000/docs</code> no navegador dele. Tem que aparecer o seu <code>/docs</code>, com as suas rotas.</li>
+    </ol>
+    <div class="alerta">Se o Windows abrir um aviso do firewall, <strong>chame o professor</strong>. Sem a liberação, a página do colega fica carregando até desistir.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 3</p>
+    <h2>Agora a tela</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · dentro de frontend/</div>
+      <pre>npm run dev -- --host
+
+<span class="com">#  Local:   http://localhost:5173/</span>
+<span class="com">#  Network: http://192.168.0.23:5173/</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>frontend/</code>, pare o Vite com <code>Ctrl+C</code>.</li>
+      <li>Suba com <code>npm run dev -- --host</code>. Os dois hifens soltos passam o <code>--host</code> para o Vite.</li>
+      <li>O colega abre o endereço da linha <code>Network</code>.</li>
+      <li>A tela aparece, mas os dados não. Abra o <code>F12</code> na máquina do colega e leia o erro.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · A VIRADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O que aconteceu</p>
+    <h2>O React roda na máquina de quem abre</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · frontend/src/App.jsx</div>
+      <pre><span class="com">// este código roda no navegador do colega</span>
+<span class="fn">fetch</span>(<span class="str">"http://127.0.0.1:8000/tarefas"</span>)
+<span class="com">// 127.0.0.1 é a máquina dele, e lá não tem API</span></pre>
+    </div>
+    <div class="fluxo">
+      <div class="passo"><span class="t">O Vite entrega</span><span class="d">da sua máquina, os arquivos da tela</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">O navegador roda</span><span class="d">na máquina do colega, o JavaScript</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">O fetch procura</span><span class="d">a API no 127.0.0.1 do colega</span></div>
+    </div>
+    <p class="dica"><b>E se trocar pelo seu IP?</b> O CORS barra, porque a origem virou outra. Não conserte hoje: anote.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · DNS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A agenda do celular</p>
+    <h2>Ninguém decora IP</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · Windows, Linux ou Mac</div>
+      <pre>nslookup www.sc.senac.br
+
+<span class="com"># Name:    www.sc.senac.br</span>
+<span class="com"># Address: 191.235.236.33</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode o <code>nslookup</code> com o endereço do Senac. Anote o IP que voltou.</li>
+      <li>Rode de novo com o endereço do app que o seu grupo desenhou.</li>
+      <li>Repare: o nome é o que você digita. O IP é o prédio onde o navegador vai bater.</li>
+    </ol>
+    <p class="dica"><b>Como um nome vira de alguém:</b> você registra o domínio e aponta para o IP do seu servidor. O DNS espalha a anotação.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · HTTPS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O cadeado</p>
+    <h2>Lembra do token do login?</h2>
+    <div class="comparacao">
+      <div class="lado ruim"><div class="rotulo">HTTP, porta 80</div><div class="codigo"><pre><span class="com"># o que passa pelo wi-fi</span>
+GET /tarefas
+Authorization: Bearer eyJhbGci...
+<span class="com"># qualquer um na rede lê</span></pre></div></div>
+      <div class="lado bom"><div class="rotulo">HTTPS, porta 443</div><div class="codigo"><pre><span class="com"># o que passa pelo wi-fi</span>
+17 03 03 00 4a 9f c2 51
+e8 0b 7d 33 a1 6c f0 2e
+<span class="com"># só o servidor decifra</span></pre></div></div>
+    </div>
+    <div class="destaque">Em localhost, o pedido nem sai do notebook. Em produção, <b>login sem HTTPS é entregar o token</b> para a rede inteira.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · O CAMINHO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Juntando tudo</p>
+    <h2>O caminho de um pedido em produção</h2>
+    <p class="intro">Na UC4 você viu a requisição por dentro. Hoje é o caminho que ela faz até chegar na sua rota.</p>
+    <div class="fluxo">
+      <div class="passo"><span class="t">DNS</span><span class="d">o nome vira um IP</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Conexão</span><span class="d">no IP, porta 443, com o cadeado</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Servidor web</span><span class="d">a recepção, que manda para a sala certa</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">API e banco</span><span class="d">a sua rota, o seu MySQL</span></div>
+    </div>
+    <p class="dica"><b>A recepção é nova:</b> um programa que atende todo mundo na 443 e repassa o pedido. Ele tem aula própria.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 3</p>
+    <h2>Veja o caminho no navegador</h2>
+    <ol class="passos">
+      <li>Abra <code>www.sc.senac.br</code>, aperte <code>F12</code> e vá na aba <b>Rede</b> (Network).</li>
+      <li>Recarregue com <code>F5</code> e clique na primeira linha da lista.</li>
+      <li>Em <b>Cabeçalhos</b>, ache o <b>Endereço remoto</b>. É o IP do <code>nslookup</code>, com <code>:443</code> no fim.</li>
+      <li>Em <b>Tempo</b> (Timing), ache a pesquisa de DNS, a conexão inicial e o SSL.</li>
+      <li>Faça o mesmo no seu <code>/docs</code> local. Repare no que não aparece lá.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · DE VOLTA AO DESENHO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">De volta ao papel do grupo</p>
+    <h2>O que o app grande tem a mais</h2>
+    <table>
+      <thead><tr><th>A peça</th><th>O que ela faz</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CDN</strong></td><td class="neutro">guarda cópias de imagem e vídeo perto de você</td></tr>
+        <tr><td><strong>Balanceador</strong></td><td class="neutro">divide os pedidos entre vários servidores iguais</td></tr>
+        <tr><td><strong>Vários servidores</strong></td><td class="neutro">se um cai, os outros continuam atendendo</td></tr>
+        <tr><td><strong>Banco com réplica</strong></td><td class="neutro">uma cópia do banco pronta para assumir</td></tr>
+        <tr><td><strong>Monitoramento</strong></td><td class="neutro">avisa a empresa antes do usuário reclamar</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>No papel:</b> escreva o nome certo nas caixas que vocês desenharam sem saber o nome.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · DEV × PROD -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Dois ambientes</p>
+    <h2>O que muda quando sai da sua máquina</h2>
+    <table>
+      <thead><tr><th>Item</th><th>Desenvolvimento</th><th>Produção</th></tr></thead>
+      <tbody>
+        <tr><td><strong>API</strong></td><td>127.0.0.1:8000</td><td>https://api.seu-dominio</td></tr>
+        <tr><td><strong>Tela</strong></td><td>npm run dev</td><td>arquivos prontos, na 443</td></tr>
+        <tr><td><strong>Banco</strong></td><td>o MySQL do notebook</td><td>o MySQL do servidor</td></tr>
+        <tr><td><strong>.env</strong></td><td>chave de teste</td><td>chave própria, fora do Git</td></tr>
+        <tr><td><strong>CORS</strong></td><td>localhost:5173</td><td>o domínio da tela</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>O <code>.env</code> da UC4 já pensava nisso:</b> o código é o mesmo, só o arquivo muda de um lado para o outro.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · A ARQUITETURA DO PROFESSOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Exemplo do professor</p>
+    <h2>O Tarefa Certa em produção, no desenho</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Navegador</span><span class="d">da solicitante ou do executor, em qualquer rede</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Servidor web</span><span class="d">porta 443: entrega a tela e repassa o <code>/api</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">FastAPI</span><span class="d">porta 8000, só para dentro</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">MySQL</span><span class="d">porta 3306, só para dentro</span></div>
+    </div>
+    <div class="destaque">Só a 443 fica aberta para a rua. A API e o banco atendem <b>só quem está dentro do prédio</b>.</div>
+    <p class="dica"><b>Ainda é desenho.</b> Cada caixa ganha uma ferramenta ao longo da UC2.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · MERMAID -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O desenho vira texto</p>
+    <h2>O GitHub desenha a partir do Markdown</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · .docs/infra.md</div>
+      <pre>```mermaid
+flowchart LR
+  nav[Navegador] -->|HTTPS 443| web[Servidor web]
+  web -->|/api| api[FastAPI 8000]
+  api -->|SQL| banco[(MySQL 3306)]
+```</pre>
+    </div>
+    <ol class="passos curta">
+      <li><code>flowchart LR</code> desenha da esquerda para a direita.</li>
+      <li><code>nav[Navegador]</code>: <code>nav</code> é o apelido, e o texto entre colchetes vai na caixa.</li>
+      <li><code>--&gt;|HTTPS 443|</code> é a seta, com o texto no meio. <code>[( )]</code> desenha um cilindro, o símbolo de banco.</li>
+    </ol>
+    <p class="dica"><b>Para conferir:</b> cole em <code>mermaid.live</code>, ou faça o commit e abra o arquivo no GitHub.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · SEGUNDO TEMPO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo</p>
+    <h2>O seu projeto em outra máquina</h2>
+    <p class="intro">O desenho tem um servidor em algum lugar. Esse servidor é um prédio que nunca viu o seu projeto. Alguém vai ter que montar tudo lá dentro.</p>
+    <div class="destaque">A pergunta do segundo tempo: como levar o projeto inteiro para um prédio novo sem montar tudo de novo, peça por peça?</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 24 · A DOR DO DOCKER -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor do segundo tempo</p>
+    <h2>"Na minha máquina funciona"</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · o que o colega precisa para rodar o Tarefa Certa</div>
+      <pre>1. instalar o Python e criar o venv
+2. instalar as bibliotecas certas    <span class="com"># quais? qual versão?</span>
+3. instalar o Node e rodar npm install
+4. instalar o MySQL 8 e criar usuário, senha e banco
+5. escrever o .env com a URL do banco e a chave do token
+6. alembic upgrade head
+7. abrir três terminais e subir tudo</pre>
+    </div>
+    <div class="alerta">Cada linha é uma chance de dar diferente: outro Python, MySQL 5.7, senha errada. <strong>E o servidor de produção é só mais uma máquina</strong> que precisa da lista inteira.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25 · ONDE PARAMOS: O VENV -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>O venv isola pouco</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">O venv guarda</span><span class="d">As bibliotecas Python deste projeto: fastapi, sqlalchemy, pwdlib. Só isso.</span></div>
+      <div class="cartao"><span class="t">O venv não guarda</span><span class="d">A versão do Python, o Node, o MySQL com o banco criado e o próprio sistema operacional.</span></div>
+    </div>
+    <div class="destaque">O que falta levar é <b>a máquina inteira</b>, do sistema ao banco. É isso que o contêiner leva junto.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 26 · HISTÓRIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Um pouco de história</p>
+    <h2>O problema já foi resolvido uma vez, no porto</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">1956, no porto</span><span class="d">Cada carga ia de um jeito: saco, barril, caixote. Carregar um navio levava dias. Malcom McLean padronizou a caixa de metal, e qualquer navio, guindaste ou caminhão passou a carregar sem abrir.</span></div>
+      <div class="cartao"><span class="t">2013, no software</span><span class="d">O Docker foi apresentado numa palestra de cinco minutos na PyCon. A ideia era a mesma: uma caixa padrão, com o programa e tudo de que ele precisa dentro.</span></div>
+    </div>
+    <p class="dica"><b>Na rua de prédios:</b> o contêiner é uma sala que muda de prédio já montada, com os móveis dentro.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 27 · IMAGEM E CONTÊINER -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito, com o que você já sabe</p>
+    <h2>Imagem é a classe, contêiner é o objeto</h2>
+    <table>
+      <thead><tr><th>No Python</th><th>No Docker</th></tr></thead>
+      <tbody>
+        <tr><td><code>class Tarefa</code>, o molde</td><td>a imagem, guardada no disco</td></tr>
+        <tr><td><code>Tarefa(titulo="...")</code></td><td>o contêiner, uma cópia rodando</td></tr>
+        <tr><td>três objetos da mesma classe</td><td>três contêineres da mesma imagem</td></tr>
+        <tr><td><code>pip</code> baixa do PyPI</td><td><code>docker</code> baixa do Docker Hub</td></tr>
+      </tbody>
+    </table>
+    <p class="dica"><b>Por isso:</b> apagar o contêiner não apaga a imagem, do mesmo jeito que apagar um objeto não apaga a classe.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 28 · CONTÊINER NÃO É VM -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Contêiner não é máquina virtual</h2>
+    <table>
+      <thead><tr><th></th><th>Máquina virtual</th><th>Contêiner</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Leva junto</strong></td><td class="neutro">um sistema operacional inteiro</td><td>o programa e o que ele usa</td></tr>
+        <tr><td><strong>Tamanho</strong></td><td class="neutro">gigabytes</td><td>megabytes</td></tr>
+        <tr><td><strong>Para ligar</strong></td><td class="neutro">minutos</td><td>segundos</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">O contêiner divide o núcleo do sistema com a máquina. No Windows, o núcleo Linux vem do <b>WSL 2</b>, e é por isso que ele entra na instalação.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 29 · INSTALAÇÃO 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Instalação · passo 1 de 3</p>
+    <h2>O WSL 2 primeiro</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · aberto como administrador</div>
+      <pre>wsl --version    <span class="com"># precisa ser 2.1.5 ou maior</span>
+wsl --install    <span class="com"># se o comando de cima falhar</span>
+wsl --update     <span class="com"># se a versão for menor</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Confira: Windows 10 22H2 ou Windows 11, com 8 GB de memória.</li>
+      <li>Abra o PowerShell com o botão direito, em <b>Executar como administrador</b>.</li>
+      <li>Rode <code>wsl --version</code>. Se a versão for 2.1.5 ou maior, pule para o próximo slide.</li>
+      <li>Senão, rode <code>wsl --install</code> ou <code>wsl --update</code>. Reinicie se ele pedir.</li>
+    </ol>
+    <p class="dica"><b>No laboratório:</b> se pedir senha de administrador, chame o professor.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 30 · INSTALAÇÃO 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Instalação · passo 2 de 3</p>
+    <h2>O Docker Desktop</h2>
+    <ol class="passos">
+      <li>Baixe o <code>Docker Desktop Installer.exe</code> em <code>docs.docker.com/desktop</code>.</li>
+      <li>Rode o instalador e deixe marcado <b>Use WSL 2 instead of Hyper-V</b>.</li>
+      <li>No fim, clique em <b>Close</b>. Ele não abre sozinho: abra pelo menu Iniciar.</li>
+      <li>Aceite os termos. O login é opcional: pode pular.</li>
+      <li>Espere o canto inferior esquerdo mostrar <b>Engine running</b>.</li>
+    </ol>
+    <p class="dica"><b>Fora do Windows:</b> no Mac é o mesmo Docker Desktop, escolhendo chip Apple ou Intel. No Linux, siga o guia do Docker Engine no site oficial.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 31 · INSTALAÇÃO 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Instalação · passo 3 de 3</p>
+    <h2>O primeiro contêiner</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · qualquer pasta</div>
+      <pre>docker --version
+docker run hello-world</pre>
+    </div>
+    <ol class="passos">
+      <li>Abra um terminal novo. O que já estava aberto não conhece o comando <code>docker</code>.</li>
+      <li>Rode <code>docker --version</code>. Qualquer versão serve.</li>
+      <li>Rode <code>docker run hello-world</code>.</li>
+      <li>Deu certo se aparecer <code>Hello from Docker!</code> no meio do texto.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 32 · O QUE O HELLO-WORLD FEZ -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O que o hello-world fez</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">a saída do docker run hello-world, resumida</div>
+      <pre>Unable to find image 'hello-world:latest' locally  <span class="com"># não tinha a classe</span>
+Pulling from library/hello-world                   <span class="com"># baixou do Docker Hub</span>
+Hello from Docker!                                 <span class="com"># o objeto rodou</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>Rode <code>docker images</code>. A imagem <code>hello-world</code> está na lista, guardada no disco.</li>
+      <li>Rode <code>docker ps -a</code>. Tem um contêiner com <code>Exited</code>: ele rodou, escreveu e terminou.</li>
+      <li>Rode <code>docker run hello-world</code> de novo. Desta vez não baixa nada, e a lista do <code>ps -a</code> ganha mais um.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 33 · PLANO B -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Sem Docker na máquina?</p>
+    <h2>Docker no navegador</h2>
+    <ol class="passos">
+      <li>Entre em <code>killercoda.com</code> e faça login com a sua conta do GitHub.</li>
+      <li>Abra <b>Playgrounds</b> e escolha <b>Ubuntu</b>.</li>
+      <li>No terminal da página, rode <code>docker run hello-world</code>.</li>
+      <li>Tire o print com o <code>Hello from Docker!</code> na tela.</li>
+    </ol>
+    <div class="alerta">A sessão expira e <strong>leva tudo junto</strong>. Serve para treinar, não para guardar projeto.</div>
+    <p class="dica"><b>E o Play with Docker do plano de curso?</b> Foi desativado em março de 2026.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 34 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício 01 · no projeto da sua cartilha</p>
+    <h2>A arquitetura de produção do seu projeto</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Em <code>.docs/infra.md</code>, o desenho em Mermaid. A IA rascunha, <b>você confere</b> caixa por caixa.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">No mesmo arquivo, a tabela desenvolvimento e produção, com as cinco linhas.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">O caminho do seu login, do clique ao banco: o que roda em qual máquina.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Todo <code>127.0.0.1</code> e <code>localhost</code> chumbado no código, com arquivo e linha. <b>Não corrija ainda.</b></span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc2-aula-01-infra.md">copiar o prompt do infra.md</button>
+      <a class="btn" href="../prompts/uc2-aula-01-regras.md" download="REGRAS_UC2_AULA1.md">baixar o REGRAS_UC2_AULA1.md</a>
+    </div>
+    <p class="dica"><b>Entrega:</b> o <code>.docs/infra.md</code> e o print do <code>hello-world</code> em <code>.docs/prints/</code>, num commit.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 35 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que fica da aula 1</h2>
+    <ul class="recap">
+      <li>Servidor é <b>um programa esperando numa porta</b>. O seu notebook já é um.</li>
+      <li>IP é o prédio, porta é a sala, DNS é a agenda. <b>127.0.0.1 é sempre a máquina de quem pede.</b></li>
+      <li>O React roda <b>no navegador de quem abre</b>. Por isso o <code>fetch</code> no 127.0.0.1 falha nos outros.</li>
+      <li>Em produção, <b>só a 443 abre para a rua</b>, e com cadeado.</li>
+      <li>Imagem é a classe, contêiner é o objeto. <b>O contêiner leva a máquina junto.</b></li>
+    </ul>
+    <p class="proximo"><b>Próximo passo:</b> a recepção do prédio. Quem entrega a tela pronta na 443 e repassa o <code>/api</code>, rodando num contêiner.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
