@@ -183,7 +183,7 @@
       (extra ? '<a href="aula-' + pad(aulaAtual) + '.html">← aula ' + pad(aulaAtual) + '</a>' :
         (idx > 0 ? '<a href="aula-' + pad(abertas[idx - 1].n) + '.html">← aula anterior</a>' : "") +
         (idx > -1 && idx < abertas.length - 1 ? '<a href="aula-' + pad(abertas[idx + 1].n) + '.html">próxima aula →</a>' : "")) +
-      (window.PREVIEW ? "" : '<a href="../index.html' + (uc2 ? '#uc2' : '') + '">índice</a>') +
+      (window.PREVIEW ? "" : '<a href="../index.html#' + (uc2 ? 'uc2' : 'uc4') + '">índice</a>') +
       '<button type="button" id="baixar-pdf" title="Abre a impressão. No destino, escolha Salvar como PDF.">baixar PDF</button>' +
       '<span class="contador" id="contador"></span>';
 

@@ -33,8 +33,11 @@ Não monte a aula 2 em diante sem pedido.
 - Manifesto em `window.UC2`, no `assets/js/aulas.js`. O `slides.js` lê essa lista quando o `<body>`
   tem `data-uc="2"`, põe `UC2 · Aula NN` no rodapé e aponta o índice para `../index.html#uc2`.
 - Prompts em `prompts/uc2-aula-NN-*.md`. O `regras` baixa como `REGRAS_UC2_AULAN.md`.
-- O índice tem a seção `#uc2` antes da UC4. A aba da barra do topo virou "Slides das aulas" nas três
-  páginas de navegação.
+- O índice tem uma aba por unidade, UC2 e UC4, cada uma com a capa (botão da aula e números) e a
+  lista dela. A aba aberta fica no endereço, `index.html#uc2` ou `#uc4`; sem nada no endereço, abre a
+  UC2 depois que a aula 1 dela começou. Os painéis se chamam `painel-uc2` e `painel-uc4`, e não `uc2`,
+  para o endereço não fazer o navegador rolar até eles. A aba da barra do topo virou "Slides das
+  aulas" nas três páginas de navegação.
 - A UC2 não tem ciclos. O rodapé não mostra ciclo.
 
 ## Ledger

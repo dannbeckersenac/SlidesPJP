@@ -47,7 +47,25 @@
   .aula.sem-aula .t { font-family: inherit; font-weight: 400; font-size: 15px; font-style: italic; color: var(--suave); }
   .aula.sem-aula.aval .n { color: var(--vermelho); border-color: var(--vermelho); }
 
+  /* abas das unidades, logo abaixo da barra do topo */
+  .ucs-barra { padding-top: 26px; }
+  .ucs { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--linha);
+         border-radius: 14px; background: var(--painel); }
+  .ucs button { display: grid; grid-template-columns: auto auto; column-gap: 8px; row-gap: 2px;
+                align-items: baseline; text-align: left; cursor: pointer;
+                border: 0; border-radius: 10px; padding: 9px 16px; background: transparent;
+                color: var(--suave); font: 500 14px/1.2 var(--corpo);
+                transition: color .15s, background .15s; }
+  .ucs button b { font: 700 15px/1.2 var(--display); color: inherit; }
+  .ucs button small { grid-column: 1 / -1; font: 400 11px/1.2 var(--mono); letter-spacing: .06em; color: var(--suave-2); }
+  .ucs button:hover { color: var(--texto); background: var(--painel-2); }
+  .ucs button[aria-selected="true"] { color: var(--ink); background: var(--texto); }
+  .ucs button[aria-selected="true"] small { color: var(--ink); opacity: .7; }
+  .painel .hero { padding-top: 34px; }
+
   @media (max-width: 620px) {
+    .ucs { display: flex; }
+    .ucs button { flex: 1; }
     .aula { grid-template-columns: 44px 1fr auto; grid-template-areas: "n t t" "n data estado";
             row-gap: 6px; column-gap: 14px; }
     .aula .n { grid-area: n; align-self: start; }
@@ -95,61 +113,101 @@
   </div>
 </div>
 
-<!-- ============ capa ============ -->
-<header class="hero">
+<!-- ============ abas das unidades ============ -->
+<div class="ucs-barra">
   <div class="wrap">
-    <p class="eyebrow">UC4 · Senac Blumenau · Turma 2026.10.78</p>
-    <h1>Back-end de<br><em>Projetos Web</em></h1>
-    <p class="lede">18 encontros de 4 horas e 11 aulas, organizadas em cinco ciclos. Seis encontros não têm slides: a landing page da persona, que faltou na UC5, a visita à Senior Sistemas, os dois encontros que fecharam a avaliação do Ciclo 1, um deles dividido com uma palestra, o Workshop de Claude e a avaliação de 08/10. Um sétimo virou a aula extra do Paseo. O exemplo dos slides é o projeto do professor: um cardápio digital até a aula 5 e um controle de tarefas por checklist daí em diante. Cada aluno desenvolve o projeto da cartilha que sorteou.</p>
-
-    <div class="acoes">
-      <a class="btn-principal" id="btnAula" href="#" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
-        <span id="rotuloAula">Abrir a última aula liberada</span>
-      </a>
-      <p class="acoes-nota" id="notaAula"></p>
+    <div class="ucs" role="tablist" aria-label="Unidades curriculares">
+      <button type="button" role="tab" id="aba-uc2" aria-controls="painel-uc2" data-uc="uc2">
+        <b>UC2</b><span>Práticas DevOps</span><small>22 a 29/10</small>
+      </button>
+      <button type="button" role="tab" id="aba-uc4" aria-controls="painel-uc4" data-uc="uc4">
+        <b>UC4</b><span>Back-end</span><small>09/09 a 21/10</small>
+      </button>
     </div>
-
-    <ul class="stats">
-      <li><b>72 h</b><span>Carga horária</span></li>
-      <li><b>18</b><span>Encontros</span></li>
-      <li><b>5</b><span>Ciclos</span></li>
-      <li><b id="stLiberadas">0/15</b><span>Aulas liberadas</span></li>
-      <li><b id="stProxima">fim</b><span>Próxima aula</span></li>
-    </ul>
   </div>
-</header>
+</div>
 
-<!-- ============ UC2, a unidade em andamento ============ -->
-<section class="aulas-sec" id="uc2">
-  <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <h2>UC2 · Práticas DevOps em Projetos Web</h2>
-        <p>Cinco encontros de 4 horas, de 22 a 29/10. O caso é o projeto da cartilha de cada aluno, saindo do localhost para a produção. Cada aula abre às 18h do dia do encontro.</p>
+<!-- ============ UC2 ============ -->
+<div class="painel" id="painel-uc2" role="tabpanel" aria-labelledby="aba-uc2">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">UC2 · Senac Blumenau · Turma 2026.10.78</p>
+      <h1>Práticas DevOps<br><em>em Projetos Web</em></h1>
+      <p class="lede">Cinco encontros de 4 horas, de 22 a 29/10. O caso é o projeto da cartilha de cada aluno, que roda no localhost e ganha o caminho até a produção: servidor, nuvem, versões, entrega contínua e monitoramento. O exemplo dos slides continua o projeto do professor, o controle de tarefas por checklist.</p>
+
+      <div class="acoes">
+        <a class="btn-principal" data-campo="botao" href="#" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
+          <span data-campo="rotulo">Abrir a última aula liberada</span>
+        </a>
+        <p class="acoes-nota" data-campo="nota"></p>
       </div>
-    </div>
-    <div class="ciclos"><ul class="aulas" id="listaUc2"></ul></div>
-  </div>
-</section>
 
-<!-- ============ UC4, aulas por ciclo ============ -->
-<section class="aulas-sec" id="uc4">
-  <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <h2>UC4 · Back-end de Projetos Web</h2>
-        <p>Cada aula abre às 18h do dia do encontro. Os slides navegam com as setas do teclado.</p>
-      </div>
+      <ul class="stats">
+        <li><b>20 h</b><span>Carga horária</span></li>
+        <li><b>5</b><span>Encontros</span></li>
+        <li><b data-campo="liberadas">0</b><span>Aulas liberadas</span></li>
+        <li><b>29/10</b><span>Entrega final</span></li>
+      </ul>
     </div>
-    <div class="ciclos" id="lista"></div>
-  </div>
-</section>
+  </header>
+
+  <section class="aulas-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>As aulas</h2>
+          <p>Cada aula abre às 18h do dia do encontro. Os slides navegam com as setas do teclado.</p>
+        </div>
+      </div>
+      <div class="ciclos"><ul class="aulas" id="listaUc2"></ul></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ UC4 ============ -->
+<div class="painel" id="painel-uc4" role="tabpanel" aria-labelledby="aba-uc4">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">UC4 · Senac Blumenau · Turma 2026.10.78</p>
+      <h1>Back-end de<br><em>Projetos Web</em></h1>
+      <p class="lede">18 encontros de 4 horas e 11 aulas, organizadas em cinco ciclos. Seis encontros não têm slides: a landing page da persona, que faltou na UC5, a visita à Senior Sistemas, os dois encontros que fecharam a avaliação do Ciclo 1, um deles dividido com uma palestra, o Workshop de Claude e a avaliação de 08/10. Um sétimo virou a aula extra do Paseo. O exemplo dos slides é o projeto do professor: um cardápio digital até a aula 5 e um controle de tarefas por checklist daí em diante. Cada aluno desenvolve o projeto da cartilha que sorteou.</p>
+
+      <div class="acoes">
+        <a class="btn-principal" data-campo="botao" href="#" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
+          <span data-campo="rotulo">Abrir a última aula liberada</span>
+        </a>
+        <p class="acoes-nota" data-campo="nota"></p>
+      </div>
+
+      <ul class="stats">
+        <li><b>72 h</b><span>Carga horária</span></li>
+        <li><b>18</b><span>Encontros</span></li>
+        <li><b>5</b><span>Ciclos</span></li>
+        <li><b data-campo="liberadas">0/11</b><span>Aulas liberadas</span></li>
+        <li><b data-campo="proxima">fim</b><span>Próxima aula</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="aulas-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>As aulas</h2>
+          <p>Cada aula abre às 18h do dia do encontro. Os slides navegam com as setas do teclado.</p>
+        </div>
+      </div>
+      <div class="ciclos" id="lista"></div>
+    </div>
+  </section>
+</div>
 
 <footer>
   <div class="wrap">
     <span>As datas e a regra de liberação ficam em <code>assets/js/aulas.js</code>. Ajuste ali e o índice inteiro acompanha.</span>
-    <span>72 horas · Docente: Daniel Becker Bortoluzzi</span>
+    <span>Docente: Daniel Becker Bortoluzzi</span>
   </div>
 </footer>
 
@@ -163,43 +221,65 @@
       if (aulasUc2.indexOf(a) > -1) return "uc2/aula-" + pad(a.n) + ".html";
       return a.arquivo ? "aulas/" + a.arquivo : "aulas/aula-" + pad(a.n) + ".html";
     };
-    /* "Aula 01", ou "Aula 01 da UC2"; com minuscula, para o meio da frase */
-    var nomeDaAula = function (a, minuscula) {
-      return (minuscula ? "aula " : "Aula ") + pad(a.n) + (aulasUc2.indexOf(a) > -1 ? " da UC2" : "");
-    };
     var ehHoje = function (a) { return window.aberturaDaAula(a).toDateString() === agora.toDateString(); };
 
     if (window.MODO_DOCENTE) document.getElementById("avisoDocente").hidden = false;
 
-    /* ---------- capa: botão da aula e números ---------- */
+    /* ---------- abas: uma por unidade ----------
+       A aba aberta fica no endereço (#uc2, #uc4), e é assim que o
+       link "índice" dos slides volta para a unidade certa. Sem nada
+       no endereço, abre a unidade mais recente que já começou.
+       O painel se chama painel-uc2, e não uc2, para o endereço não
+       fazer o navegador rolar a página até ele. */
 
-    /* as duas UCs numa lista só, pela data: a UC2 vem depois da UC4 */
-    var todas = window.AULAS.concat(aulasUc2);
-    var liberadas = todas.filter(window.liberada);
-    var ultima = liberadas[liberadas.length - 1];
-    /* no modo docente uma aula futura já pode estar liberada: a próxima é a primeira que ainda não está */
-    var proxima = todas.find(function (a) { return !window.liberada(a) && window.aberturaDaAula(a) > agora; });
-
-    /* os números da capa são os da UC4 */
-    document.getElementById("stLiberadas").textContent = window.AULAS.filter(window.liberada).length + "/" + window.AULAS.length;
-    if (proxima) document.getElementById("stProxima").textContent = window.dataCurta(proxima.data);
-
-    var quandoProxima = !proxima ? ""
-      : ehHoje(proxima)
-        ? "A " + nomeDaAula(proxima, true) + " abre hoje, às " + window.LIBERA_HORA + "h."
-        : "A próxima abre em " + window.dataCurta(proxima.data) + ", às " + window.LIBERA_HORA + "h.";
-
-    var btnAula = document.getElementById("btnAula");
-    var notaAula = document.getElementById("notaAula");
-    if (ultima) {
-      btnAula.href = endereco(ultima);
-      btnAula.hidden = false;
-      document.getElementById("rotuloAula").textContent =
-        ehHoje(ultima) ? "Abrir a aula de hoje" : "Abrir a última aula liberada";
-      notaAula.textContent = nomeDaAula(ultima) + ", " + ultima.titulo + ". " + quandoProxima;
-    } else {
-      notaAula.textContent = quandoProxima;
+    var abas = Array.prototype.slice.call(document.querySelectorAll(".ucs [role=tab]"));
+    function abrir(uc) {
+      abas.forEach(function (b) {
+        var esta = b.dataset.uc === uc;
+        b.setAttribute("aria-selected", esta ? "true" : "false");
+        b.tabIndex = esta ? 0 : -1;
+        document.getElementById("painel-" + b.dataset.uc).hidden = !esta;
+      });
     }
+    abas.forEach(function (b) {
+      b.addEventListener("click", function () {
+        abrir(b.dataset.uc);
+        if (history.replaceState) history.replaceState(null, "", "#" + b.dataset.uc);
+      });
+    });
+    var pedida = window.location.hash.replace("#", "");
+    var comecouUc2 = aulasUc2.length && agora >= window.aberturaDaAula(aulasUc2[0]);
+    abrir(pedida === "uc2" || pedida === "uc4" ? pedida : (comecouUc2 ? "uc2" : "uc4"));
+
+    /* ---------- capa de cada aba: botão da aula e números ---------- */
+
+    function capa(painel, lista, rotuloDaAula) {
+      var campo = function (nome) { return painel.querySelector('[data-campo="' + nome + '"]'); };
+      var liberadas = lista.filter(window.liberada);
+      var ultima = liberadas[liberadas.length - 1];
+      /* no modo docente uma aula futura já pode estar liberada: a próxima é a primeira que ainda não está */
+      var proxima = lista.find(function (a) { return !window.liberada(a) && window.aberturaDaAula(a) > agora; });
+
+      var liberadasTxt = String(liberadas.length) + (campo("proxima") ? "/" + lista.length : "");
+      campo("liberadas").textContent = liberadasTxt;
+      if (proxima && campo("proxima")) campo("proxima").textContent = window.dataCurta(proxima.data);
+
+      var quandoProxima = !proxima ? ""
+        : ehHoje(proxima)
+          ? "A aula " + pad(proxima.n) + " abre hoje, às " + window.LIBERA_HORA + "h."
+          : "A próxima abre em " + window.dataCurta(proxima.data) + ", às " + window.LIBERA_HORA + "h.";
+
+      if (ultima) {
+        campo("botao").href = endereco(ultima);
+        campo("botao").hidden = false;
+        campo("rotulo").textContent = ehHoje(ultima) ? "Abrir a aula de hoje" : "Abrir a última aula liberada";
+        campo("nota").textContent = "Aula " + pad(ultima.n) + ", " + ultima.titulo + ". " + quandoProxima;
+      } else {
+        campo("nota").textContent = quandoProxima;
+      }
+    }
+    capa(document.getElementById("painel-uc2"), aulasUc2);
+    capa(document.getElementById("painel-uc4"), window.AULAS);
 
     /* ---------- lista das aulas ---------- */
 
@@ -210,6 +290,21 @@
       if (window.liberada(a)) return { cls: " ok", txt: "slides" };
       if (ehHoje(a)) return { cls: " trancado", txt: "abre às " + window.LIBERA_HORA + "h" };
       return { cls: "", txt: "a liberar" };
+    }
+
+    /* uma linha da lista: link se a aula está no ar, caixa apagada se não */
+    function linha(a) {
+      var e = estado(a);
+      var aberta = window.liberada(a);
+      var cls = "aula" + (aberta ? "" : " indisponivel") + (a.avaliacao ? " aval" : "");
+      var conteudo =
+        '<span class="n">' + (a.chave ? "+" : pad(a.n)) + '</span>' +
+        '<span class="data">' + window.dataCurta(a.data) + '</span>' +
+        '<span class="t">' + a.titulo + '</span>' +
+        '<span class="estado' + e.cls + '">' + e.txt + '</span>';
+      return aberta
+        ? '<li><a class="' + cls + '" href="' + endereco(a) + '">' + conteudo + '</a></li>'
+        : '<li><div class="' + cls + '">' + conteudo + '</div></li>';
     }
 
     /* encontro sem slides: sem número, sem link, só a data e o que aconteceu */
@@ -231,18 +326,7 @@
           return (x.chave ? 1 : 0) - (y.chave ? 1 : 0);   /* no mesmo dia, o extra vem depois da aula */
         });
       var itens = linhas.map(function (a) {
-        if (!("n" in a) && !a.chave) return semAula(a);
-        var e = estado(a);
-        var aberta = window.liberada(a);
-        var cls = "aula" + (aberta ? "" : " indisponivel") + (a.avaliacao ? " aval" : "");
-        var conteudo =
-          '<span class="n">' + (a.chave ? "+" : pad(a.n)) + '</span>' +
-          '<span class="data">' + window.dataCurta(a.data) + '</span>' +
-          '<span class="t">' + a.titulo + '</span>' +
-          '<span class="estado' + e.cls + '">' + e.txt + '</span>';
-        return aberta
-          ? '<li><a class="' + cls + '" href="' + endereco(a) + '">' + conteudo + '</a></li>'
-          : '<li><div class="' + cls + '">' + conteudo + '</div></li>';
+        return (!("n" in a) && !a.chave) ? semAula(a) : linha(a);
       }).join("");
       return '<section class="ciclo"><div class="ciclo-cab"><span class="ciclo-tag">Ciclo ' + c.n +
              ' · ' + c.aulas + '</span><h2>' + c.nome + '</h2><p class="guia">“' + c.guia +
@@ -250,19 +334,7 @@
     }).join("");
     document.getElementById("lista").innerHTML = html;
 
-    document.getElementById("listaUc2").innerHTML = aulasUc2.map(function (a) {
-      var e = estado(a);
-      var aberta = window.liberada(a);
-      var cls = "aula" + (aberta ? "" : " indisponivel") + (a.avaliacao ? " aval" : "");
-      var conteudo =
-        '<span class="n">' + pad(a.n) + '</span>' +
-        '<span class="data">' + window.dataCurta(a.data) + '</span>' +
-        '<span class="t">' + a.titulo + '</span>' +
-        '<span class="estado' + e.cls + '">' + e.txt + '</span>';
-      return aberta
-        ? '<li><a class="' + cls + '" href="' + endereco(a) + '">' + conteudo + '</a></li>'
-        : '<li><div class="' + cls + '">' + conteudo + '</div></li>';
-    }).join("");
+    document.getElementById("listaUc2").innerHTML = aulasUc2.map(linha).join("");
   })();
 </script>
 

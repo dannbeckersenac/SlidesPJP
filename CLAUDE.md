@@ -437,6 +437,7 @@ docente/                fora do Git: as cartilhas e a página de sorteio, só na
 cronograma/             o calendário do ano inteiro, das seis UCs, página à parte
 hackathon/              o hackathon do fim do ano: página do regulamento, apresentação e o PDF
 uc2/                    os slides da UC2, com o CLAUDE.md dela; o manifesto é o window.UC2, no aulas.js
+                        (o índice separa a UC2 e a UC4 em abas, index.html#uc2 e #uc4)
 ```
 
 **O índice, o cronograma e a página do hackathon são as páginas de navegação** e dividem o mesmo
