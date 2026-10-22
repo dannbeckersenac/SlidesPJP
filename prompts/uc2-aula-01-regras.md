@@ -15,13 +15,14 @@ da cartilha com o nome `REGRAS.md`, por cima da versão da UC4. Só vale a vers�
   `fastapi dev main.py` na porta 8000. O MySQL roda na porta 3306.
 - `.docs/` tem `README.md`, `arquitetura.md`, `decisoes.md`, `proximos-passos.md`, `roadmap.md`
   e `ia.md`. Nesta aula ela ganha o `infra.md`, com a arquitetura de produção, e a pasta `prints/`.
+- Trabalho individual, inclusive o desenho de abertura. Cada aluno usa o próprio projeto e repositório.
 - Código, nomes, comentários, documentação e respostas sempre em português do Brasil.
 - Cartilha: escreva aqui o número e o nome, e em uma linha a pessoa e a regra.
 
 ## O que já foi visto, e pode usar
 
 - Tudo o que a UC4 ensinou e já está no código do projeto. Leia o código antes de supor.
-- Cliente e servidor: o servidor é um programa esperando numa porta; o cliente toma a iniciativa.
+- Cliente e servidor: o servidor recebe pedidos em uma porta; o cliente inicia a comunicação.
 - IP, porta, `localhost` e `127.0.0.1`, `0.0.0.0`, DNS e domínio, HTTP na porta 80 e HTTPS na 443.
 - O React roda no navegador de quem abre a tela. O Vite só entrega os arquivos.
 - `fastapi dev main.py --host 0.0.0.0` e `npm run dev -- --host`, só para testar na rede do laboratório.
@@ -30,8 +31,13 @@ da cartilha com o nome `REGRAS.md`, por cima da versão da UC4. Só vale a vers�
   banco, `.env` e CORS.
 - Na arquitetura: servidor web como recepção, CDN, balanceador, réplica de banco e monitoramento,
   só como nomes de peças num desenho.
-- Diagrama em Mermaid dentro de Markdown: `flowchart LR`, caixas com `apelido[texto]`, setas
-  `-->` com texto `|assim|` e cilindro `[( )]` para banco.
+- Mermaid: `flowchart LR`, caixas com `apelido[texto]`, setas `-->|texto|` e cilindro `[(texto)]`
+  para banco. No Markdown, use abertura ```mermaid e fechamento ```. No Mermaid Live, cole
+  só o conteúdo, começando em `flowchart LR`.
+- No desenho da aula, o servidor web recebe HTTPS na 443 e encaminha `/api` à API interna
+  na 8000. O banco atende internamente na 3306. É uma proposta, não uma regra para todo site.
+- A imagem reúne os arquivos do programa e suas dependências. O contêiner é uma instância
+  isolada que compartilha o núcleo do sistema. Dados de banco exigem armazenamento próprio.
 - Docker: o que é imagem e contêiner, Docker Hub, `docker --version`, `docker run hello-world`,
   `docker images` e `docker ps -a`. A instalação do Docker Desktop com WSL 2.
 
@@ -67,13 +73,15 @@ da cartilha com o nome `REGRAS.md`, por cima da versão da UC4. Só vale a vers�
 - O que é infraestrutura vai no `infra.md`: o desenho de produção, a tabela de ambientes, o caminho
   de uma requisição e o que ainda está chumbado no código.
 - Escreva curto e com certeza. O que você deduziu sem ver no código leva `?` no fim da linha.
+- Não leia arquivos `.env`, chaves privadas ou credenciais. Consulte `.env.exemplo`, se existir.
 - Nunca escreva senha, chave do `.env`, token ou IP de servidor real na `.docs/` nem no README.
 
 ## Como responder
 
 - Uma coisa por vez. Não adiante etapa que eu não pedi.
 - Se a tarefa exigir algo da lista de cima, avise antes e proponha a versão simples.
-- Em todo desenho de arquitetura, diga em qual máquina cada peça roda e em qual porta ela atende.
+- Em todo desenho, diga onde cada peça roda. Para servidores, indique as portas e o acesso
+  público ou interno. Para o navegador, indique que é cliente. Não invente uma porta pública nele.
 - Quando houver mais de uma escolha de infraestrutura, me mostre as opções e o que cada uma custa.
   A escolha é minha.
 - Justifique cada decisão em uma linha. Eu preciso conseguir defender o que entrego na apresentação.

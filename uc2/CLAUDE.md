@@ -24,8 +24,8 @@ Não monte a aula 2 em diante sem pedido.
 - O "case de aplicação que precisa ir para produção" do PTD é o **projeto da cartilha de cada aluno**,
   que fechou a UC4 rodando em localhost: React (Vite, 5173), FastAPI (8000) e MySQL (3306).
 - O exemplo dos slides continua o **Tarefa Certa**, o projeto do professor (seção 4 do CLAUDE.md da raiz).
-- O PTD fala em equipe. Até o docente decidir, os grupos existem só na atividade de abertura da
-  aula 1. O projeto continua individual.
+- O PTD fala em equipe, mas o docente definiu trabalho individual na aula 1, inclusive na abertura.
+  Cada aluno faz o próprio desenho, testa no próprio computador e entrega no próprio repositório.
 
 ## Onde ficam os arquivos
 
@@ -55,10 +55,25 @@ nuvem, branches e PR, GitHub Actions, monitoramento de verdade.
   `--host 0.0.0.0`, o mesmo endereço responde `{"status":"ok"}` (FastAPI 0.159).
 - `nslookup www.sc.senac.br` devolveu `191.235.236.33` em 22/10/2026.
 - `docker run hello-world` imprime `Hello from Docker!` (Docker 29.8).
-- O Mermaid do slide 22 renderiza com o mermaid-cli.
+- O bloco do slide 22 começa em `flowchart LR`, pronto para o Mermaid Live. Os marcadores
+  de Markdown só entram ao salvar em `.docs/infra.md`; colá-los no editor causa UnknownDiagramError.
 - **Play with Docker foi desativado em 01/03/2026**, apesar de estar no PTD. O plano B é o Killercoda.
-- Docker Desktop no Windows (docs.docker.com, lido em 22/10/2026): WSL 2.1.5 ou maior, Windows 10
-  22H2 ou 11, 8 GB de RAM, virtualização ligada na BIOS. A instalação por usuário não pede
-  administrador, mas **ligar o WSL 2 pela primeira vez pede**. O login no Docker é opcional.
-- **Não testado:** se o playground Ubuntu do Killercoda vem com Docker, e se o firewall do
-  laboratório deixa o colega acessar a API pelo IP. Os slides 12 e 33 dependem disso.
+- Docker Desktop no Windows (guia oficial conferido na revisão): WSL 2.1.5 ou maior,
+  8 GB de RAM e virtualização habilitada. Conferir também edição, versão e suporte do Windows
+  no guia. A instalação por usuário não pede administrador; habilitar o WSL pode pedir.
+  O login no Docker é opcional.
+- A documentação oficial do Killercoda descreve o ambiente `ubuntu` como Ubuntu 24.04 com
+  Docker e Podman. Não foi executada uma sessão autenticada do playground nesta revisão.
+  O slide 33 pede `docker --version` antes do exercício.
+- O teste individual do slide 12 usa o IP da própria máquina. Ele não comprova acesso externo
+  nem a liberação do firewall da rede do laboratório.
+
+## Fontes da revisão
+
+- Mermaid Live e Markdown: https://mermaid.js.org/intro/getting-started.html
+- Imagens, contêineres e núcleo compartilhado: https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/
+- Ambiente virtual Python: https://docs.python.org/3/library/venv.html
+- Docker Desktop no Windows: https://docs.docker.com/desktop/setup/install/windows-install/
+- CORS e origens: https://fastapi.tiangolo.com/tutorial/cors/
+- Ambiente Ubuntu do Killercoda: https://killercoda.com/creators
+- Encerramento do Play with Docker: https://github.com/play-with-docker/play-with-docker/blob/master/README.md
