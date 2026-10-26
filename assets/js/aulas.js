@@ -55,7 +55,8 @@ window.UC2 = {
   sigla: "UC2",
   nome: "Práticas DevOps em Projetos Web",
   aulas: [
-    { n: 1, data: "2026-10-22", titulo: "Onde o seu sistema mora: cliente, servidor e o Docker", pronto: true }
+    { n: 1, data: "2026-10-22", titulo: "Onde o seu sistema mora: cliente, servidor e o Docker", pronto: true },
+    { n: 2, data: "2026-10-26", titulo: "Tela e API na mesma porta: build, variáveis e o servidor web", pronto: true }
   ]
 };
 

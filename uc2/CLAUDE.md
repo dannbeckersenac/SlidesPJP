@@ -16,8 +16,24 @@ visual, a escrita dos slides, os prompts e as regras. Este arquivo guarda só o 
 O `cronograma/dados.js` marca 27/10 como avaliação. O PTD só fala em entrega final. **Não resolvido
 com o docente:** não invente avaliação até ele decidir.
 
-**Só a aula 1 foi aprovada.** O plano das outras quatro foi proposto e o docente não aprovou ainda.
-Não monte a aula 2 em diante sem pedido.
+## O plano das aulas 2 a 5, definido pelo docente em 24/10/2026
+
+O docente tem autorização da coordenação para sair do roteiro do PTD. O plano é dele:
+
+| Aula | Data | Conteúdo |
+|---|---|---|
+| 2 | 26/10 | Tela e API respondendo **na mesma porta**: build do React, endereço da API fora do código, servidor web com proxy do `/api`. Tudo local. |
+| 3 | 27/10 | Direto ao ponto: a IA gera os arquivos do Docker para subir tudo com um comando, banco incluso, na mesma máquina, e o aluno revisa. Depois, IaaS: conta grátis na AWS, uma EC2, SSH, o projeto subindo lá, e as diferenças entre o Windows do laboratório e o Linux da VM. O docente pode mostrar ao vivo a configuração de um domínio. |
+| 4 | 28/10 | O banco sai da EC2 e vai para uma conta grátis no Supabase. Front e back continuam na EC2. Sistemas separados se comunicando. |
+| 5 | 29/10 | No máximo 1h de conteúdo novo: `docker logs` e como perceber que algo caiu. O segundo tempo inteiro é das apresentações. |
+
+Decidido em 24/10: o servidor web é o **Caddy**, com um slide comparando com o Nginx; o HTTPS vale
+para **todos os alunos**, cada um com um subdomínio criado pelo docente.
+
+**Em aberto para a aula 3:** a conta da AWS. Nem todo aluno pode abrir conta própria: o cadastro pede
+cartão, e o contrato da AWS exige quem possa contratar. Precisa de plano B (conta do docente com um
+usuário por aluno, ou AWS Academy). O Supabase da aula 4 é PostgreSQL: muda o driver e a URL do banco, e a EC2
+precisa do endereço do Session pooler, porque a conexão direta grátis é IPv6.
 
 ## O caso e o exemplo
 
@@ -46,8 +62,10 @@ Não monte a aula 2 em diante sem pedido.
 |---|---|
 | 1 | cliente e servidor como papel; IP (`ipconfig`), porta, `localhost`/`127.0.0.1`, `0.0.0.0` (`--host` no FastAPI e no Vite); o React roda no navegador de quem abre; DNS (`nslookup`); HTTPS e a 443; aba Rede do DevTools; CDN, balanceador, réplica e monitoramento só como nomes; desenvolvimento e produção; Mermaid (`flowchart LR`, `[ ]`, `-->|texto|`, `[( )]`). **Segundo tempo:** "na minha máquina funciona", o venv isola pouco, a história do contêiner, imagem e contêiner como classe e objeto, contêiner e VM, instalação do WSL 2 e do Docker Desktop, `docker run hello-world`, `docker images`, `docker ps -a`, Killercoda como plano B |
 
-Fora da aula 1, de propósito: `Dockerfile`, `compose`, `-p`, Nginx, `npm run build`, provedor de
-nuvem, branches e PR, GitHub Actions, monitoramento de verdade.
+| 2 | a dor do `npm run dev` em produção; `npm run build` e o `dist/` (nome com hash); o `dist/index.html` aberto do disco fica em branco; o endereço da API copiado para dentro do build; variáveis do Vite (`.env.development`, `.env.production`, `VITE_`, `import.meta.env`) e a diferença para o `.env` do backend; `src/api.js` com `URL_DA_API`; servidor web (entregar arquivos, proxy reverso, HTTPS); Nginx e Caddy comparados, com o `nginx.conf` só para ler; o `Caddyfile` com `:80`, `handle_path`, `reverse_proxy`, `handle`, `root`, `file_server`; `host.docker.internal`; `docker run --rm -p 8080:80 -v ... caddy:2`; mesma origem e o CORS; o aviso do Caddy sem domínio |
+
+Fora até a aula 2, de propósito: `Dockerfile`, `compose`, domínio e HTTPS no `Caddyfile`, provedor
+de nuvem, branches e PR, GitHub Actions, monitoramento de verdade.
 
 ## Testado na montagem da aula 1
 
@@ -67,6 +85,25 @@ nuvem, branches e PR, GitHub Actions, monitoramento de verdade.
   O slide 33 pede `docker --version` antes do exercício.
 - O teste individual do slide 12 usa o IP da própria máquina. Ele não comprova acesso externo
   nem a liberação do firewall da rede do laboratório.
+
+## Testado na montagem da aula 2 (24/10/2026)
+
+Vite 8.3 com React 19, FastAPI 0.159 e Caddy 2.11, num projeto descartável igual ao do professor.
+
+- O `npm install` do template do Vite 8 falhou no npm 10.8 (`Cannot read properties of null
+  (reading 'edgesOut')`) e passou com `--legacy-peer-deps`. Os projetos da turma já têm `node_modules`.
+- O build copia o endereço do `fetch` para o `.js` do `dist/assets/`. Com `VITE_URL_DA_API=/api` no
+  `.env.production`, o `127.0.0.1` some do build e o `npm run dev` continua usando o `.env.development`.
+- O `dist/index.html` aberto do disco fica em branco: o console mostra o script de `file:///assets/...`
+  bloqueado por CORS, origem `null`.
+- O `Caddyfile` e o `nginx.conf` dos slides 15 e 16, copiados do HTML, servem a tela e encaminham o
+  `/api` (`/api/health`, `/api/tarefas` e o `POST /api/login` com formulário). Caddyfile com CRLF funciona.
+- O Caddy com `:80` registra no log que não vai aplicar HTTPS automático. É o slide 23.
+- No Linux, o contêiner só chega na API com `--add-host=host.docker.internal:host-gateway` e a API em
+  `--host 0.0.0.0`. No Docker Desktop do Windows o nome já existe; isso não foi testado aqui.
+- O `docker run --rm` em primeiro plano para com `Ctrl+C` e apaga o contêiner.
+- **Não testado:** o comando com crase do PowerShell e o `-v ./caminho` relativo no Windows. Se o
+  Docker reclamar do caminho, a troca é `./` por `${PWD}/`.
 
 ## Fontes da revisão
 

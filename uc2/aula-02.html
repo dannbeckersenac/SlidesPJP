@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 02 · Tela e API na mesma porta · UC2</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="2" data-aula="2">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC2 · Práticas DevOps em Projetos Web · Aula 02</p>
+    <h1>Tela e API na mesma porta</h1>
+    <p class="sub">Hoje vocês vão gerar os arquivos da tela e configurar o Caddy. Ele vai entregar esses arquivos e encaminhar os pedidos para a API.</p>
+  </div>
+  <div class="rodape"><span>Do servidor à entrega contínua</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>O desenho da aula 1</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Navegador</span><span class="d">o cliente, na máquina do usuário</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Servidor web</span><span class="d">entrega a tela e encaminha o <code>/api</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">FastAPI</span><span class="d">porta 8000, rede interna</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">MySQL</span><span class="d">porta 3306, rede interna</span></div>
+    </div>
+    <p class="intro">Hoje vocês configuram o servidor web na própria máquina. A API e o banco continuam como na UC4.</p>
+    <p class="dica">Hoje vamos usar HTTP local. Na próxima aula, vamos configurar o domínio e o HTTPS no servidor.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR: npm run dev -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor de hoje</p>
+    <h2>O <code>npm run dev</code> foi feito para quem programa</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">Precisa do Node</span><span class="d">Para rodar o Vite, o servidor precisa do Node e das dependências do projeto.</span></div>
+      <div class="cartao"><span class="t">Arquivo por arquivo</span><span class="d">Cada componente do <code>src/</code> chega ao navegador como um pedido separado.</span></div>
+      <div class="cartao"><span class="t">Recarrega sozinho</span><span class="d">Ele vigia os arquivos para atualizar a tela enquanto vocês editam.</span></div>
+    </div>
+    <p class="dica">Com o <code>npm run dev</code>, abram <code>F12</code>, aba <b>Rede</b>, e recarreguem. O <code>App.jsx</code> aparece na lista como um pedido próprio.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · O BUILD -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O build gera os arquivos da tela</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">src/</span><span class="d">JSX, vários componentes, imports do <code>node_modules</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">npm run build</span><span class="d">o Vite traduz o JSX e junta os arquivos</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">dist/</span><span class="d">HTML, JavaScript, CSS e outros arquivos da tela</span></div>
+    </div>
+    <div class="destaque">O servidor web entrega o <code>dist/</code>. Ele não precisa do Node para servir a tela.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · MÃO NA MASSA 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 5</p>
+    <h2>Gerem o build</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · dentro de frontend/</div>
+      <pre>npm run build
+
+<span class="com"># dist/index.html                  0.45 kB</span>
+<span class="com"># dist/assets/index-nqMpL4T3.css   1.78 kB</span>
+<span class="com"># dist/assets/index-DJc9s8uz.js  219.72 kB</span></pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>frontend/</code>, rodem <code>npm run build</code>.</li>
+      <li>Abram a pasta <code>dist/</code> no VS Code. Confiram o <code>index.html</code> e a pasta <code>assets/</code>.</li>
+      <li>Confiram o código no nome dos arquivos. Ele muda com o conteúdo para o navegador buscar a versão nova.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · A DOR: ABRIR DO DISCO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Teste no navegador</p>
+    <h2>Abram o <code>dist/index.html</code> com dois cliques</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">console do navegador · F12</div>
+      <pre>Access to script at 'file:///assets/index-DJc9s8uz.js'
+from origin 'null' has been blocked by CORS policy</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No Explorador de Arquivos, abram o <code>dist/index.html</code>. A página fica em branco.</li>
+      <li>O HTML pede <code>/assets/...</code>. Aberto do disco, esse caminho aponta para a raiz da unidade.</li>
+      <li>No <code>F12</code>, abram o Console. Confiram o erro ao carregar o script por <code>file://</code>.</li>
+    </ol>
+    <div class="destaque">Vamos servir o <code>dist/</code> por HTTP para o navegador carregar a tela.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · A DOR: O ENDEREÇO FOI JUNTO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O endereço no build</p>
+    <h2>O endereço da API foi junto para o build</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">dist/assets/index-DJc9s8uz.js · um trecho, de uma linha só</div>
+      <pre>fetch(`http://127.0.0.1:8000/tarefas`).then(e=>e.json())</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abram o arquivo <code>.js</code> do <code>dist/assets/</code> no VS Code.</li>
+      <li>Com <code>Ctrl+F</code>, procurem <code>127.0.0.1</code>. Se o <code>fetch</code> usa esse endereço, ele aparece no build.</li>
+      <li>Usem o <code>Ctrl+F</code> do próprio arquivo. A busca geral do VS Code ignora o <code>dist/</code>, porque ele está no <code>.gitignore</code>.</li>
+    </ol>
+    <div class="alerta">O JavaScript roda no navegador do usuário. Com esse endereço, ele procura a API no computador de quem abriu a tela.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · JAVASCRIPT QUE FALTAVA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">JavaScript que faltava</p>
+    <h2>Variáveis de desenvolvimento e de produção</h2>
+    <table>
+      <thead><tr><th>Comando</th><th>Arquivo lido</th><th>VITE_URL_DA_API</th></tr></thead>
+      <tbody>
+        <tr><td><code>npm run dev</code></td><td class="neutro"><code>.env.development</code></td><td>http://127.0.0.1:8000</td></tr>
+        <tr><td><code>npm run build</code></td><td class="neutro"><code>.env.production</code></td><td>/api</td></tr>
+      </tbody>
+    </table>
+    <div class="codigo compacto">
+      <div class="arquivo">como o código lê a variável</div>
+      <pre>import.meta.env.VITE_URL_DA_API</pre>
+    </div>
+    <p class="dica">Por padrão, o Vite expõe as variáveis <code>VITE_</code> ao código da tela. No build, ele copia os valores para o JavaScript.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · NÃO É O .env DO BACKEND -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Variáveis no front e no back</p>
+    <h2>Quem lê cada arquivo de variáveis</h2>
+    <table>
+      <thead><tr><th></th><th>.env do backend</th><th>.env.* do Vite</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Quem lê</strong></td><td class="neutro">o Python, no servidor</td><td>o build, que copia o valor para o JavaScript</td></tr>
+        <tr><td><strong>Quem vê</strong></td><td class="neutro">quem tem acesso ao arquivo no servidor</td><td>qualquer um que abra a tela</td></tr>
+        <tr><td><strong>Vai para o Git</strong></td><td class="neutro">não, só o <code>.env.exemplo</code></td><td>estes dois arquivos, sem segredos</td></tr>
+        <tr><td><strong>Pode ter segredo</strong></td><td class="neutro">sim</td><td>nunca</td></tr>
+      </tbody>
+    </table>
+    <div class="alerta">Tudo que vocês colocam em variável <code>VITE_</code> pode aparecer no navegador. Senhas e chaves ficam no backend.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · MÃO NA MASSA 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 5</p>
+    <h2>Criem os dois arquivos de variáveis</h2>
+    <div class="comparacao">
+      <div class="lado"><div class="rotulo">frontend/.env.development</div><div class="codigo"><pre>VITE_URL_DA_API=http://127.0.0.1:8000</pre></div></div>
+      <div class="lado"><div class="rotulo">frontend/.env.production</div><div class="codigo"><pre>VITE_URL_DA_API=/api</pre></div></div>
+    </div>
+    <ol class="passos curta">
+      <li>Criem os dois arquivos dentro de <code>frontend/</code>, ao lado do <code>package.json</code>.</li>
+      <li>Usem o endereço que a tela de vocês chama hoje no <code>.env.development</code>.</li>
+      <li>No <code>.env.production</code>, usem <code>/api</code>. O navegador usa o protocolo, o endereço e a porta da própria tela.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · MÃO NA MASSA 3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 5</p>
+    <h2>Troquem o endereço fixo pela variável</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · frontend/src/api.js</div>
+      <pre><span class="com">// o endereço da API vem do .env.development ou do .env.production</span>
+<span class="kw">export const</span> URL_DA_API = <span class="kw">import</span>.meta.env.VITE_URL_DA_API;</pre>
+    </div>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · frontend/src/App.jsx</div>
+      <pre><span class="kw">import</span> { URL_DA_API } <span class="kw">from</span> <span class="str">"./api"</span>;
+<span class="fn">fetch</span>(URL_DA_API + <span class="str">"/tarefas"</span>)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criem o <code>src/api.js</code>. Em cada arquivo da lista do <code>infra.md</code>, importem e troquem o endereço. Ajustem o caminho do import conforme a pasta.</li>
+      <li>Reiniciem o <code>npm run dev</code>. Confiram se o login e as consultas continuam funcionando.</li>
+      <li>Rodem <code>npm run build</code> e procurem de novo no <code>.js</code>. Agora aparece <code>/api</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · O SERVIDOR WEB -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O que um servidor web faz</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Entrega arquivos</span><span class="d">Recebe o pedido da tela e devolve o HTML, o JavaScript e o CSS do <code>dist/</code>.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Encaminha pedidos</span><span class="d">Repassa o que começa com <code>/api</code> para a API e devolve a resposta.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Cuida do HTTPS</span><span class="d">Guarda o certificado e atende na 443. Isso entra na próxima aula.</span></div>
+    </div>
+    <p class="dica">Encaminhar esses pedidos é o papel do proxy reverso. O navegador acessa o servidor web, que chama a API.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · O PROXY REVERSO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Um pedido passando pelo proxy reverso</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Navegador</span><span class="d">pede <code>/api/tarefas</code> na porta 8080</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Servidor web</span><span class="d">tira o <code>/api</code> e repassa</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">FastAPI</span><span class="d">recebe <code>/tarefas</code> na porta 8000</span></div>
+    </div>
+    <div class="destaque">Comparem os endereços da tela e da API. O protocolo, o endereço e a porta são iguais. Por isso, esses pedidos dispensam o CORS.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · NGINX E CADDY -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Dois servidores web</p>
+    <h2>Nginx e Caddy</h2>
+    <table>
+      <thead><tr><th></th><th>Nginx</th><th>Caddy</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Desde</strong></td><td class="neutro">2004, escrito em C</td><td class="neutro">2015, escrito em Go</td></tr>
+        <tr><td><strong>Configuração</strong></td><td class="neutro">blocos <code>server</code> e <code>location</code></td><td class="neutro">um <code>Caddyfile</code> mais curto</td></tr>
+        <tr><td><strong>HTTPS</strong></td><td class="neutro">neste exemplo, certificado e renovação configurados à parte</td><td class="neutro">emite e renova certificados automaticamente</td></tr>
+        <tr><td><strong>Nesta aula</strong></td><td class="neutro">vamos ler a configuração para comparar</td><td class="neutro">vamos usar no projeto</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Vamos usar o Caddy. Ele também vai cuidar da emissão e da renovação do certificado na próxima aula.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · O MESMO NO NGINX -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Para comparar · não precisam digitar</p>
+    <h2>O trabalho de hoje no Nginx</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">nginx.conf · testado com a imagem nginx</div>
+      <pre><span class="kw">server</span> {
+    listen <span class="num">80</span>;
+    <span class="com"># a barra no fim do proxy_pass tira o /api do caminho</span>
+    <span class="kw">location</span> /api/ {
+        proxy_pass http://host.docker.internal:8000/;
+    }
+    <span class="com"># o resto são os arquivos do build do React</span>
+    <span class="kw">location</span> / {
+        root /usr/share/nginx/html;
+    }
+}</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · O CADDYFILE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O mesmo trabalho no Caddy</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · Caddyfile, na raiz do repositório</div>
+      <pre><span class="com"># atende na porta 80, sem domínio e sem HTTPS</span>
+:<span class="num">80</span> {
+    <span class="com"># handle_path tira o /api: /api/tarefas chega como /tarefas</span>
+    <span class="kw">handle_path</span> /api/* {
+        <span class="fn">reverse_proxy</span> host.docker.internal:8000
+    }
+    <span class="com"># o resto são os arquivos do build do React</span>
+    <span class="kw">handle</span> {
+        <span class="fn">root</span> * /srv
+        <span class="fn">file_server</span>
+    }
+}</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · HOST.DOCKER.INTERNAL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Como o Caddy chega à API fora do contêiner</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t"><code>127.0.0.1</code> no contêiner</span><span class="d">Aponta para o próprio contêiner. No nosso exemplo, a API está fora dele.</span></div>
+      <div class="cartao"><span class="t"><code>host.docker.internal</code></span><span class="d">O nome que o Docker Desktop dá, dentro do contêiner, para a máquina onde ele roda.</span></div>
+    </div>
+    <div class="destaque">A API precisa aceitar conexões vindas do contêiner. Vamos iniciá-la com <code>--host 0.0.0.0</code>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · ÁRVORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O repositório depois de hoje</p>
+    <h2>Onde salvar os arquivos</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">raiz do repositório da cartilha</div>
+      <pre>repositorio/
+├── Caddyfile             <span class="com"># novo: o servidor web</span>
+├── backend/              <span class="com"># não muda</span>
+└── frontend/
+    ├── .env.development  <span class="com"># novo: a API no npm run dev</span>
+    ├── .env.production   <span class="com"># novo: a API no build</span>
+    ├── dist/             <span class="com"># gerado pelo build, fora do Git</span>
+    └── src/
+        └── api.js        <span class="com"># novo: lê VITE_URL_DA_API</span></pre>
+    </div>
+    <p class="dica">Confiram se o <code>dist/</code> está no <code>.gitignore</code> do <code>frontend/</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · MÃO NA MASSA 4 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 5</p>
+    <h2>Preparem o Caddyfile e a API</h2>
+    <ol class="passos">
+      <li>Criem o <code>Caddyfile</code> na raiz do repositório, sem extensão. Copiem o bloco do slide 16 pelo botão.</li>
+      <li>Liguem o MySQL, como na UC4.</li>
+      <li>No terminal do <code>backend/</code>, rodem <code>fastapi dev main.py --host 0.0.0.0</code>.</li>
+      <li>Abram <code>http://127.0.0.1:8000/health</code>. Tem que aparecer <code>{"status":"ok"}</code>.</li>
+    </ol>
+    <p class="dica">Se o Windows mostrar um aviso de firewall para o Python, chamem o professor.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · MÃO NA MASSA 5 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 5</p>
+    <h2>Subam o Caddy num contêiner</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · na raiz do repositório</div>
+      <pre>docker run --rm -p 8080:80 `
+  -v ./Caddyfile:/etc/caddy/Caddyfile `
+  -v ./frontend/dist:/srv `
+  caddy:2</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Abram um terminal novo na raiz do repositório e rodem o comando. Na primeira vez, ele baixa a imagem.</li>
+      <li>Abram <code>http://localhost:8080</code> e entrem com cada perfil.</li>
+      <li>Na aba <b>Rede</b>, os pedidos vão para <code>localhost:8080/api/...</code>. Para parar, <code>Ctrl+C</code>.</li>
+    </ol>
+    <p class="dica">No Linux ou no Killercoda, troquem cada <code>`</code> por <code>\</code> e acrescentem <code style="white-space: nowrap">--add-host=host.docker.internal:host-gateway</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · LEITURA DO DOCKER RUN -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura do comando</p>
+    <h2>Cada pedaço do <code>docker run</code></h2>
+    <table>
+      <thead><tr><th>Pedaço</th><th>O que faz</th></tr></thead>
+      <tbody>
+        <tr><td><code>--rm</code></td><td class="neutro">apaga o contêiner quando ele parar</td></tr>
+        <tr><td><code>-p 8080:80</code></td><td class="neutro">a porta 8080 da máquina leva à porta 80 do contêiner</td></tr>
+        <tr><td><code>-v ./Caddyfile:/etc/...</code></td><td class="neutro">o contêiner lê o Caddyfile de vocês</td></tr>
+        <tr><td><code>-v ./frontend/dist:/srv</code></td><td class="neutro">o <code>dist/</code> aparece dentro do contêiner em <code>/srv</code></td></tr>
+        <tr><td><code>caddy:2</code></td><td class="neutro">a imagem oficial do Caddy, versão 2</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">O <code>-v</code> permite ao Caddy ler o <code>dist/</code> da máquina. Depois de um novo build, recarreguem a página.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · O QUE MUDOU -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O que mudou</p>
+    <h2>De duas origens para uma</h2>
+    <div class="comparacao">
+      <div class="lado ruim"><div class="rotulo">na UC4</div><div class="codigo"><pre><span class="com"># a tela</span>
+http://localhost:5173
+<span class="com"># a API</span>
+http://127.0.0.1:8000/tarefas
+<span class="com"># duas origens: o CORS entra</span></pre></div></div>
+      <div class="lado bom"><div class="rotulo">hoje</div><div class="codigo"><pre><span class="com"># a tela</span>
+http://localhost:8080
+<span class="com"># a API</span>
+http://localhost:8080/api/tarefas
+<span class="com"># uma origem: sem CORS</span></pre></div></div>
+    </div>
+    <p class="dica">Mantenham o CORS do backend. Ele continua necessário para a tela do <code>npm run dev</code>, na porta 5173.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · O AVISO DO CADDY -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leiam o terminal do Caddy</p>
+    <h2>Por que o Caddy está usando HTTP</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal do docker run · uma linha do log</div>
+      <pre>"msg":"server is listening only on the HTTP port,
+so no automatic HTTPS will be applied to this server"</pre>
+    </div>
+    <p class="intro">Com <code>:80</code> no Caddyfile, configuramos apenas HTTP. O log confirma isso.</p>
+    <div class="destaque">Na próxima aula, cada um recebe um subdomínio. Vamos apontá-lo para o servidor e liberar as portas 80 e 443 antes de configurar o HTTPS.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 24 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício individual · projeto da própria cartilha</p>
+    <h2>A tela e a API na porta 8080</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">No front, troquem os endereços fixos da API pela <code>URL_DA_API</code>. Atualizem o <code>infra.md</code>.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Gerem o build. No <code>.js</code>, confiram se as chamadas usam <code>/api</code> no lugar do endereço local.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Subam o Caddy e entrem com cada perfil em <code>http://localhost:8080</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">No <code>decisoes.md</code>, escrevam por que o <code>.env.production</code> tem só <code>/api</code>.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc2-aula-02-endereco.md">copiar o prompt da troca de endereço</button>
+      <a class="btn" href="../prompts/uc2-aula-02-regras.md" download="REGRAS_UC2_AULA2.md">baixar o REGRAS_UC2_AULA2.md</a>
+    </div>
+    <p class="dica">Façam um commit com o código, o <code>Caddyfile</code> e o print da aba <b>Rede</b> em <code>.docs/prints/</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que vocês fizeram hoje</h2>
+    <ul class="recap">
+      <li>O <code>npm run build</code> gera o <code>dist/</code>. O servidor web entrega esses arquivos sem Node.</li>
+      <li>O endereço da API entra no build. Ele vem do <code>.env.development</code> ou do <code>.env.production</code>.</li>
+      <li>Variável <code>VITE_</code> vai para o navegador do usuário. Segredo nunca entra nela.</li>
+      <li>O servidor web entrega o <code>dist/</code> e encaminha o <code>/api</code>. Esse segundo papel é o proxy reverso.</li>
+      <li>Tela e API na mesma origem dispensam o CORS em produção.</li>
+    </ul>
+    <p class="proximo">Na próxima aula, vocês vão revisar os arquivos que a IA gerar para subir banco, API e Caddy juntos. Depois, vamos levar o projeto para um servidor com subdomínio e HTTPS.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
