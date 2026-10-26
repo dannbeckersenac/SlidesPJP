@@ -48,7 +48,8 @@ window.EXTRAS = [
    Cinco encontros, de 22 a 29/10. Os slides ficam em uc2/,
    e cada página leva data-uc="2" no <body>: o slides.js lê
    esta lista em vez da AULAS. Aula entra aqui quando o
-   docente aprova o plano dela.
+   docente aprova o plano dela. As que ainda não têm slides ficam
+   com pronto: false e aparecem no índice como "a liberar".
    ============================================================ */
 
 window.UC2 = {
@@ -56,7 +57,10 @@ window.UC2 = {
   nome: "Práticas DevOps em Projetos Web",
   aulas: [
     { n: 1, data: "2026-10-22", titulo: "Onde o seu sistema mora: cliente, servidor e o Docker", pronto: true },
-    { n: 2, data: "2026-10-26", titulo: "Tela e API na mesma porta: build, variáveis e o servidor web", pronto: true }
+    { n: 2, data: "2026-10-26", titulo: "Tela e API na mesma porta: build, variáveis e o servidor web", pronto: true },
+    { n: 3, data: "2026-10-27", titulo: "Tudo com um comando e o projeto na nuvem: Docker Compose, EC2, SSH e HTTPS", pronto: false },
+    { n: 4, data: "2026-10-28", titulo: "O banco no Supabase: sistemas separados se comunicando", pronto: false },
+    { n: 5, data: "2026-10-29", titulo: "Logs e monitoramento · Apresentações e entrega final", pronto: false, avaliacao: true }
   ]
 };
 
