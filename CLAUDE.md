@@ -763,9 +763,12 @@ está incompleto.
 O bloco padrão é `<ol class="passos">`, com o código logo antes ou logo depois. Regras:
 
 1. **De três a cinco passos.** Menos que isso não precisava de lista; mais que isso é slide demais.
-2. **Cada passo diz onde.** O arquivo ou o terminal, sempre nomeado.
-3. **Um passo, uma ação.** Se o passo tem um "e" no meio ligando dois comandos, são dois passos.
-4. **O último passo é verificável.** O que aparece na tela se deu certo, com o texto ou a URL exata.
+2. **Verbos no infinitivo nas instruções.** Em slides de passo a passo, escrever "Construir",
+   "Executar", "Abrir" e "Conferir", inclusive nos títulos que indicam uma ação. As explicações
+   continuam em linguagem natural.
+3. **Cada passo diz onde.** O arquivo ou o terminal, sempre nomeado.
+4. **Um passo, uma ação.** Se o passo tem um "e" no meio ligando dois comandos, são dois passos.
+5. **O último passo é verificável.** O que aparece na tela se deu certo, com o texto ou a URL exata.
    É o que permite a turma saber que pode seguir em frente sem perguntar.
 
 Também vale fora do código: conceito com etapa, decisão com critério e checklist de conferência

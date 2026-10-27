@@ -24,8 +24,10 @@ O docente tem autorização da coordenação para sair do roteiro do PTD. O plan
 |---|---|---|
 | 2 | 26/10 | Tela e API respondendo **na mesma porta**: build do React, endereço da API fora do código, servidor web com proxy do `/api`. Tudo local. |
 | 3 | 27/10 | Direto ao ponto: a IA gera os arquivos do Docker para subir tudo com um comando, banco incluso, na mesma máquina, e o aluno revisa. Depois, IaaS: conta grátis na AWS, uma EC2, SSH, o projeto subindo lá, e as diferenças entre o Windows do laboratório e o Linux da VM. O docente pode mostrar ao vivo a configuração de um domínio. |
-| 4 | 28/10 | O banco sai da EC2 e vai para uma conta grátis no Supabase. Front e back continuam na EC2. Sistemas separados se comunicando. |
+| 4 | 28/10 | O banco vai para o Supabase e o projeto vai para a Vercel, no plano gratuito, com um subdomínio para cada aluno. A EC2 fica como demonstração do professor. |
 | 5 | 29/10 | No máximo 1h de conteúdo novo: `docker logs` e como perceber que algo caiu. O segundo tempo inteiro é das apresentações. |
+
+Confirmado pelo docente em 27/10: a publicação na Vercel da aula 4 vale para todos os alunos.
 
 Decidido em 24/10: o servidor web é o **Caddy**, com um slide comparando com o Nginx; o HTTPS vale
 para **todos os alunos**, cada um com um subdomínio criado pelo docente.

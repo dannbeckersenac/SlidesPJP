@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 03 · Docker Compose e publicação na AWS · UC2</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="2" data-aula="3">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC2 · Práticas DevOps em Projetos Web · Aula 03</p>
+    <h1>Docker Compose e publicação na AWS</h1>
+    <p class="sub">Vocês vão revisar os arquivos que a IA gerar para subir banco, API e Caddy juntos. Depois, eu mostro como levar o Tarefa Certa para um servidor na AWS.</p>
+  </div>
+  <div class="rodape"><span>Do servidor à entrega contínua</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>Só o Caddy está num contêiner</h2>
+    <div class="fluxo">
+      <div class="passo enfase"><span class="t">Caddy</span><span class="d">no contêiner, acessível pela 8080</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">FastAPI</span><span class="d">no terminal, com <code>fastapi dev</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">MySQL</span><span class="d">instalado no Windows</span></div>
+    </div>
+    <p class="intro">A API e o banco ainda dependem do que está instalado no computador de vocês.</p>
+    <p class="dica">Em outra máquina, vocês ainda precisam instalar Python, bibliotecas e MySQL. Também precisam configurar os acessos e iniciar cada serviço.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · O COMPOSE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Um arquivo descreve os três serviços</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">banco</span><span class="d">a imagem oficial do MySQL, com usuário, senha e um volume para os dados</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">api</span><span class="d">uma imagem feita a partir do <code>backend/</code>, por um <code>Dockerfile</code></span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">web</span><span class="d">o Caddy com o build do React dentro, na porta 8080</span></div>
+    </div>
+    <div class="destaque">O <code>docker-compose.yml</code> descreve os serviços. Com o Docker Compose instalado e as variáveis preenchidas, vocês iniciam o projeto pelo <code>docker compose up</code>.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · DOCKERFILE DO BACKEND -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O Dockerfile é a receita da imagem</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/Dockerfile</div>
+      <pre><span class="com"># a imagem oficial do Python, na versão enxuta</span>
+<span class="kw">FROM</span> python:3.12-slim
+<span class="com"># a pasta de trabalho dentro da imagem</span>
+<span class="kw">WORKDIR</span> /app
+<span class="com"># primeiro a lista de bibliotecas: o Docker reaproveita esta etapa</span>
+<span class="kw">COPY</span> requirements.txt .
+<span class="kw">RUN</span> pip install --no-cache-dir -r requirements.txt
+<span class="com"># depois o resto do código</span>
+<span class="kw">COPY</span> . .
+<span class="com"># modo de produção, atendendo em 0.0.0.0 na porta 8000</span>
+<span class="kw">CMD</span> [<span class="str">"fastapi"</span>, <span class="str">"run"</span>, <span class="str">"main.py"</span>, <span class="str">"--port"</span>, <span class="str">"8000"</span>]</pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · REQUIREMENTS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Python que faltava</p>
+    <h2>Salvar a lista de bibliotecas</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · dentro de backend/, com o venv ativo</div>
+      <pre>pip freeze &gt; requirements.txt</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>backend/</code>, ativar o venv do projeto.</li>
+      <li>Executar <code>pip freeze &gt; requirements.txt</code>. O <code>&gt;</code> grava a lista no arquivo.</li>
+      <li>Abrir o <code>requirements.txt</code> e conferir as bibliotecas e suas versões. A imagem vai instalar essa lista.</li>
+    </ol>
+    <p class="dica">Sem o venv ativo, o <code>pip freeze</code> pode listar bibliotecas que não pertencem ao projeto.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · DOCKERIGNORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O que não entra na imagem</p>
+    <h2>O <code>.dockerignore</code></h2>
+    <div class="comparacao">
+      <div class="lado"><div class="rotulo">backend/.dockerignore</div><div class="codigo"><pre>venv/
+.env
+__pycache__/</pre></div></div>
+      <div class="lado"><div class="rotulo">frontend/.dockerignore</div><div class="codigo"><pre>node_modules/
+dist/</pre></div></div>
+    </div>
+    <ol class="passos curta">
+      <li>O <code>venv/</code> e o <code>node_modules/</code> foram montados no Windows. A imagem é Linux e instala os dela.</li>
+      <li>O <code>.env</code> pode conter senhas. Se entrar na imagem, quem tiver acesso a ela poderá ler o arquivo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · DOCKERFILE DO FRONT -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>A tela é construída em duas etapas</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · frontend/Dockerfile</div>
+      <pre><span class="com"># etapa 1: uma imagem com Node só para gerar o build</span>
+<span class="kw">FROM</span> node:22 <span class="kw">AS</span> build
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> package.json package-lock.json ./
+<span class="kw">RUN</span> npm ci
+<span class="kw">COPY</span> . .
+<span class="kw">RUN</span> npm run build
+<span class="com"># etapa 2: o Caddy, levando só o dist/ da etapa 1</span>
+<span class="kw">FROM</span> caddy:2
+<span class="kw">COPY</span> --from=build /app/dist /srv</pre>
+    </div>
+    <p class="dica">O Node fica na etapa de build. A imagem final usa o Caddy para servir a tela, como na aula 2.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · O COMPOSE LINHA A LINHA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O <code>docker-compose.yml</code></h2>
+    <div class="comparacao">
+      <div class="lado"><div class="rotulo">o banco</div><div class="codigo"><pre>services:
+  banco:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: tarefas
+      MYSQL_USER: app
+      MYSQL_PASSWORD: ${SENHA_DO_BANCO}
+      MYSQL_ROOT_PASSWORD: ${SENHA_DO_BANCO}
+    volumes:
+      - dados_do_banco:/var/lib/mysql</pre></div></div>
+      <div class="lado"><div class="rotulo">a API e o Caddy</div><div class="codigo"><pre>  api:
+    build: ./backend
+    environment:
+      URL_DO_BANCO:
+        mysql+mysql...@banco:3306/tarefas
+      CHAVE_DO_TOKEN: ${CHAVE_DO_TOKEN}
+  web:
+    build: ./frontend
+    ports: ["8080:80"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile</pre></div></div>
+    </div>
+    <p class="dica">Trechos para leitura. O prompt do slide 13 gera o arquivo completo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · O NOME DO SERVIÇO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Na rede do Compose, usem o nome do serviço</h2>
+    <table>
+      <thead><tr><th>Quem chama</th><th>Antes</th><th>No compose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A API chama o banco</strong></td><td class="neutro"><code>localhost:3306</code></td><td><code>banco:3306</code></td></tr>
+        <tr><td><strong>O Caddy chama a API</strong></td><td class="neutro"><code>host.docker.internal:8000</code></td><td><code>api:8000</code></td></tr>
+      </tbody>
+    </table>
+    <div class="alerta">Dentro do contêiner da API, <code>localhost</code> aponta para a própria API. Para acessar o MySQL, usem <code>banco</code>.</div>
+    <p class="dica">No <code>Caddyfile</code>, o destino passa a ser <code>reverse_proxy api:8000</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · SEGREDOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Senha fora do Git</p>
+    <h2>O compose lê um <code>.env</code> na raiz</h2>
+    <div class="comparacao">
+      <div class="lado ruim"><div class="rotulo">.env · fora do Git</div><div class="codigo"><pre>SENHA_DO_BANCO=uma-senha-forte
+CHAVE_DO_TOKEN=4f9c1e...</pre></div></div>
+      <div class="lado bom"><div class="rotulo">.env.exemplo · vai para o Git</div><div class="codigo"><pre>SENHA_DO_BANCO=
+CHAVE_DO_TOKEN=</pre></div></div>
+    </div>
+    <ol class="passos curta">
+      <li>O <code>${SENHA_DO_BANCO}</code> do compose é trocado pelo valor desse <code>.env</code> na hora do <code>up</code>.</li>
+      <li>A API recebe o <code>URL_DO_BANCO</code> do compose. O <code>.env</code> do <code>backend/</code> não entra na imagem.</li>
+      <li>Conferir o <code>.gitignore</code> da raiz. a linha <code>.env</code> cobre esse arquivo também.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · VOLUME -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O volume guarda os dados fora do contêiner</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">Sem volume</span><span class="d">Sem armazenamento persistente configurado, recriar o contêiner pode fazer vocês perderem os dados.</span></div>
+      <div class="cartao"><span class="t">Com <code>dados_do_banco</code></span><span class="d">Os dados ficam num volume do Docker. Ao recriar o contêiner com o mesmo volume, o MySQL encontra os dados.</span></div>
+    </div>
+    <div class="alerta"><code>docker compose down -v</code> apaga os volumes. Sem o <code>-v</code>, os dados ficam.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · ÁRVORE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O repositório depois de hoje</p>
+    <h2>Onde salvar os arquivos</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">raiz do repositório da cartilha</div>
+      <pre>repositorio/
+├── docker-compose.yml   <span class="com"># novo: os três serviços</span>
+├── .env                 <span class="com"># novo: senhas, fora do Git</span>
+├── .env.exemplo         <span class="com"># novo: as mesmas chaves, sem valor</span>
+├── Caddyfile            <span class="com"># muda: reverse_proxy api:8000</span>
+├── backend/
+│   ├── Dockerfile       <span class="com"># novo</span>
+│   ├── .dockerignore    <span class="com"># novo</span>
+│   └── requirements.txt <span class="com"># novo: pip freeze</span>
+└── frontend/
+    ├── Dockerfile       <span class="com"># novo: build e Caddy</span>
+    └── .dockerignore    <span class="com"># novo</span></pre>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · IA GERA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 4</p>
+    <h2>Pedir os arquivos à IA e revisar o plano</h2>
+    <ol class="passos">
+      <li>Baixar o <code>REGRAS_UC2_AULA3.md</code> e salvar como <code>REGRAS.md</code> na raiz do repositório.</li>
+      <li>Numa conversa nova, colar o prompt. Ele lê o projeto e mostra o plano dos arquivos.</li>
+      <li>Comparar o plano com a árvore do slide anterior antes de responder <code>pode seguir</code>.</li>
+      <li>Conferir se a lista de arquivos criados corresponde à árvore.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc2-aula-03-docker.md">copiar o prompt do Docker</button>
+      <a class="btn" href="../prompts/uc2-aula-03-regras.md" download="REGRAS_UC2_AULA3.md">baixar o REGRAS_UC2_AULA3.md</a>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · CONFERIR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 4</p>
+    <h2>Conferir os arquivos gerados pela IA</h2>
+    <ol class="passos">
+      <li>Conferir se o <code>URL_DO_BANCO</code> usa <code>@banco:3306</code> no Compose.</li>
+      <li>Conferir se o <code>Caddyfile</code> tem <code>reverse_proxy api:8000</code>.</li>
+      <li>Conferir se o <code>.dockerignore</code> do backend inclui <code>venv/</code> e <code>.env</code>.</li>
+      <li>Verificar se as senhas vêm de variáveis como <code>${SENHA_DO_BANCO}</code>, sem valores reais no Compose.</li>
+      <li>Conferir se o banco usa o volume <code>dados_do_banco</code> para manter os dados.</li>
+    </ol>
+    <p class="dica">Se algo estiver diferente, pedir o ajuste à IA. Explicar o motivo com as próprias palavras.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · SUBIR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 4</p>
+    <h2>Subir tudo com um comando</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · na raiz do repositório</div>
+      <pre>docker compose up -d --build</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Parar o <code>fastapi dev</code> e o Caddy da aula 2. A porta 8080 precisa estar livre.</li>
+      <li>Na raiz do repositório, executar o comando. Na primeira vez, o Docker baixa as imagens e instala as dependências.</li>
+      <li>Executar <code>docker compose ps</code>. Os três serviços aparecem como <code>Up</code>.</li>
+    </ol>
+    <p class="dica">O <code>-d</code> deixa os serviços em segundo plano. <code>Up</code> indica que o contêiner está rodando, mas o MySQL ainda pode estar iniciando.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · O BANCO VAZIO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 4</p>
+    <h2>Criar as tabelas no banco novo</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · na raiz do repositório</div>
+      <pre>docker compose exec api python criar_tabelas.py
+docker compose exec api alembic stamp head</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Na raiz do repositório, executar o primeiro comando. Ele cria as tabelas dentro do banco novo.</li>
+      <li>Se a criação das tabelas terminou sem erro, executar o segundo comando. Ele registra a versão atual das migrations.</li>
+      <li>Abrir <code>http://localhost:8080</code>. Cadastrar e testar um usuário de cada perfil.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · OS COMANDOS DO DIA A DIA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Os comandos do compose</h2>
+    <table>
+      <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+      <tbody>
+        <tr><td><code>docker compose up -d --build</code></td><td class="neutro">refaz as imagens e sobe tudo</td></tr>
+        <tr><td><code>docker compose ps</code></td><td class="neutro">mostra os serviços e o estado de cada um</td></tr>
+        <tr><td><code>docker compose logs api</code></td><td class="neutro">mostra o que a API escreveu no terminal dela</td></tr>
+        <tr><td><code>docker compose down</code></td><td class="neutro">para e apaga os contêineres, e mantém o volume</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Depois de alterar o código, rodem <code>docker compose up -d --build</code> para atualizar as imagens e os contêineres.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · SEGUNDO TEMPO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Segundo tempo · demonstração do professor</p>
+    <h2>O projeto num servidor da AWS</h2>
+    <p class="intro">Vou publicar o Tarefa Certa numa máquina da minha conta da AWS. Vocês acompanham a configuração pelo projetor.</p>
+    <div class="destaque">Vocês podem acompanhar sem criar conta na AWS. Amanhã, todos vão publicar na Vercel, no plano gratuito.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · IAAS, PAAS, SAAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Quem cuida de cada parte</h2>
+    <table>
+      <thead><tr><th>Modelo</th><th>Vocês cuidam de</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>IaaS</strong>, infraestrutura</td><td class="neutro">sistema, Docker, atualizações, portas</td><td>EC2 da AWS, hoje</td></tr>
+        <tr><td><strong>PaaS</strong>, plataforma</td><td class="neutro">código, dependências e configuração da aplicação</td><td>Vercel, na próxima aula</td></tr>
+        <tr><td><strong>SaaS</strong>, software</td><td class="neutro">contas, permissões e uso do software</td><td>Gmail, Teams</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Na EC2, vocês também cuidam do sistema operacional e das atualizações. A AWS fornece a máquina virtual.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · A EC2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Demonstração · passo 1 de 4</p>
+    <h2>Criar a máquina na AWS</h2>
+    <ol class="passos">
+      <li>No console da AWS, abrir <b>EC2</b> e <b>Executar instância</b>. Imagem: <b>Ubuntu 24.04</b>.</li>
+      <li>Selecionar o tipo <b>t3.small</b>, com 2 GB de memória. Com 1 GB, pode faltar memória durante o build do front.</li>
+      <li>Criar um par de chaves e baixar o arquivo <code>.pem</code>. Ele é a chave de entrada.</li>
+      <li>No grupo de segurança, liberar a porta 22 só para o IP de quem administra, e as portas 80 e 443 para todos.</li>
+      <li>Anotar o <b>IPv4 público</b> da instância quando ela aparecer como <b>Executando</b>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · SSH -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Acessem o terminal do servidor com SSH</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · na pasta onde está o .pem</div>
+      <pre>ssh -i tarefa-certa.pem ubuntu@IP-PUBLICO</pre>
+    </div>
+    <ol class="passos curta">
+      <li>O SSH abre um terminal do servidor dentro do terminal de vocês. Tudo passa cifrado, pela porta 22.</li>
+      <li>A chave <code>.pem</code> autentica o acesso. Quem tiver a chave pode entrar nas instâncias que a aceitam.</li>
+      <li>O <code>ubuntu</code> é o usuário padrão da imagem do Ubuntu na AWS.</li>
+    </ol>
+    <p class="dica">Guardem o <code>.pem</code> fora da pasta do projeto. Não enviem a chave para o Git ou o Teams.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · A CHAVE NO WINDOWS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Permissões da chave no Windows</p>
+    <h2>O SSH pode recusar as permissões da chave</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">PowerShell · quando aparecer "UNPROTECTED PRIVATE KEY FILE"</div>
+      <pre>icacls tarefa-certa.pem /inheritance:r
+icacls tarefa-certa.pem /grant:r "$($env:USERNAME):(R)"</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Conferir se o erro é <code>UNPROTECTED PRIVATE KEY FILE</code>. O arquivo pode ter permissões herdadas para outros usuários.</li>
+      <li>No PowerShell, na pasta do <code>.pem</code>, executar os dois comandos. Eles removem a herança e permitem a leitura pelo usuário atual.</li>
+      <li>Tentar o SSH de novo. Se o erro continuar, chamar o professor para conferir as permissões que ainda ficaram no arquivo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · NO SERVIDOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Demonstração · passo 2 de 4</p>
+    <h2>Instalar o Docker e copiar o projeto</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal do servidor, pelo SSH</div>
+      <pre>curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker ubuntu
+<span class="com"># sair com exit e entrar de novo pelo SSH</span>
+git clone https://github.com/USUARIO/REPOSITORIO.git
+cd REPOSITORIO
+nano .env</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Executar os comandos no terminal SSH. Após o <code>usermod</code>, sair com <code>exit</code> e conectar novamente.</li>
+      <li>Preencher o <code>.env</code> no servidor com o <code>nano</code>. O arquivo não vem no <code>git clone</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 24 · DOMÍNIO E HTTPS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Demonstração · passo 3 de 4</p>
+    <h2>Configurar o subdomínio e o HTTPS</h2>
+    <div class="comparacao">
+      <div class="lado"><div class="rotulo">Caddyfile no servidor</div><div class="codigo"><pre>tarefas.seudominio.com.br {
+    handle_path /api/* {
+        reverse_proxy api:8000
+    }
+    handle {
+        root * /srv
+        file_server
+    }
+}</pre></div></div>
+      <div class="lado"><div class="rotulo">serviço web no compose</div><div class="codigo"><pre>  web:
+    build: ./frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - certificados:/data</pre></div></div>
+    </div>
+    <p class="dica">Antes do <code>up</code>, apontar o registro A para o IP público e conferir as portas 80 e 443. O Caddy tenta emitir o certificado.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25 · SUBIR NO SERVIDOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Demonstração · passo 4 de 4</p>
+    <h2>Subir e conferir o HTTPS</h2>
+    <ol class="passos">
+      <li>No servidor, executar <code>docker compose up -d --build</code>, como no primeiro tempo.</li>
+      <li>Criar as tabelas e marcar as migrations com os dois <code>docker compose exec</code>.</li>
+      <li>Ler o <code>docker compose logs web</code>. O Caddy registra o certificado obtido.</li>
+      <li>Abrir o domínio configurado por HTTPS. Conferir se o navegador aceita o certificado e testar o login.</li>
+    </ol>
+    <p class="dica">O volume <code>certificados</code> mantém os certificados ao recriar o contêiner. Sem ele, novas emissões podem atingir os limites da autoridade certificadora.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 26 · WINDOWS E LINUX -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Windows e Linux</p>
+    <h2>O que conferir ao mudar para Linux</h2>
+    <table>
+      <thead><tr><th>No Windows</th><th>No Linux do servidor</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro">normalmente ignora maiúsculas em nomes de pasta</td><td>distingue <code>Modelos/</code> de <code>modelos/</code>; confiram os imports</td></tr>
+        <tr><td class="neutro">fim de linha CRLF em scripts <code>.sh</code></td><td>o script quebra com <code>\r</code></td></tr>
+        <tr><td class="neutro">caminho com <code>\</code></td><td>o caminho usa <code>/</code></td></tr>
+        <tr><td class="neutro"><code>venv/</code> ou <code>node_modules/</code> no Git</td><td>binários do Windows que não rodam</td></tr>
+        <tr><td class="neutro">chave <code>.pem</code> com acesso para outros usuários</td><td>o SSH recusa a chave</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 27 · CUSTO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Custos da demonstração</p>
+    <h2>O que continua sendo cobrado</h2>
+    <ol class="passos">
+      <li>Interromper uma instância sob demanda para a cobrança de processamento. Discos e outros recursos podem continuar cobrados.</li>
+      <li>Ao iniciar de novo, o IPv4 público automático pode mudar. Confiram o endereço e atualizem o registro do subdomínio.</li>
+      <li>Encerrar remove a instância. A exclusão de cada disco depende da configuração dele. Confiram os dados antes de encerrar.</li>
+      <li>Configurem um alerta de orçamento. O aviso pode atrasar e não bloqueia os gastos por si só.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 28 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício individual · projeto da própria cartilha</p>
+    <h2>Testar o projeto com o Compose</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Gerar os arquivos com a IA e conferir os cinco pontos do slide 14.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Subir com o Compose e entrar com cada perfil em <code>http://localhost:8080</code>.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">No <code>infra.md</code>, explicar por que a API usa <code>banco</code> e não <code>localhost</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Opcional. Repetir a demonstração com orientação do professor, se já tiver conta própria na AWS.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc2-aula-03-docker.md">copiar o prompt do Docker</button>
+      <a class="btn" href="../prompts/uc2-aula-03-regras.md" download="REGRAS_UC2_AULA3.md">baixar o REGRAS_UC2_AULA3.md</a>
+    </div>
+    <p class="dica">Façam um commit com os arquivos novos e o print do <code>docker compose ps</code> em <code>.docs/prints/</code>. Confiram se o <code>.env</code> ficou de fora.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 29 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que vocês fizeram hoje</h2>
+    <ul class="recap">
+      <li>O <code>Dockerfile</code> é a receita de uma imagem. O <code>docker-compose.yml</code> junta os serviços.</li>
+      <li>Na rede do Compose, a API usa <code>banco</code> e o Caddy usa <code>api</code> como endereço.</li>
+      <li>Senha fica no <code>.env</code>, fora do Git e fora da imagem. Dados ficam num volume.</li>
+      <li>Na EC2, vocês configuram o sistema, o Docker e o acesso por SSH. Também acompanham os custos.</li>
+      <li>Com DNS e portas configurados, o Caddy emite e renova o certificado do domínio.</li>
+    </ul>
+    <p class="proximo">Na próxima aula, o banco vai para o Supabase e o projeto vai para a Vercel, no plano gratuito, com o subdomínio de cada um.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

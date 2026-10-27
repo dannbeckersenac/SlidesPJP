@@ -58,8 +58,8 @@ window.UC2 = {
   aulas: [
     { n: 1, data: "2026-10-22", titulo: "Onde o seu sistema mora: cliente, servidor e o Docker", pronto: true },
     { n: 2, data: "2026-10-26", titulo: "Tela e API na mesma porta: build, variáveis e o servidor web", pronto: true },
-    { n: 3, data: "2026-10-27", titulo: "Tudo com um comando e o projeto na nuvem: Docker Compose, EC2, SSH e HTTPS", pronto: false },
-    { n: 4, data: "2026-10-28", titulo: "O banco no Supabase: sistemas separados se comunicando", pronto: false },
+    { n: 3, data: "2026-10-27", titulo: "Tudo com um comando e o projeto na nuvem: Docker Compose e a demonstração na AWS", pronto: true },
+    { n: 4, data: "2026-10-28", titulo: "O banco no Supabase e o projeto na Vercel", pronto: false },
     { n: 5, data: "2026-10-29", titulo: "Logs e monitoramento · Apresentações e entrega final", pronto: false, avaliacao: true }
   ]
 };
