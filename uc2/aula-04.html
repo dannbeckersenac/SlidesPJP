@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 04 · O banco no Supabase e o projeto na Vercel · UC2</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="2" data-aula="4">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC2 · Práticas DevOps em Projetos Web · Aula 04</p>
+    <h1>O banco no Supabase e o projeto na Vercel</h1>
+    <p class="sub">Hoje vocês vão publicar o projeto no plano gratuito da Vercel e usar o banco do Supabase. Cada um vai acessar o próprio sistema pelo subdomínio.</p>
+  </div>
+  <div class="rodape"><span>Do servidor à entrega contínua</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>Na EC2, nós configuramos a máquina</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">Sistema</span><span class="d">Instalar o Docker, aplicar atualizações, cuidar do disco.</span></div>
+      <div class="cartao"><span class="t">Rede</span><span class="d">Abrir portas, guardar a chave <code>.pem</code>, apontar o domínio.</span></div>
+      <div class="cartao"><span class="t">Conta</span><span class="d">Conferir os requisitos da conta e acompanhar os custos dos recursos.</span></div>
+    </div>
+    <div class="destaque">Hoje vamos usar uma plataforma que administra os servidores. Vocês configuram a aplicação e acompanham os deploys.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A ARQUITETURA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O desenho de hoje</p>
+    <h2>O caminho da tela até o banco</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Navegador</span><span class="d">abre o subdomínio, em HTTPS</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Vercel · tela</span><span class="d">entrega o build e encaminha o <code>/api</code></span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">Vercel · API</span><span class="d">o FastAPI, como função</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Supabase</span><span class="d">o banco, em PostgreSQL</span></div>
+    </div>
+    <p class="dica">O navegador acessa a tela e o <code>/api</code> pela mesma origem, como na aula 2.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · MYSQL E POSTGRESQL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O banco do Supabase é PostgreSQL</h2>
+    <table>
+      <thead><tr><th></th><th>MySQL</th><th>PostgreSQL</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tipo</strong></td><td class="neutro">banco relacional, com SQL</td><td class="neutro">banco relacional, com SQL</td></tr>
+        <tr><td><strong>Driver em Python</strong></td><td class="neutro"><code>mysql-connector-python</code></td><td class="neutro"><code>psycopg2-binary</code></td></tr>
+        <tr><td><strong>Começo da URL</strong></td><td class="neutro"><code>mysql+mysqlconnector://</code></td><td class="neutro"><code>postgresql://</code></td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">O SQLAlchemy gera o SQL para cada banco. Vamos conferir se o projeto tem algum trecho específico de MySQL antes de trocar a conexão.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · O QUE MUDA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A troca de banco</p>
+    <h2>O que muda no backend</h2>
+    <table>
+      <thead><tr><th>Arquivo</th><th>A mudança</th></tr></thead>
+      <tbody>
+        <tr><td><code>.env</code></td><td class="neutro">o <code>URL_DO_BANCO</code> passa a ser o endereço do Supabase</td></tr>
+        <tr><td><code>requirements.txt</code></td><td class="neutro">ganha o <code>psycopg2-binary</code></td></tr>
+        <tr><td><code>banco.py</code></td><td class="neutro">o <code>create_engine</code> ganha o <code>poolclass=NullPool</code></td></tr>
+        <tr><td>rotas, serviços, repositórios</td><td class="neutro">conferir se há código específico de MySQL</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Essa troca não copia os dados do MySQL. Vamos criar as tabelas no Supabase e cadastrar os perfis novamente.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · SUPABASE: CONTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 8</p>
+    <h2>Criar o projeto no Supabase</h2>
+    <ol class="passos">
+      <li>Abrir <code>supabase.com</code> e entrar com a conta do GitHub. O plano grátis não pede cartão.</li>
+      <li>Criar um projeto novo, com a região <b>South America (São Paulo)</b>.</li>
+      <li>Definir uma senha longa e única. Com símbolos, pedir orientação para codificá-los na URL.</li>
+      <li>Guardar a senha em local privado. Não enviar na conversa com a IA.</li>
+      <li>Aguardar o painel mostrar o projeto pronto.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · O POOLER -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Qual endereço de conexão usar</h2>
+    <table>
+      <thead><tr><th>No botão Connect</th><th>Porta</th><th>Serve para</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Direct connection</strong></td><td class="neutro">5432</td><td class="neutro">redes com IPv6. Muitas redes não têm</td></tr>
+        <tr><td><strong>Session pooler</strong></td><td class="neutro">5432</td><td class="neutro">servidor ligado o tempo todo, em IPv4</td></tr>
+        <tr><td><strong>Transaction pooler</strong></td><td class="neutro">6543</td><td>função sem servidor, como a da Vercel</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">O pooler reaproveita conexões com o banco. Nesta aula, usar o <b>Transaction pooler</b> para a API na Vercel.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · O .env -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 8</p>
+    <h2>Trocar o banco no <code>.env</code></h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/.env · o formato da linha do banco</div>
+      <pre>URL_DO_BANCO=postgresql://postgres.REF:SENHA@HOST:6543/postgres</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No Supabase, clicar em <b>Connect</b> e copiar a URI do <b>Transaction pooler</b>.</li>
+      <li>Substituir <code>[YOUR-PASSWORD]</code> pela senha do passo 1. Codificar os símbolos para uso na URL, se houver.</li>
+      <li>No <code>backend/.env</code>, comentar a linha antiga do MySQL com <code>#</code> e colar a nova.</li>
+      <li>Conferir que o <code>.env</code> continua no <code>.gitignore</code>. Essa linha tem senha.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · O DRIVER E O NULLPOOL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 8</p>
+    <h2>Instalar o driver e ajustar o <code>banco.py</code></h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/banco.py, só o que muda</div>
+      <pre><span class="kw">from</span> sqlalchemy.pool <span class="kw">import</span> NullPool
+
+<span class="com"># não manter um pool de conexões no SQLAlchemy;</span>
+<span class="com"># o pooler do Supabase faz esse trabalho</span>
+engine = <span class="fn">create_engine</span>(configuracao.url_do_banco, poolclass=NullPool)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No terminal do <code>backend/</code>, com o venv ativo, executar <code>pip install psycopg2-binary</code>.</li>
+      <li>Executar <code>pip freeze &gt; requirements.txt</code> de novo.</li>
+      <li>No <code>banco.py</code>, acrescentar o import e o <code>poolclass=NullPool</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · AS TABELAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 8</p>
+    <h2>Criar as tabelas no Supabase</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · dentro de backend/, com o venv ativo</div>
+      <pre>python criar_tabelas.py
+alembic stamp head</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Executar <code>python criar_tabelas.py</code>. Se terminar sem erro, executar <code>alembic stamp head</code>.</li>
+      <li>No Supabase, abrir o <b>Table Editor</b>. As tabelas do projeto e a <code>alembic_version</code> aparecem lá.</li>
+      <li>Executar <code>fastapi dev main.py</code>, cadastrar cada perfil no <code>/docs</code> e entrar com cada um.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · RLS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segurança</p>
+    <h2>Ativar o RLS nas tabelas</h2>
+    <p class="intro">O Supabase tem uma API de dados própria. Vamos ativar o RLS para restringir o acesso às linhas das tabelas por ela.</p>
+    <ol class="passos">
+      <li>No <b>Table Editor</b>, abrir cada tabela do projeto.</li>
+      <li>Clicar em <b>Enable RLS</b> e confirmar. Sem políticas, os acessos com papéis comuns dessa API ficam bloqueados.</li>
+      <li>Testar o login de novo. A conexão com o usuário <code>postgres</code> passa por fora do RLS. O controle de acesso continua na API de vocês.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · A VERCEL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>A Vercel faz o papel do servidor web</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><div class="icone">1</div><span class="t">Entrega a tela</span><span class="d">Executa o <code>npm run build</code> e publica o <code>dist/</code>.</span></div>
+      <div class="cartao"><div class="icone">2</div><span class="t">Encaminha o <code>/api</code></span><span class="d">Um <code>vercel.json</code> faz o que o <code>handle_path</code> fazia no Caddy.</span></div>
+      <div class="cartao"><div class="icone">3</div><span class="t">Cuida do HTTPS</span><span class="d">A plataforma emite o certificado após validar o domínio.</span></div>
+    </div>
+    <p class="dica">Vamos usar o plano Hobby da Vercel, voltado a projetos pessoais e não comerciais.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · DOIS PROJETOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Um repositório, dois projetos na Vercel</h2>
+    <table>
+      <thead><tr><th>Projeto na Vercel</th><th>Root Directory</th><th>O que vira</th></tr></thead>
+      <tbody>
+        <tr><td><strong>a API</strong></td><td class="neutro"><code>backend</code></td><td class="neutro">o FastAPI do <code>main.py</code>, como função</td></tr>
+        <tr><td><strong>a tela</strong></td><td class="neutro"><code>frontend</code></td><td class="neutro">o build do Vite, com o <code>/api</code> encaminhado</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">A API tem endereço próprio. O projeto da tela encaminha os pedidos de <code>/api</code> para ela. O navegador acessa uma origem só.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · PUBLICAR A API -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 8</p>
+    <h2>Publicar a API</h2>
+    <ol class="passos">
+      <li>Conferir se o <code>.env</code> ficou fora do Git antes de fazer commit e push do backend.</li>
+      <li>Em <code>vercel.com</code>, entrar com o GitHub. Importar o repositório em <b>Add New Project</b>.</li>
+      <li>Em <b>Root Directory</b>, escolher <code>backend</code>. Em <b>Environment Variables</b>, cadastrar <code>URL_DO_BANCO</code> e <code>CHAVE_DO_TOKEN</code>.</li>
+      <li>Clicar em <b>Deploy</b> e aguardar.</li>
+      <li>Abrir <code>https://NOME-DA-API.vercel.app/health</code>. Tem que aparecer <code>{"status":"ok"}</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · O VERCEL.JSON -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Leitura linha a linha</p>
+    <h2>O <code>vercel.json</code> encaminha o <code>/api</code></h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · frontend/vercel.json</div>
+      <pre>{
+  <span class="str">"rewrites"</span>: [
+    {
+      <span class="str">"source"</span>: <span class="str">"/api/:caminho*"</span>,
+      <span class="str">"destination"</span>: <span class="str">"https://tarefa-certa-api.vercel.app/:caminho*"</span>
+    }
+  ]
+}</pre>
+    </div>
+    <ol class="passos curta">
+      <li>O <code>source</code> pega todo pedido que começa com <code>/api/</code> e guarda o resto em <code>:caminho*</code>.</li>
+      <li>O <code>destination</code> manda esse resto para a API, sem o <code>/api</code>. É o <code>handle_path</code> da aula 2.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · PUBLICAR A TELA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 6 de 8</p>
+    <h2>Publicar a tela</h2>
+    <ol class="passos">
+      <li>Criar o <code>frontend/vercel.json</code> com o endereço da API do passo 5. Fazer commit e push.</li>
+      <li>Na Vercel, em <b>Add New Project</b>, importar o mesmo repositório de novo.</li>
+      <li>Em <b>Root Directory</b>, escolher <code>frontend</code>. A Vercel reconhece o Vite sozinha.</li>
+      <li>Clicar em <b>Deploy</b> e abrir o endereço <code>.vercel.app</code> da tela.</li>
+      <li>Entrar com cada perfil. Na aba <b>Rede</b>, os pedidos vão para <code>/api/...</code> no mesmo endereço.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · FUNÇÃO SEM SERVIDOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>A API agora é uma função</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">Execução sob demanda</span><span class="d">A plataforma inicia a função quando necessário. A primeira resposta pode demorar mais.</span></div>
+      <div class="cartao"><span class="t">Sem disco persistente</span><span class="d">Não contar com arquivos locais entre execuções. Nesta aula, os dados ficam no banco.</span></div>
+      <div class="cartao"><span class="t">Logs no painel</span><span class="d">O que a API escreveria no terminal aparece em <b>Logs</b>, no projeto da Vercel.</span></div>
+    </div>
+    <p class="dica">Com <code>NullPool</code>, o SQLAlchemy não mantém conexões ociosas. O pooler do Supabase reaproveita as conexões com o banco.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · SUBDOMÍNIO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 7 de 8</p>
+    <h2>Configurar o subdomínio</h2>
+    <ol class="passos">
+      <li>No projeto da tela, abrir <b>Settings</b> e depois <b>Domains</b>.</li>
+      <li>Adicionar o subdomínio que o professor entregou.</li>
+      <li>Copiar o registro que a Vercel mostra, com tipo, nome e valor, e mandar ao professor.</li>
+      <li>Aguardar a validação do domínio e a emissão do certificado pela Vercel.</li>
+      <li>Abrir o subdomínio com <code>https://</code>. Conferir o certificado no navegador e testar o login.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · ENTREGA CONTÍNUA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 8 de 8</p>
+    <h2>Testar o deploy pelo Git</h2>
+    <ol class="passos">
+      <li>Mudar um texto da tela no <code>frontend/</code>.</li>
+      <li>Fazer commit e push na <code>main</code>.</li>
+      <li>Abrir a aba <b>Deployments</b> do projeto da tela. Um deploy novo começa sozinho.</li>
+      <li>Recarregar o subdomínio quando o deploy terminar. O texto novo aparece.</li>
+    </ol>
+    <div class="destaque">Com a integração padrão, um push na branch de produção inicia um deploy. Quando ele passa, a Vercel atualiza o site. Outras branches geram prévias.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · QUANDO ALGO DÁ ERRADO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Onde procurar quando falha</h2>
+    <table>
+      <thead><tr><th>Sintoma</th><th>Onde olhar</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro">o deploy fica vermelho</td><td>o log do build, no deploy que falhou</td></tr>
+        <tr><td class="neutro"><code>/health</code> responde 500</td><td>Logs da API. Procurar a causa registrada</td></tr>
+        <tr><td class="neutro">login dá erro na tela</td><td>aba Rede. Conferir o destino e a resposta de <code>/api</code></td></tr>
+        <tr><td class="neutro">erro de senha no banco</td><td>a senha no <code>URL_DO_BANCO</code> da Vercel</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Depois de alterar uma variável na Vercel, usar <b>Redeploy</b> para aplicar o valor em um novo deploy.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício individual · projeto da própria cartilha</p>
+    <h2>Publicar e testar o projeto</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Criar as tabelas no Supabase e ativar o RLS.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Publicar a API e a tela na Vercel. Testar o login de cada perfil.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Configurar o subdomínio com HTTPS e testar um deploy por push.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Atualizar o desenho em Mermaid no <code>infra.md</code> e explicar a escolha do Transaction pooler.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc2-aula-04-nuvem.md">copiar o prompt da troca de banco</button>
+      <a class="btn" href="../prompts/uc2-aula-04-regras.md" download="REGRAS_UC2_AULA4.md">baixar o REGRAS_UC2_AULA4.md</a>
+    </div>
+    <p class="dica">Fazer commit do código e dos prints em <code>.docs/prints/</code>. Conferir se os arquivos e as imagens não mostram credenciais.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · RECAP -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que vocês fizeram hoje</h2>
+    <ul class="recap">
+      <li>Na troca de banco, ajustamos URL, driver e pool. Código específico de MySQL precisa ser conferido.</li>
+      <li>Escolhemos o Transaction pooler para as conexões da API na Vercel.</li>
+      <li>Na Vercel, o <code>vercel.json</code> encaminha o <code>/api</code>, como o Caddy fazia.</li>
+      <li>Senha mora nas variáveis da plataforma, nunca no repositório.</li>
+      <li>A integração com o Git inicia o deploy após o push na branch de produção.</li>
+    </ul>
+    <p class="proximo">Na próxima aula, vamos consultar os logs e verificar falhas. Depois, cada um apresenta o projeto.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
