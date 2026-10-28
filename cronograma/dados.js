@@ -125,9 +125,9 @@ const AULAS = `
 10-21 back
 10-22 devops
 10-26 devops
-10-27 devops *
+10-27 devops
 10-28 devops
-10-29 devops
+10-29 devops *
 11-04 devia
 11-05 devia
 11-09 devia
@@ -177,6 +177,7 @@ const NOTAS = `
 10-19 aula 9: recapitulação, o login com JWT e os perfis, e a documentação com IA; a avaliação que era nesta data passou para 08/10
 10-20 aula 10: o briefing atualizado e o plano do módulo de IA, sem código
 10-21 revisão, tempo de ajustes e apresentação individual de fechamento
+10-29 até 1h de conteúdo novo; no segundo tempo, a avaliação final da UC4 e da UC2, em quatro etapas (as etapas estão na aba UC2 da página dos slides)
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

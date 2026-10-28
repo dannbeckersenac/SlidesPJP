@@ -13,8 +13,10 @@ visual, a escrita dos slides, os prompts e as regras. Este arquivo guarda só o 
 | Avaliação | entrega final do projeto, com formulário de avaliação individual |
 | AEO | prints das simulações em plataformas de nuvem e de controle de versões |
 
-O `cronograma/dados.js` marca 27/10 como avaliação. O PTD só fala em entrega final. **Não resolvido
-com o docente:** não invente avaliação até ele decidir.
+A avaliação é em 29/10, no segundo tempo, e junta a UC4 e a UC2 numa apresentação individual em quatro
+etapas: as personas, a solução e o MVP, o sistema no ar (Vercel, Supabase, senha como hash, erros
+tratados na tela) e os próximos passos com a funcionalidade de IA. O texto que a turma lê está na seção
+`#avaliacao` do painel da UC2, no `index.html`, liberado antes do dia; o `cronograma/dados.js` marca o 29/10.
 
 ## O plano das aulas 2 a 5, definido pelo docente em 24/10/2026
 

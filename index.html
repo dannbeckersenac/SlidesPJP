@@ -63,6 +63,28 @@
   .ucs button[aria-selected="true"] small { color: var(--ink); opacity: .7; }
   .painel .hero { padding-top: 34px; }
 
+  /* avaliação final da UC2, dentro do painel dela; o texto é escrito à mão no HTML */
+  .aval-sec { padding: 44px 0 0; }
+  .aval-tag { margin: 0 0 14px; font: 700 10.5px/1.4 var(--mono); letter-spacing: .12em;
+              text-transform: uppercase; color: var(--roxo); }
+  .aval-etapas { list-style: none; margin: 0; padding: 0; display: grid;
+                 grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 12px; }
+  .aval-etapas > li { background: var(--painel); border: 1px solid var(--linha); border-radius: var(--r);
+                      padding: 16px 16px 14px; }
+  .aval-n { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+            border-radius: 8px; margin-bottom: 10px; font: 700 13px/1 var(--mono);
+            color: #FFFFFF; background: var(--roxo); }
+  .aval-etapas h3 { margin: 0 0 6px; font-family: var(--display); font-weight: 500; font-size: 17px;
+                    letter-spacing: -.01em; line-height: 1.25; }
+  .aval-etapas p { margin: 0 0 10px; color: var(--suave); font-size: 14px; line-height: 1.5; }
+  .aval-etapas ul { list-style: none; margin: 0; padding: 10px 0 0; border-top: 1px solid var(--linha);
+                    display: flex; flex-direction: column; gap: 7px; }
+  .aval-etapas ul li { position: relative; padding-left: 15px; font-size: 14px; line-height: 1.45; }
+  .aval-etapas ul li::before { content: ""; position: absolute; left: 0; top: .55em; width: 6px; height: 6px;
+                               border-radius: 2px; background: var(--acento); }
+  .aval-nota { margin: 16px 0 0; color: var(--suave); font-size: 14px; }
+  .aval-nota b { color: var(--texto); font-weight: 600; }
+
   @media (max-width: 620px) {
     .ucs { display: flex; }
     .ucs button { flex: 1; }
@@ -161,6 +183,64 @@
         </div>
       </div>
       <div class="ciclos"><ul class="aulas" id="listaUc2"></ul></div>
+    </div>
+  </section>
+  <!-- avaliação final: liberada antes do dia, de propósito -->
+  <section class="aval-sec" id="avaliacao">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>Como será a avaliação final</h2>
+          <p>Cada um vai apresentar o próprio projeto. Seguir as quatro etapas abaixo para mostrar o trabalho da UC4 e da UC2.</p>
+        </div>
+      </div>
+      <p class="aval-tag">29/10 · segundo tempo do encontro · UC4 e UC2</p>
+
+      <ol class="aval-etapas">
+        <li>
+          <span class="aval-n">1</span>
+          <h3>Apresentar as duas personas</h3>
+          <p>As personas são fictícias. Apresentar cada uma com os detalhes de quem conhece sua rotina, como numa entrevista.</p>
+          <ul>
+            <li>Preparar os slides com fotos e outros recursos visuais de sua escolha.</li>
+            <li>Contar quem é cada persona e descrever sua rotina.</li>
+            <li>Explicar o problema de cada persona com as palavras que ela usaria.</li>
+          </ul>
+        </li>
+        <li>
+          <span class="aval-n">2</span>
+          <h3>Explicar a solução e o MVP</h3>
+          <p>Explicar a solução em poucos minutos. Mostrar o que ela já faz e deixar os planos para a etapa 4.</p>
+          <ul>
+            <li>Contar como o briefing foi construído.</li>
+            <li>Mostrar a logomarca e as cores. Explicar as escolhas.</li>
+            <li>Apresentar as telas e as funcionalidades que entraram no MVP.</li>
+          </ul>
+        </li>
+        <li>
+          <span class="aval-n">3</span>
+          <h3>Demonstrar o sistema publicado</h3>
+          <p>Começar pela tela de login do sistema publicado. Demonstrar o funcionamento nos passos abaixo.</p>
+          <ul>
+            <li>Abrir o sistema pelo endereço publicado na Vercel.</li>
+            <li>Cadastrar um usuário e mostrar o registro no Supabase. Conferir que o banco guarda o hash, sem a senha em texto.</li>
+            <li>Entrar com cada persona e demonstrar como ela usaria as telas do sistema.</li>
+            <li>Testar um cadastro inválido ou uma senha errada. Mostrar a mensagem exibida na tela.</li>
+          </ul>
+        </li>
+        <li>
+          <span class="aval-n">4</span>
+          <h3>Apresentar os próximos passos</h3>
+          <p>Apresentar o backlog das próximas funcionalidades. Usar um formato visual de sua escolha, como um quadro no ClickUp ou no Trello.</p>
+          <ul>
+            <li>Mostrar o que está planejado para o sistema.</li>
+            <li>Explicar a funcionalidade de IA planejada e justificar sua escolha.</li>
+            <li>Indicar o que será implementado na UC3, a partir de 04/11, com base nesse plano de IA.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p class="aval-nota"><b>Antes da apresentação</b> Testar o login de cada persona no endereço publicado. Deixar o Table Editor do Supabase aberto em outra aba.</p>
     </div>
   </section>
 </div>
