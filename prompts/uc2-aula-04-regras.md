@@ -82,15 +82,16 @@ da cartilha com o nome `REGRAS.md`, por cima da versão da UC4. Só vale a vers�
   Domains e o deploy integrado ao Git. Na configuração padrão, a branch de produção atualiza o site
   após um deploy bem-sucedido; outras branches geram prévias. `vercel.json` com
   `rewrites`. Função sem servidor: execução sob demanda e sem garantia de arquivos locais persistentes.
-- IaaS, PaaS e SaaS como modelos. EC2, SSH com chave `.pem`, o domínio apontando para o IP e o Caddy
-  emitindo o certificado após configurar domínio, DNS e portas: vistos na demonstração do professor, opcionais.
+- Vercel e Supabase administram os servidores. O aluno configura a aplicação, o banco e o domínio
+  pelos painéis das plataformas. A publicação desta aula parte do projeto local com Docker Compose.
 
 ## O que ainda não foi visto, e não deve aparecer
 
 - Mudança na lógica do `backend/`: rota, serviço, repositório, esquema, modelo ou migration.
 - Redes do Docker declaradas à mão, `network_mode: host`, Docker Swarm e Kubernetes.
 - Nginx configurado no projeto. Ele só foi mostrado para comparar.
-- Domínio e HTTPS no `Caddyfile` do repositório. Isso só existe no servidor da demonstração.
+- Domínio e HTTPS no `Caddyfile` do repositório. Nesta aula, domínio e certificado são configurados
+  pela Vercel. O Caddy continua no ambiente local.
 - SDK do Supabase, API REST do Supabase, autenticação do Supabase e regras de RLS escritas à mão.
 - `asyncpg`, `psycopg` 3, `async def` e sessão assíncrona.
 - Vercel Services, `builds` e `routes` no `vercel.json`, e `vercel.json` no `backend/`.

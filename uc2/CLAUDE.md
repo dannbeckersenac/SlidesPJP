@@ -25,8 +25,8 @@ O docente tem autorização da coordenação para sair do roteiro do PTD. O plan
 | Aula | Data | Conteúdo |
 |---|---|---|
 | 2 | 26/10 | Tela e API respondendo **na mesma porta**: build do React, endereço da API fora do código, servidor web com proxy do `/api`. Tudo local. |
-| 3 | 27/10 | Direto ao ponto: a IA gera os arquivos do Docker para subir tudo com um comando, banco incluso, na mesma máquina, e o aluno revisa. Depois, IaaS: conta grátis na AWS, uma EC2, SSH, o projeto subindo lá, e as diferenças entre o Windows do laboratório e o Linux da VM. O docente pode mostrar ao vivo a configuração de um domínio. |
-| 4 | 28/10 | O banco vai para o Supabase e o projeto vai para a Vercel, no plano gratuito, com um subdomínio para cada aluno. A EC2 fica como demonstração do professor. |
+| 3 | 27/10 | A IA gera os arquivos do Docker para subir banco, API e Caddy com um comando, na mesma máquina, e o aluno revisa. A parte de AWS foi pulada pelo docente. |
+| 4 | 28/10 | O banco vai para o Supabase e o projeto vai para a Vercel, no plano gratuito, com um subdomínio para cada aluno. |
 | 5 | 29/10 | No máximo 1h de conteúdo novo: `docker logs` e como perceber que algo caiu. O segundo tempo inteiro é das apresentações. |
 
 Confirmado pelo docente em 27/10: a publicação na Vercel da aula 4 vale para todos os alunos.
@@ -34,10 +34,13 @@ Confirmado pelo docente em 27/10: a publicação na Vercel da aula 4 vale para t
 Decidido em 24/10: o servidor web é o **Caddy**, com um slide comparando com o Nginx; o HTTPS vale
 para **todos os alunos**, cada um com um subdomínio criado pelo docente.
 
-**Em aberto para a aula 3:** a conta da AWS. Nem todo aluno pode abrir conta própria: o cadastro pede
-cartão, e o contrato da AWS exige quem possa contratar. Precisa de plano B (conta do docente com um
-usuário por aluno, ou AWS Academy). O Supabase da aula 4 é PostgreSQL: muda o driver e a URL do banco, e a EC2
-precisa do endereço do Session pooler, porque a conexão direta grátis é IPv6.
+Confirmado pelo docente em 28/10: a parte de AWS da aula 3 não foi dada. A aula 4 parte do
+projeto local com Docker Compose. Não presumir que a turma viu EC2, SSH, configuração de servidor
+ou a comparação entre IaaS, PaaS e SaaS. Os slides dessa parte continuam na aula 3 como material
+que não foi apresentado; não usar como pré-requisito nem retomar na aula 4.
+
+O Supabase da aula 4 é PostgreSQL. A turma troca o driver e a URL do banco e usa o Transaction
+pooler para a API publicada na Vercel.
 
 ## O caso e o exemplo
 
