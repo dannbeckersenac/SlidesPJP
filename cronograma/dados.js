@@ -127,15 +127,15 @@ const AULAS = `
 10-26 devops
 10-27 devops
 10-28 devops
-10-29 devops *
+10-29 devops
 11-04 devia
 11-05 devia
 11-09 devia
+11-10 devia
 11-11 devia
-11-12 devia
+11-12 devia *
 11-16 protot
 11-18 protot
-11-19 protot
 11-23 protot
 11-25 protot
 11-26 protot
@@ -157,6 +157,7 @@ const PAUSAS = `
 10-12 feriado|Nossa Senhora Aparecida
 10-15 pausa|Dia do Professor
 11-02 feriado|Finados
+11-19 pausa|Encontro antecipado para 10/11
 11-20 feriado|Consciência Negra
 12-25 feriado|Natal
 `;
@@ -177,7 +178,13 @@ const NOTAS = `
 10-19 aula 9: recapitulação, o login com JWT e os perfis, e a documentação com IA; a avaliação que era nesta data passou para 08/10
 10-20 aula 10: o briefing atualizado e o plano do módulo de IA, sem código
 10-21 revisão, tempo de ajustes e apresentação individual de fechamento
-10-29 até 1h de conteúdo novo; no segundo tempo, a avaliação final da UC4 e da UC2, em quatro etapas (as etapas estão na aba UC2 da página dos slides)
+10-29 aula 5: os logs e o Sentry; a avaliação final da UC4 e da UC2 passou para 04/11
+11-04 encontro usado para a avaliação final da UC4 e da UC2, em quatro etapas (as etapas estão na aba UC2 da página dos slides); as aulas da UC3 começam em 09/11
+11-09 aula 1 da UC3: a chave do Gemini, o primeiro pedido e o orquestrador Jangada
+11-10 encontro da UC6 antecipado de 19/11, usado para a aula 2 da UC3: o Claude como reserva, as tools e o plano no projeto
+11-11 Semana do Trabalho 2026 do Senac: participação obrigatória no evento, no horário de aula, contando como presença
+11-12 ajustes até o intervalo e apresentação final do projeto, com ênfase na funcionalidade de IA; as apresentações podem seguir em 16/11
+11-16 fim das apresentações da UC3, se preciso; formação dos grupos e inscrição no Hackathon, boas práticas para o evento e sorteio dos temas dos simulados, nas frentes de atuação do Senac
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

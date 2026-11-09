@@ -45,7 +45,8 @@ window.EXTRAS = [
 
 /* ============================================================
    UC2 · Práticas DevOps em Projetos Web.
-   Cinco encontros, de 22 a 29/10. Os slides ficam em uc2/,
+   Cinco encontros, de 22 a 29/10. A avaliação final foi para
+   04/11, num encontro da UC3. Os slides ficam em uc2/,
    e cada página leva data-uc="2" no <body>: o slides.js lê
    esta lista em vez da AULAS. Aula entra aqui quando o
    docente aprova o plano dela. As que ainda não têm slides ficam
@@ -60,7 +61,30 @@ window.UC2 = {
     { n: 2, data: "2026-10-26", titulo: "Tela e API na mesma porta: build, variáveis e o servidor web", pronto: true },
     { n: 3, data: "2026-10-27", titulo: "Tudo com um comando e o projeto na nuvem: Docker Compose e a demonstração na AWS", pronto: true },
     { n: 4, data: "2026-10-28", titulo: "O banco no Supabase e o projeto na Vercel", pronto: true },
-    { n: 5, data: "2026-10-29", titulo: "Logs e monitoramento · Apresentações e entrega final", pronto: false, avaliacao: true }
+    { n: 5, data: "2026-10-29", titulo: "Logs e monitoramento: do Docker ao Sentry", pronto: false }
+  ]
+};
+
+/* ============================================================
+   UC3 · Desenvolvimento de Software Apoiado por IA.
+   De 04 a 12/11. O 04/11 foi a avaliação final da UC2 e da
+   UC4, e o 11/11 é a Semana do Trabalho 2026: os dois ficam
+   em semAula, sem slides. O 10/11 é um encontro da UC6
+   antecipado de 19/11. Os slides ficam em uc3/, com
+   data-uc="3" no <body>.
+   ============================================================ */
+
+window.UC3 = {
+  sigla: "UC3",
+  nome: "Desenvolvimento de Software Apoiado por IA",
+  aulas: [
+    { n: 1, data: "2026-11-09", titulo: "A chave, o primeiro pedido e o orquestrador", pronto: true },
+    { n: 2, data: "2026-11-10", titulo: "O Claude de reserva e as tools: a IA dentro do projeto", pronto: false },
+    { n: 3, data: "2026-11-12", titulo: "Ajustes finais e apresentação do projeto", pronto: false, avaliacao: true }
+  ],
+  semAula: [
+    { data: "2026-11-04", titulo: "Avaliação final da UC2 e da UC4: apresentações em quatro etapas", avaliacao: true },
+    { data: "2026-11-11", titulo: "Semana do Trabalho 2026 do Senac: participação obrigatória, conta como presença" }
   ]
 };
 

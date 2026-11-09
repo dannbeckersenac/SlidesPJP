@@ -139,6 +139,9 @@
 <div class="ucs-barra">
   <div class="wrap">
     <div class="ucs" role="tablist" aria-label="Unidades curriculares">
+      <button type="button" role="tab" id="aba-uc3" aria-controls="painel-uc3" data-uc="uc3">
+        <b>UC3</b><span>IA no desenvolvimento</span><small>04 a 12/11</small>
+      </button>
       <button type="button" role="tab" id="aba-uc2" aria-controls="painel-uc2" data-uc="uc2">
         <b>UC2</b><span>Práticas DevOps</span><small>22 a 29/10</small>
       </button>
@@ -147,6 +150,44 @@
       </button>
     </div>
   </div>
+</div>
+
+<!-- ============ UC3 ============ -->
+<div class="painel" id="painel-uc3" role="tabpanel" aria-labelledby="aba-uc3">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">UC3 · Senac Blumenau · Turma 2026.10.78</p>
+      <h1>Desenvolvimento<br><em>apoiado por IA</em></h1>
+      <p class="lede">De 04 a 12/11. O 04/11 foi a avaliação final da UC2 e da UC4, e no 11/11 a turma participa da Semana do Trabalho 2026 do Senac. Nas três aulas, cada aluno cria a chave do Gemini, usa o Jangada para ter o Claude como reserva e dar ferramentas à IA, e leva a funcionalidade de IA que planejou para dentro do próprio projeto. Em 12/11, os ajustes finais e a apresentação do projeto, com ênfase na funcionalidade de IA.</p>
+
+      <div class="acoes">
+        <a class="btn-principal" data-campo="botao" href="#" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
+          <span data-campo="rotulo">Abrir a última aula liberada</span>
+        </a>
+        <p class="acoes-nota" data-campo="nota"></p>
+      </div>
+
+      <ul class="stats">
+        <li><b>20 h</b><span>Carga horária</span></li>
+        <li><b>3</b><span>Aulas</span></li>
+        <li><b data-campo="liberadas">0</b><span>Aulas liberadas</span></li>
+        <li><b>12/11</b><span>Entrega final</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="aulas-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>As aulas</h2>
+          <p>Cada aula abre às 18h do dia do encontro. Os slides navegam com as setas do teclado.</p>
+        </div>
+      </div>
+      <div class="ciclos"><ul class="aulas" id="listaUc3"></ul></div>
+    </div>
+  </section>
 </div>
 
 <!-- ============ UC2 ============ -->
@@ -169,7 +210,7 @@
         <li><b>20 h</b><span>Carga horária</span></li>
         <li><b>5</b><span>Encontros</span></li>
         <li><b data-campo="liberadas">0</b><span>Aulas liberadas</span></li>
-        <li><b>29/10</b><span>Entrega final</span></li>
+        <li><b>04/11</b><span>Entrega final</span></li>
       </ul>
     </div>
   </header>
@@ -194,7 +235,7 @@
           <p>Cada um vai apresentar o próprio projeto. Seguir as quatro etapas abaixo para mostrar o trabalho da UC4 e da UC2.</p>
         </div>
       </div>
-      <p class="aval-tag">29/10 · segundo tempo do encontro · UC4 e UC2</p>
+      <p class="aval-tag">04/11 · UC4 e UC2</p>
 
       <ol class="aval-etapas">
         <li>
@@ -235,7 +276,7 @@
           <ul>
             <li>Mostrar o que está planejado para o sistema.</li>
             <li>Explicar a funcionalidade de IA planejada e justificar sua escolha.</li>
-            <li>Indicar o que será implementado na UC3, a partir de 04/11, com base nesse plano de IA.</li>
+            <li>Indicar o que será implementado na UC3, a partir de 09/11, com base nesse plano de IA.</li>
           </ul>
         </li>
       </ol>
@@ -297,7 +338,9 @@
     var pad = function (n) { return String(n).padStart(2, "0"); };
     var agora = new Date();
     var aulasUc2 = window.UC2 ? window.UC2.aulas : [];
+    var aulasUc3 = window.UC3 ? window.UC3.aulas : [];
     var endereco = function (a) {
+      if (aulasUc3.indexOf(a) > -1) return "uc3/aula-" + pad(a.n) + ".html";
       if (aulasUc2.indexOf(a) > -1) return "uc2/aula-" + pad(a.n) + ".html";
       return a.arquivo ? "aulas/" + a.arquivo : "aulas/aula-" + pad(a.n) + ".html";
     };
@@ -306,7 +349,7 @@
     if (window.MODO_DOCENTE) document.getElementById("avisoDocente").hidden = false;
 
     /* ---------- abas: uma por unidade ----------
-       A aba aberta fica no endereço (#uc2, #uc4), e é assim que o
+       A aba aberta fica no endereço (#uc2, #uc3, #uc4), e é assim que o
        link "índice" dos slides volta para a unidade certa. Sem nada
        no endereço, abre a unidade mais recente que já começou.
        O painel se chama painel-uc2, e não uc2, para o endereço não
@@ -328,8 +371,9 @@
       });
     });
     var pedida = window.location.hash.replace("#", "");
-    var comecouUc2 = aulasUc2.length && agora >= window.aberturaDaAula(aulasUc2[0]);
-    abrir(pedida === "uc2" || pedida === "uc4" ? pedida : (comecouUc2 ? "uc2" : "uc4"));
+    var comecou = function (lista) { return lista.length && agora >= window.aberturaDaAula(lista[0]); };
+    var maisRecente = comecou(aulasUc3) ? "uc3" : (comecou(aulasUc2) ? "uc2" : "uc4");
+    abrir(["uc2", "uc3", "uc4"].indexOf(pedida) > -1 ? pedida : maisRecente);
 
     /* ---------- capa de cada aba: botão da aula e números ---------- */
 
@@ -358,6 +402,7 @@
         campo("nota").textContent = quandoProxima;
       }
     }
+    capa(document.getElementById("painel-uc3"), aulasUc3);
     capa(document.getElementById("painel-uc2"), aulasUc2);
     capa(document.getElementById("painel-uc4"), window.AULAS);
 
@@ -415,6 +460,13 @@
     document.getElementById("lista").innerHTML = html;
 
     document.getElementById("listaUc2").innerHTML = aulasUc2.map(linha).join("");
+
+    /* UC3: as aulas e o encontro sem slides de 04/11, em ordem de data */
+    var linhasUc3 = aulasUc3.concat((window.UC3 && window.UC3.semAula) || [])
+      .sort(function (x, y) { return x.data < y.data ? -1 : 1; });
+    document.getElementById("listaUc3").innerHTML = linhasUc3.map(function (a) {
+      return "n" in a ? linha(a) : semAula(a);
+    }).join("");
   })();
 </script>
 

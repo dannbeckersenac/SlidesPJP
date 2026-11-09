@@ -14,9 +14,11 @@
   var atual = 0;
   var total = slides.length;
   var aulaAtual = Number(document.body.dataset.aula || 0);
-  /* página da UC2: <body data-uc="2" data-aula="1">, com a lista própria */
-  var uc2 = document.body.dataset.uc === "2" && window.UC2;
-  var listaDeAulas = uc2 ? window.UC2.aulas : window.AULAS;
+  /* página da UC2 ou da UC3: <body data-uc="2" data-aula="1">, com a lista própria
+     (window.UC2, window.UC3); sem data-uc, é a UC4, com a AULAS */
+  var codigoUc = document.body.dataset.uc || "";
+  var ucPropria = codigoUc ? window["UC" + codigoUc] : null;
+  var listaDeAulas = ucPropria ? ucPropria.aulas : window.AULAS;
   /* página de aula extra: <body data-aula="6" data-extra="paseo"> */
   var extra = (window.EXTRAS || []).filter(function (e) { return e.chave === document.body.dataset.extra; })[0] || null;
 
@@ -148,7 +150,7 @@
      a paginação à esquerda e a identificação da aula à direita. ----- */
   function rodapes() {
     var meta = (listaDeAulas || []).filter(function (a) { return a.n === aulaAtual; })[0] || {};
-    var etiqueta = (uc2 ? window.UC2.sigla + " · " : "") +
+    var etiqueta = (ucPropria ? ucPropria.sigla + " · " : "") +
                    (extra ? "Extra da aula " : "Aula ") + String(aulaAtual).padStart(2, "0") +
                    (meta.ciclo ? " · Ciclo " + meta.ciclo : "");
     slides.forEach(function (s, k) {
@@ -183,7 +185,7 @@
       (extra ? '<a href="aula-' + pad(aulaAtual) + '.html">← aula ' + pad(aulaAtual) + '</a>' :
         (idx > 0 ? '<a href="aula-' + pad(abertas[idx - 1].n) + '.html">← aula anterior</a>' : "") +
         (idx > -1 && idx < abertas.length - 1 ? '<a href="aula-' + pad(abertas[idx + 1].n) + '.html">próxima aula →</a>' : "")) +
-      (window.PREVIEW ? "" : '<a href="../index.html#' + (uc2 ? 'uc2' : 'uc4') + '">índice</a>') +
+      (window.PREVIEW ? "" : '<a href="../index.html#' + (ucPropria ? 'uc' + codigoUc : 'uc4') + '">índice</a>') +
       '<button type="button" id="baixar-pdf" title="Abre a impressão. No destino, escolha Salvar como PDF.">baixar PDF</button>' +
       '<span class="contador" id="contador"></span>';
 

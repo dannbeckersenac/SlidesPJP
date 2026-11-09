@@ -13,10 +13,11 @@ visual, a escrita dos slides, os prompts e as regras. Este arquivo guarda só o 
 | Avaliação | entrega final do projeto, com formulário de avaliação individual |
 | AEO | prints das simulações em plataformas de nuvem e de controle de versões |
 
-A avaliação é em 29/10, no segundo tempo, e junta a UC4 e a UC2 numa apresentação individual em quatro
+A avaliação foi para 04/11, um encontro da UC3, e junta a UC4 e a UC2 numa apresentação individual em quatro
 etapas: as personas, a solução e o MVP, o sistema no ar (Vercel, Supabase, senha como hash, erros
 tratados na tela) e os próximos passos com a funcionalidade de IA. O texto que a turma lê está na seção
-`#avaliacao` do painel da UC2, no `index.html`, liberado antes do dia; o `cronograma/dados.js` marca o 29/10.
+`#avaliacao` do painel da UC2, no `index.html`, liberado antes do dia; o `cronograma/dados.js` explica o 04/11 numa nota. A aula 5 (29/10)
+ficou com os logs e o Sentry, sem avaliação.
 
 ## O plano das aulas 2 a 5, definido pelo docente em 24/10/2026
 
@@ -27,7 +28,7 @@ O docente tem autorização da coordenação para sair do roteiro do PTD. O plan
 | 2 | 26/10 | Tela e API respondendo **na mesma porta**: build do React, endereço da API fora do código, servidor web com proxy do `/api`. Tudo local. |
 | 3 | 27/10 | A IA gera os arquivos do Docker para subir banco, API e Caddy com um comando, na mesma máquina, e o aluno revisa. A parte de AWS foi pulada pelo docente. |
 | 4 | 28/10 | O banco vai para o Supabase e o projeto vai para a Vercel, no plano gratuito, com um subdomínio para cada aluno. |
-| 5 | 29/10 | No máximo 1h de conteúdo novo: `docker logs` e como perceber que algo caiu. O segundo tempo inteiro é das apresentações. |
+| 5 | 29/10 | Logs (`docker compose logs`, a aba Logs da Vercel) e o Sentry como log de produção dos erros. As apresentações foram para 04/11. |
 
 Confirmado pelo docente em 27/10: a publicação na Vercel da aula 4 vale para todos os alunos.
 
@@ -111,6 +112,30 @@ Vite 8.3 com React 19, FastAPI 0.159 e Caddy 2.11, num projeto descartável igua
 - O `docker run --rm` em primeiro plano para com `Ctrl+C` e apaga o contêiner.
 - **Não testado:** o comando com crase do PowerShell e o `-v ./caminho` relativo no Windows. Se o
   Docker reclamar do caminho, a troca é `./` por `${PWD}/`.
+
+## Testado na montagem da aula 5 (29/10/2026)
+
+Compose do projeto do professor (MySQL 8.4, FastAPI 0.162 com `fastapi run`, Caddy 2), com o `banco.py`
+da aula 4 (`NullPool`).
+
+- O log de acesso da API mostra `"POST /login HTTP/1.1" 401 Unauthorized`, com o IP do contêiner do Caddy.
+- Com `docker compose stop banco`, o login dá 500 e o traceback termina em
+  `Unknown MySQL server host 'banco' (-3)`, passando por `File "/app/main.py", line 29, in login`. Sem o
+  `NullPool`, a primeira tentativa mostra `MySQL Connection not available.`
+- Com o banco parado, `/health` continua respondendo 200: ele não consulta o banco.
+- `docker compose ps` sem `-a` esconde o serviço parado; com `-a`, aparece `Exited (0)`.
+- Com a API parada, o Caddy responde 502 e o log do `web` traz `"status":502` e `dial tcp: lookup api`.
+- Depois de `docker compose start banco` e de o MySQL aceitar conexões, o login volta a dar 200.
+- Sentry (`sentry-sdk` 2.73, testado contra um receptor falso que imita o Sentry): o erro chega com o
+  tipo, a linha do `main.py` e o caminho. **Sem `include_local_variables=False`, um 500 no login mandou a
+  senha em texto**, pelas variáveis locais das funções do FastAPI. Sem `max_request_body_size="never"`,
+  o corpo vai com o e-mail e a senha como `[Filtered]`. IP não vai, porque o `send_default_pii` fica
+  desligado. Com o `DSN_DO_SENTRY` vazio, nada é enviado.
+- **Não testado (sem conta):** a aba Logs da Vercel, a conta e o painel do Sentry e o envio do erro de
+  dentro da função da Vercel. A documentação do Sentry não cobre FastAPI na Vercel; em função sem
+  servidor, o envio em segundo plano pode não terminar antes de a função congelar. Conferidos em fontes
+  públicas em 29/10: log de execução guardado por 1 hora no Hobby, Sentry Developer grátis (1 usuário,
+  5 mil erros por mês, idade mínima de 16 anos) e o Supabase grátis pausando depois de 7 dias sem atividade.
 
 ## Fontes da revisão
 

@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 01 · A chave, o primeiro pedido e o orquestrador · UC3</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="3" data-aula="1">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC3 · Desenvolvimento de Software Apoiado por IA · Aula 01</p>
+    <h1>A chave, o primeiro pedido e o orquestrador</h1>
+    <p class="sub">Hoje cada um cria a própria chave e faz o primeiro pedido à IA: direto pela API do Google e depois pelo Jangada, um orquestrador.</p>
+  </div>
+  <div class="rodape"><span>Primeiro teste pela API</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · O MAPA DA UC3 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">As aulas da UC3</p>
+    <h2>O que vamos fazer na UC3</h2>
+    <table>
+      <thead><tr><th>Aula</th><th>O que acontece</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · hoje</strong></td><td>a chave, o primeiro pedido direto pela API e o mesmo pedido pelo orquestrador</td></tr>
+        <tr><td><strong>2</strong></td><td class="neutro">o Claude como reserva do Gemini, as tools e o plano para o seu projeto</td></tr>
+        <tr><td><strong>3</strong></td><td class="neutro">ajustes finais e a apresentação do projeto, com a funcionalidade de IA</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Cada um vai usar a funcionalidade que planejou na UC4 e apresentou na avaliação.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>O pedido está no <code>.docs/ia.md</code></h2>
+    <p class="intro">Na UC4, vocês escreveram o pedido e testaram três entradas no chat.</p>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · o pedido do .docs/ia.md</div>
+      <pre>Sugira de 3 a 6 etapas para o checklist desta tarefa.
+Responda com uma etapa por linha, começando com um verbo.
+Se faltar informação, peça mais detalhes em vez de inventar.
+Tarefa: Trocar o toner da impressora que está imprimindo falhado.</pre>
+    </div>
+    <p class="dica">No Tarefa Certa, o botão planejado é "sugerir etapas". O executor vai conferir as sugestões antes de gravar.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor</p>
+    <h2>Copiar do chat dá trabalho</h2>
+    <ol class="passos">
+      <li>Copiar a descrição da tarefa.</li>
+      <li>Abrir o chat e colar junto com o pedido.</li>
+      <li>Ler a resposta e copiar as etapas.</li>
+      <li>Voltar ao sistema e digitar uma por uma.</li>
+    </ol>
+    <div class="destaque">Queremos que o sistema envie a descrição e receba as etapas. O executor continua conferindo a resposta.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · CHAT E API -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Usar a IA pelo chat ou pela API</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">Chat</span><span class="d">Vocês entram com a conta do Google, digitam o pedido e leem a resposta.</span></div>
+      <div class="cartao"><span class="t">API</span><span class="d">O código envia o pedido com uma chave e recebe a resposta para usar no sistema.</span></div>
+    </div>
+    <div class="destaque">O React já chama a API de vocês. Nas próximas aulas, essa API também vai chamar a do Google.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · O QUE É UM MODELO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O que um modelo de linguagem faz</h2>
+    <p class="intro">O modelo foi treinado com muitos textos. Ele usa o texto recebido para gerar uma continuação.</p>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">Não acessa o banco</span><span class="d">Neste teste, ele recebe só o pedido. Não consulta as tarefas no banco de vocês.</span></div>
+      <div class="cartao"><span class="t">Erra com confiança</span><span class="d">Ele pode escrever uma resposta errada com toda a certeza. Vocês precisam conferir.</span></div>
+      <div class="cartao"><span class="t">Pode variar</span><span class="d">A mesma entrada pode gerar respostas diferentes. Vamos repetir os testes para comparar.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · AS PEÇAS DO PEDIDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O que enviamos e o que recebemos</h2>
+    <table>
+      <thead><tr><th>Peça</th><th>O que é</th><th>No exemplo do professor</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Modelo</strong></td><td class="neutro">qual IA responde</td><td class="neutro"><code>gemini-3.8-flash</code></td></tr>
+        <tr><td><strong>Instrução de sistema</strong></td><td class="neutro">as regras que mantemos entre os testes</td><td class="neutro">o pedido do <code>ia.md</code></td></tr>
+        <tr><td><strong>Entrada</strong></td><td class="neutro">o caso que vamos testar</td><td class="neutro">a descrição da tarefa</td></tr>
+        <tr><td><strong>Resposta</strong></td><td class="neutro">o texto que volta</td><td class="neutro">as etapas sugeridas</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · A CHAVE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>A chave identifica o projeto de vocês</h2>
+    <p class="intro">A chave identifica o projeto no Google. Os pedidos descontam da cota desse projeto.</p>
+    <div class="alerta">Quem tiver a chave pode consumir a cota do projeto. Guardar no backend, como a <code>CHAVE_DO_TOKEN</code>.</div>
+    <p class="dica">O limite de pedidos é por projeto. Criar outra chave no mesmo projeto não aumenta a cota. Conferir os limites em <code>aistudio.google.com/rate-limit</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · PASSO 1: CRIAR A CHAVE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 8</p>
+    <h2>Criar a chave no Google AI Studio</h2>
+    <ol class="passos">
+      <li>Abrir <code>aistudio.google.com/apikey</code> e entrar com a conta do Google.</li>
+      <li>Clicar em <b>Create API key</b> e seguir as instruções para criar a chave num projeto.</li>
+      <li>Copiar a chave.</li>
+      <li>Guardar a chave em local privado, fora de conversas com a IA e de prints.</li>
+    </ol>
+    <p class="dica">Quem não conseguir criar a conta recebe a chave com o professor.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · CONHECER O AI STUDIO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 8</p>
+    <h2>Conhecer o AI Studio antes do código</h2>
+    <ol class="passos">
+      <li>No AI Studio, abrir a área de testes (Playground) e colar o pedido do seu <code>.docs/ia.md</code>.</li>
+      <li>Trocar o modelo na lista e comparar as respostas.</li>
+      <li>Clicar em <b>Get code</b> e ver o mesmo pedido escrito em Python.</li>
+      <li>Abrir <code>aistudio.google.com/rate-limit</code> e conferir os limites do plano grátis do seu projeto.</li>
+    </ol>
+    <p class="dica">O Playground também usa a cota do projeto. Testar a ideia ali antes de escrever código poupa tempo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · O QUE VAI PARA O GOOGLE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segurança</p>
+    <h2>O que acontece com os dados enviados</h2>
+    <p class="intro">No plano grátis, o Google usa os pedidos e as respostas para melhorar os produtos. Pessoas podem ler esse conteúdo.</p>
+    <div class="alerta">Usar só dados fictícios nos testes, como os das cartilhas. Os termos proíbem enviar dados pessoais ou confidenciais no plano grátis.</div>
+    <p class="dica">No plano pago, os pedidos não são usados para melhorar os produtos. Essa diferença precisa ser explicada antes de usar dados reais.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · ONDE A CHAVE MORA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Onde guardar a chave</h2>
+    <table>
+      <thead><tr><th>Lugar</th><th>Pode?</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro"><code>backend/.env</code></td><td>sim. Fica fora do Git</td></tr>
+        <tr><td class="neutro"><code>backend/.env.exemplo</code></td><td>só o nome, sem o valor</td></tr>
+        <tr><td class="neutro">variáveis da Vercel</td><td>sim, na aula 3</td></tr>
+        <tr><td class="neutro"><code>frontend/</code>, variável <code>VITE_</code></td><td>não. Vai para o navegador de quem abre</td></tr>
+        <tr><td class="neutro">Git, print, conversa com a IA</td><td>não</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · PASSO 2: GUARDAR A CHAVE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 8</p>
+    <h2>Guardar a chave no backend</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/configuracao.py · acrescentar abaixo das outras configurações</div>
+      <pre>chave_do_gemini = os.getenv(<span class="str">"GEMINI_API_KEY"</span>)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>backend/.env</code>, acrescentar <code>GEMINI_API_KEY=</code> e colar a chave depois do sinal de igual.</li>
+      <li>No <code>backend/.env.exemplo</code>, acrescentar <code>GEMINI_API_KEY=</code>, sem valor.</li>
+      <li>No <code>backend/configuracao.py</code>, acrescentar a linha acima.</li>
+      <li>Na raiz do repositório, executar <code>git status --short --ignored backend/.env</code>. Conferir <code>!! backend/.env</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · PASSO 3: INSTALAR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 8</p>
+    <h2>Instalar a biblioteca do Gemini</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · na pasta backend/, com o venv ativo</div>
+      <pre>pip install -U google-genai
+pip freeze &gt; requirements.txt</pre>
+    </div>
+    <ol class="passos">
+      <li>No terminal, entrar na pasta <code>backend/</code> e ativar o venv.</li>
+      <li>Executar <code>pip install -U google-genai</code>.</li>
+      <li>Executar <code>pip freeze &gt; requirements.txt</code>. Esse arquivo registra as dependências do backend.</li>
+      <li>Abrir o <code>requirements.txt</code> e conferir a linha <code>google-genai</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · PASSO 4: O PRIMEIRO PEDIDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 8</p>
+    <h2>Fazer o primeiro pedido</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/testar_ia.py</div>
+      <pre><span class="kw">from</span> google <span class="kw">import</span> genai
+<span class="kw">import</span> configuracao
+
+<span class="com"># o cliente da API do Gemini, com a chave do .env</span>
+cliente = genai.<span class="fn">Client</span>(api_key=configuracao.chave_do_gemini)
+resposta = cliente.interactions.<span class="fn">create</span>(
+    model=<span class="str">"gemini-3.8-flash"</span>, input=<span class="str">"Explique em uma frase o que é uma API."</span>)
+<span class="fn">print</span>(resposta.output_text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar o arquivo <code>backend/testar_ia.py</code> e colar o código.</li>
+      <li>No terminal, dentro de <code>backend/</code> e com o venv ativo, executar <code>python testar_ia.py</code>.</li>
+      <li>Conferir a resposta no terminal. Se aparecer um erro, consultar o próximo slide.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · QUANDO DÁ ERRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Quando o primeiro pedido dá erro</h2>
+    <table>
+      <thead><tr><th>A última linha do erro</th><th>O que conferir</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro"><code>ValueError: No API key was provided</code></td><td>o nome <code>GEMINI_API_KEY</code> no <code>.env</code> e no <code>configuracao.py</code></td></tr>
+        <tr><td class="neutro"><code>400</code> e <code>API key not valid</code></td><td>a chave copiada pela metade ou com espaço</td></tr>
+        <tr><td class="neutro"><code>429</code> e <code>RESOURCE_EXHAUSTED</code></td><td>a cota do projeto no AI Studio. Conferir quando o limite libera novos pedidos</td></tr>
+        <tr><td class="neutro"><code>ModuleNotFoundError: google</code></td><td>o venv ativo e o <code>pip install</code> do passo 3</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">O traceback se lê de baixo para cima, como na UC2.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · CADA PROVEDOR TEM O SEU JEITO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor</p>
+    <h2>Cada provedor tem o seu jeito</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Google · google-genai</div>
+        <div class="codigo"><pre>cliente = genai.<span class="fn">Client</span>(api_key=CHAVE)
+r = cliente.interactions.<span class="fn">create</span>(
+    model=<span class="str">"gemini-3.8-flash"</span>,
+    input=PERGUNTA)
+<span class="fn">print</span>(r.output_text)</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">Anthropic · anthropic</div>
+        <div class="codigo"><pre>cliente = <span class="fn">Anthropic</span>(api_key=CHAVE)
+r = cliente.messages.<span class="fn">create</span>(
+    model=<span class="str">"claude-opus-5-5"</span>, max_tokens=<span class="num">1024</span>,
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: PERGUNTA}])
+<span class="kw">for</span> bloco <span class="kw">in</span> r.content:
+    <span class="kw">if</span> bloco.type == <span class="str">"text"</span>:
+        <span class="fn">print</span>(bloco.text)</pre></div>
+      </div>
+    </div>
+    <div class="destaque">Trocar o Gemini pelo Claude seria reescrever cada pedido. E amanhã o Claude entra como reserva.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · O ORQUESTRADOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Um orquestrador na frente dos provedores</h2>
+    <p class="intro">O Jangada é uma biblioteca Python que fica na frente dos SDKs. O mesmo código fala com Gemini, Claude, OpenAI e outros.</p>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">O que ganha</span><span class="d">Trocar de provedor numa linha. Reserva e tools escritas do mesmo jeito para todos, como vamos ver amanhã.</span></div>
+      <div class="cartao"><span class="t">O que custa</span><span class="d">Mais uma dependência no projeto. Embaixo continua o SDK de cada provedor, e os erros vêm de lá.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · INSTALAR O JANGADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 6 de 8</p>
+    <h2>Instalar o Jangada</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · na pasta backend/, com o venv ativo</div>
+      <pre>pip install <span class="str">"jangada-ai[gemini]"</span>
+pip freeze &gt; requirements.txt</pre>
+    </div>
+    <ol class="passos">
+      <li>No terminal do <code>backend/</code>, com o venv ativo, executar o primeiro comando.</li>
+      <li>Executar o <code>pip freeze</code> para atualizar o <code>requirements.txt</code>.</li>
+      <li>Abrir o <code>requirements.txt</code> e conferir a linha <code>jangada-ai</code>.</li>
+    </ol>
+    <p class="dica">O <code>[gemini]</code> instala o SDK do Google junto. Amanhã entra o <code>[anthropic]</code>, para o Claude.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · O PRIMEIRO PEDIDO PELO JANGADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 7 de 8</p>
+    <h2>Fazer o mesmo pedido pelo Jangada</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/testar_jangada.py</div>
+      <pre><span class="kw">from</span> jangada_ai <span class="kw">import</span> LLM
+<span class="kw">import</span> configuracao
+
+<span class="com"># o provedor e o modelo são os dois primeiros argumentos</span>
+llm = <span class="fn">LLM</span>(<span class="str">"gemini"</span>, <span class="str">"gemini-3.8-flash"</span>, api_key=configuracao.chave_do_gemini)
+resposta = llm.<span class="fn">complete</span>(<span class="str">"Explique em uma frase o que é uma API."</span>)
+<span class="fn">print</span>(resposta.provider, <span class="str">"respondeu:"</span>, resposta.text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar o arquivo <code>backend/testar_jangada.py</code> e colar o código.</li>
+      <li>No terminal, executar <code>python testar_jangada.py</code>.</li>
+      <li>Conferir a linha que começa com <code>gemini respondeu:</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · O PEDIDO DO IA.MD PELO JANGADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 8 de 8</p>
+    <h2>Mandar o pedido do <code>ia.md</code> pelo Jangada</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/testar_jangada.py · no fim do arquivo</div>
+      <pre><span class="com"># o papel e as regras: o pedido que ficou no .docs/ia.md</span>
+INSTRUCAO = <span class="str">"""Sugira de 3 a 6 etapas para o checklist desta tarefa.
+Responda com uma etapa por linha, começando com um verbo.
+Se faltar informação, peça mais detalhes em vez de inventar."""</span>
+<span class="com"># o caso de agora: trocar a cada teste</span>
+ENTRADA = <span class="str">"Tarefa: Trocar o toner da impressora que está imprimindo falhado."</span>
+
+resposta = llm.<span class="fn">complete</span>(ENTRADA, system=INSTRUCAO)
+<span class="fn">print</span>(resposta.text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Colar o bloco no fim do arquivo e trocar os textos pelos do seu <code>ia.md</code>.</li>
+      <li>Executar de novo e conferir se a resposta segue o formato combinado.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício individual · projeto da própria cartilha</p>
+    <h2>O primeiro pedido, direto e pelo orquestrador</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">A chave no <code>backend/.env</code>, fora do Git, e só o nome no <code>.env.exemplo</code>.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">O <code>testar_ia.py</code> respondendo direto pela API do Google.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">O <code>testar_jangada.py</code> respondendo com o pedido do seu <code>.docs/ia.md</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">No <code>ia.md</code>, a resposta pelo Jangada e uma diferença entre os dois jeitos de pedir.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc3-aula-01-testes.md">copiar o prompt de comparação</button>
+      <a class="btn" href="../prompts/uc3-aula-01-regras.md" download="REGRAS_UC3_AULA1.md">baixar o REGRAS_UC3_AULA1.md</a>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · RECAPITULAÇÃO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que vocês fizeram hoje</h2>
+    <ul class="recap">
+      <li>Cada um criou a própria chave e conheceu o AI Studio.</li>
+      <li>O primeiro pedido foi direto pela API do Google, e depois pelo Jangada.</li>
+      <li>Um pedido tem modelo, instrução de sistema, entrada e resposta.</li>
+      <li>A chave ficou no <code>backend/.env</code>, fora do Git e do frontend.</li>
+      <li>No plano grátis, o Google usa o que é enviado. Só dados fictícios.</li>
+    </ul>
+    <p class="proximo">Amanhã, o Claude como reserva do Gemini, as tools e o plano da funcionalidade no seu projeto.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
