@@ -180,8 +180,8 @@ const NOTAS = `
 10-21 revisão, tempo de ajustes e apresentação individual de fechamento
 10-29 aula 5: os logs e o Sentry; a avaliação final da UC4 e da UC2 passou para 04/11
 11-04 encontro usado para a avaliação final da UC4 e da UC2, em quatro etapas (as etapas estão na aba UC2 da página dos slides); as aulas da UC3 começam em 09/11
-11-09 aula 1 da UC3: a chave do Gemini, o primeiro pedido e o orquestrador Jangada
-11-10 encontro da UC6 antecipado de 19/11, usado para a aula 2 da UC3: o Claude como reserva, as tools e o plano no projeto
+11-09 aula 1 da UC3: as chaves do Gemini e do OpenRouter
+11-10 encontro da UC6 antecipado de 19/11, usado para a aula 2 da UC3: o primeiro pedido, o fallback com o OpenRouter e o Claude, as tools e o plano no projeto
 11-11 Semana do Trabalho 2026 do Senac: participação obrigatória no evento, no horário de aula, contando como presença
 11-12 ajustes até o intervalo e apresentação final do projeto, com ênfase na funcionalidade de IA; as apresentações podem seguir em 16/11
 11-16 fim das apresentações da UC3, se preciso; formação dos grupos e inscrição no Hackathon, boas práticas para o evento e sorteio dos temas dos simulados, nas frentes de atuação do Senac

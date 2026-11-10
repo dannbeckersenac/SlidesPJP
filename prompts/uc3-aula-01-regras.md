@@ -7,13 +7,9 @@ repositório da cartilha com o nome `REGRAS.md`, por cima da versão da UC2. Só
 
 - Repositório da cartilha sorteada na UC4. A aplicação foi desenvolvida na UC4 e publicada na UC2.
   Na UC3, ela ganha a funcionalidade de IA planejada no `.docs/ia.md` e apresentada na avaliação.
-- A IA do projeto é o Gemini, pela API, com o SDK `google-genai`. A chave fica no `backend/.env`,
-  na chave `GEMINI_API_KEY`, e o `configuracao.py` lê com `chave_do_gemini = os.getenv("GEMINI_API_KEY")`.
-  O `.env.exemplo` tem a chave sem valor.
-- `backend/testar_ia.py`: o primeiro pedido, direto pela API do Google, fora da API do projeto.
-- `backend/testar_jangada.py`: o mesmo pedido pelo Jangada (`jangada-ai`), um orquestrador que fica
-  na frente dos SDKs, e o pedido do `.docs/ia.md` com a instrução de sistema. Os dois scripts são
-  rascunho: a funcionalidade entra no projeto na aula 2.
+- As chaves da IA ficam no `backend/.env`: `GEMINI_API_KEY` (Google AI Studio) e `OPENROUTER_API_KEY`
+  (OpenRouter), as duas grátis. O `configuracao.py` lê com `chave_do_gemini` e `chave_do_openrouter`.
+  O `.env.exemplo` tem os dois nomes, sem valor. Nenhum código do projeto chama a IA ainda.
 - Na raiz: `README.md`, `docs/` (a cartilha, o briefing e o DER), `.docs/` (o diário de obra),
   `frontend/` e `backend/`.
 - Em produção: o banco é o PostgreSQL do Supabase, pelo Transaction pooler (porta 6543). A API e a
@@ -119,31 +115,23 @@ repositório da cartilha com o nome `REGRAS.md`, por cima da versão da UC2. Só
   resposta como dado. A API do projeto passa a ser cliente da API do Google.
 - As peças do pedido: modelo, instrução de sistema (o papel e as regras, fixos), entrada (o caso de
   agora, que muda) e resposta.
-- `from google import genai`, `genai.Client(api_key=configuracao.chave_do_gemini)` e
-  `cliente.interactions.create(model=..., system_instruction=..., input=...)`, com a resposta em
-  `.output_text`. O modelo da aula é o `gemini-3.8-flash`.
-- Os erros: sem chave, `ValueError` (`No API key was provided`); chave errada, 400
-  (`API key not valid`); limite do plano grátis, 429 (`RESOURCE_EXHAUSTED`). O limite vale por projeto.
 - O plano grátis: o Google usa as entradas e as respostas para melhorar os produtos, e pessoas podem
   ler. Só dados fictícios nos pedidos.
 
 - O AI Studio: a área de testes (Playground), o **Get code** e a página de limites do projeto.
-- Jangada: `pip install "jangada-ai[gemini]"`, `from jangada_ai import LLM`,
-  `LLM("gemini", "gemini-3.8-flash", api_key=configuracao.chave_do_gemini)`,
-  `llm.complete(entrada, system=INSTRUCAO)` e a resposta em `.text`, com `.provider` e `.model`
-  dizendo quem respondeu.
+- O OpenRouter: uma porta para muitos modelos com uma chave só. Os modelos grátis têm limite (sem
+  créditos comprados, 20 pedidos por minuto e 50 por dia), e o `openrouter/free` escolhe um deles.
+  Alguns provedores grátis guardam os pedidos: só dados fictícios.
 
 ## O que ainda não foi visto, e não deve aparecer
 
-- Rota, serviço, esquema ou repositório para a IA. Na aula 1, a IA só roda no `testar_ia.py`.
+- Código que chama a IA: o SDK do Google, o Jangada e os scripts de teste. Isso é da aula 2.
 - Chamada à IA pelo `frontend/`, SDK do Gemini no `frontend/` e a chave em variável `VITE_`.
 - `GEMINI_API_KEY` nas variáveis da Vercel. Isso é da aula 3.
 - Saída estruturada (`response_format`, `response_mime_type`), streaming (`stream`), conversa com
   memória (`previous_interaction_id`), ferramentas (`tools`) e agentes.
-- `generate_content`, `chats` e o cliente assíncrono (`client.aio`). Use `client.interactions.create`,
-  como na aula.
-- Fallback (`with_fallback`), a chave do Claude, tools, `Agent` e a pasta `backend/ia/`. Isso é da aula 2.
-- LangChain, LlamaIndex, CrewAI e outro orquestrador no lugar do Jangada.
+- Fallback, a chave do Claude, tools, `Agent` e a pasta `backend/ia/`. Isso é da aula 2.
+- LangChain, LlamaIndex, CrewAI e outros orquestradores.
 
 - Mudança na lógica do `backend/`: rota, serviço, repositório, esquema, modelo ou migration.
 - Redes do Docker declaradas à mão, `network_mode: host`, Docker Swarm e Kubernetes.

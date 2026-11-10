@@ -78,8 +78,8 @@ window.UC3 = {
   sigla: "UC3",
   nome: "Desenvolvimento de Software Apoiado por IA",
   aulas: [
-    { n: 1, data: "2026-11-09", titulo: "A chave, o primeiro pedido e o orquestrador", pronto: true },
-    { n: 2, data: "2026-11-10", titulo: "O Claude de reserva e as tools: a IA dentro do projeto", pronto: false },
+    { n: 1, data: "2026-11-09", titulo: "As chaves da IA: o Gemini e o OpenRouter", pronto: true },
+    { n: 2, data: "2026-11-10", titulo: "O primeiro pedido, o fallback e as tools", pronto: true },
     { n: 3, data: "2026-11-12", titulo: "Ajustes finais e apresentação do projeto", pronto: false, avaliacao: true }
   ],
   semAula: [

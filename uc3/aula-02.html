@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 02 · O primeiro pedido, o fallback e as tools · UC3</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="3" data-aula="2">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC3 · Desenvolvimento de Software Apoiado por IA · Aula 02</p>
+    <h1>O primeiro pedido, o fallback e as tools</h1>
+    <p class="sub">Hoje vocês vão chamar a IA pelo Python, testar as reservas do Gemini e começar a funcionalidade no projeto.</p>
+  </div>
+  <div class="rodape"><span>IA no projeto</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · ONDE PARAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde paramos</p>
+    <h2>O que ficou pronto na aula 1</h2>
+    <ol class="passos">
+      <li>A chave do Gemini e a do OpenRouter estão no <code>backend/.env</code>.</li>
+      <li>O <code>configuracao.py</code> lê as duas.</li>
+      <li>Vocês testaram o pedido do <code>.docs/ia.md</code> no Playground do AI Studio.</li>
+      <li>Falta fazer esse pedido pelo código do projeto.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · INSTALAR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 1 de 10</p>
+    <h2>Instalar as bibliotecas de hoje</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">terminal · na pasta backend/, com o venv ativo</div>
+      <pre>pip install -U google-genai <span class="str">"jangada-ai[gemini,openai,anthropic]"</span>
+pip freeze &gt; requirements.txt</pre>
+    </div>
+    <ol class="passos">
+      <li>No terminal do <code>backend/</code>, com o venv ativo, executar o primeiro comando.</li>
+      <li>Executar o <code>pip freeze</code> para atualizar o <code>requirements.txt</code>.</li>
+      <li>Abrir o <code>requirements.txt</code> e conferir as linhas <code>google-genai</code> e <code>jangada-ai</code>.</li>
+    </ol>
+    <p class="dica">O extra <code>[openai]</code> instala a biblioteca que o Jangada usa para chamar o OpenRouter.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · PASSO 4: O PRIMEIRO PEDIDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 2 de 10</p>
+    <h2>Fazer o primeiro pedido</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/testar_ia.py</div>
+      <pre><span class="kw">from</span> google <span class="kw">import</span> genai
+<span class="kw">import</span> configuracao
+
+<span class="com"># o cliente da API do Gemini, com a chave do .env</span>
+cliente = genai.<span class="fn">Client</span>(api_key=configuracao.chave_do_gemini)
+resposta = cliente.interactions.<span class="fn">create</span>(
+    model=<span class="str">"gemini-3.8-flash"</span>, input=<span class="str">"Explique em uma frase o que é uma API."</span>)
+<span class="fn">print</span>(resposta.output_text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar o arquivo <code>backend/testar_ia.py</code> e colar o código.</li>
+      <li>No terminal, dentro de <code>backend/</code> e com o venv ativo, executar <code>python testar_ia.py</code>.</li>
+      <li>Conferir a resposta no terminal. Se aparecer um erro, consultar o próximo slide.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · QUANDO DÁ ERRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Conferir os erros do primeiro pedido</h2>
+    <table>
+      <thead><tr><th>A última linha do erro</th><th>O que conferir</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro"><code>ValueError: No API key was provided</code></td><td>o nome <code>GEMINI_API_KEY</code> no <code>.env</code> e no <code>configuracao.py</code></td></tr>
+        <tr><td class="neutro"><code>400</code> e <code>API key not valid</code></td><td>a chave copiada pela metade ou com espaço</td></tr>
+        <tr><td class="neutro"><code>429</code> e <code>RESOURCE_EXHAUSTED</code></td><td>a cota do projeto no AI Studio. Conferir quando o limite libera novos pedidos</td></tr>
+        <tr><td class="neutro"><code>ModuleNotFoundError: google</code></td><td>o venv ativo e o <code>pip install</code> do passo 1</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">O traceback se lê de baixo para cima, como na UC2.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · CADA PROVEDOR TEM O SEU JEITO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor</p>
+    <h2>O código muda entre os provedores</h2>
+    <div class="comparacao">
+      <div class="lado">
+        <div class="rotulo">Google · google-genai</div>
+        <div class="codigo"><pre>cliente = genai.<span class="fn">Client</span>(api_key=CHAVE)
+r = cliente.interactions.<span class="fn">create</span>(
+    model=<span class="str">"gemini-3.8-flash"</span>,
+    input=PERGUNTA)
+<span class="fn">print</span>(r.output_text)</pre></div>
+      </div>
+      <div class="lado">
+        <div class="rotulo">Anthropic · anthropic</div>
+        <div class="codigo"><pre>cliente = <span class="fn">Anthropic</span>(api_key=CHAVE)
+r = cliente.messages.<span class="fn">create</span>(
+    model=<span class="str">"claude-opus-5-5"</span>, max_tokens=<span class="num">1024</span>,
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>,
+               <span class="str">"content"</span>: PERGUNTA}])
+<span class="kw">for</span> bloco <span class="kw">in</span> r.content:
+    <span class="kw">if</span> bloco.type == <span class="str">"text"</span>:
+        <span class="fn">print</span>(bloco.text)</pre></div>
+      </div>
+    </div>
+    <div class="destaque">Os dois exemplos enviam um pedido, mas usam métodos e respostas diferentes. Vamos precisar dos dois provedores no projeto.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · O ORQUESTRADOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Usar o Jangada para chamar os provedores</h2>
+    <p class="intro">O Jangada usa as bibliotecas dos provedores por baixo. Ele permite chamar modelos diferentes com o mesmo formato de código.</p>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">O que facilita</span><span class="d">Podemos configurar os provedores de reserva e as tools na mesma biblioteca.</span></div>
+      <div class="cartao"><span class="t">O que precisamos acompanhar</span><span class="d">O projeto ganha mais uma dependência. Os provedores continuam com suas próprias regras e mensagens de erro.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · O PRIMEIRO PEDIDO PELO JANGADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 3 de 10</p>
+    <h2>Fazer o mesmo pedido pelo Jangada</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/testar_jangada.py</div>
+      <pre><span class="kw">from</span> jangada_ai <span class="kw">import</span> LLM
+<span class="kw">import</span> configuracao
+
+<span class="com"># o provedor e o modelo são os dois primeiros argumentos</span>
+llm = <span class="fn">LLM</span>(<span class="str">"gemini"</span>, <span class="str">"gemini-3.8-flash"</span>, api_key=configuracao.chave_do_gemini)
+resposta = llm.<span class="fn">complete</span>(<span class="str">"Explique em uma frase o que é uma API."</span>)
+<span class="fn">print</span>(resposta.provider, <span class="str">"respondeu:"</span>, resposta.text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar o arquivo <code>backend/testar_jangada.py</code> e colar o código.</li>
+      <li>No terminal do <code>backend/</code>, executar <code>python testar_jangada.py</code>.</li>
+      <li>Conferir a linha que começa com <code>gemini respondeu:</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · O PEDIDO DO IA.MD PELO JANGADA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 4 de 10</p>
+    <h2>Testar o pedido do <code>ia.md</code> pelo Jangada</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/testar_jangada.py · no fim do arquivo</div>
+      <pre><span class="com"># o papel e as regras: o pedido que ficou no .docs/ia.md</span>
+INSTRUCAO = <span class="str">"""Sugira de 3 a 6 etapas para o checklist desta tarefa.
+Responda com uma etapa por linha, começando com um verbo.
+Se faltar informação, peça mais detalhes em vez de inventar."""</span>
+<span class="com"># o caso de agora: trocar a cada teste</span>
+ENTRADA = <span class="str">"Tarefa: Trocar o toner da impressora que está imprimindo falhado."</span>
+
+resposta = llm.<span class="fn">complete</span>(ENTRADA, system=INSTRUCAO)
+<span class="fn">print</span>(resposta.text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>testar_jangada.py</code>, acrescentar o bloco com a instrução e a entrada do seu <code>ia.md</code>.</li>
+      <li>Executar <code>python testar_jangada.py</code>. Conferir se a resposta segue o formato do <code>ia.md</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor</p>
+    <h2>E se a cota acabar na apresentação?</h2>
+    <p class="intro">Imaginem que o Gemini devolva 429 durante a apresentação de quinta. A cota acabou e o pedido ficou sem resposta.</p>
+    <div class="destaque">Vamos configurar outras opções para tentar responder quando o Gemini estiver indisponível.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · O FALLBACK -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Fallback: tentar outro provedor</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Gemini</span><span class="d">o principal, grátis</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">OpenRouter</span><span class="d">a primeira reserva, grátis</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Claude</span><span class="d">a terceira opção, paga, só quando as outras falham</span></div>
+    </div>
+    <p class="dica">O código tenta as reservas na ordem. Se uma responder, podemos conferir o provedor em <code>resposta.provider</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · QUANDO O RESERVA ENTRA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Quais erros acionam a reserva</h2>
+    <table>
+      <thead><tr><th>Erro no provedor atual</th><th>O Jangada faz</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro">limite (429), demora, conexão, erro 5xx</td><td>tenta de novo, depois passa para o próximo</td></tr>
+        <tr><td class="neutro">modelo que não existe (404)</td><td>passa para o próximo direto</td></tr>
+        <tr><td class="neutro">chave inválida ou pedido errado (400)</td><td>devolve o erro, sem passar adiante</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">As novas tentativas aumentam a espera. O fallback pode falhar também se nenhuma reserva conseguir responder.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · A CHAVE PAGA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segurança</p>
+    <h2>A chave do Claude é paga</h2>
+    <p class="intro">O professor fornece a chave. Os pedidos ao Claude são cobrados, por isso ele fica depois das duas opções grátis.</p>
+    <div class="alerta">A <code>ANTHROPIC_API_KEY</code> fica só no <code>backend/.env</code>. Nunca no Git, no frontend, num print ou na conversa com a IA.</div>
+    <p class="dica">Se a chave aparecer num lugar público, avisar o professor para revogá-la e criar outra.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · PASSO 1: A CHAVE E O PACOTE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 5 de 10</p>
+    <h2>Guardar a chave do Claude</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/configuracao.py · acrescentar às configurações existentes</div>
+      <pre>chave_do_claude = os.getenv(<span class="str">"ANTHROPIC_API_KEY"</span>)</pre>
+    </div>
+    <ol class="passos curta">
+            <li>No <code>backend/.env</code>, acrescentar a chave em <code>ANTHROPIC_API_KEY=</code>. No <code>.env.exemplo</code>, deixar o valor vazio.</li>
+      <li>No <code>backend/configuracao.py</code>, acrescentar a linha acima.</li>
+      <li>Na raiz do projeto, executar <code>git status --short --ignored backend/.env</code>. Conferir <code>!! backend/.env</code>.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · A PASTA DA IA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A estrutura</p>
+    <h2>Organizar a IA em backend/ia/</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · o backend/ com a pasta nova</div>
+      <pre>backend/
+├── ia/                  <span class="com"># código da funcionalidade de IA</span>
+│   ├── __init__.py      <span class="com"># vazio</span>
+│   ├── modelos.py       <span class="com"># os três provedores e o fallback</span>
+│   ├── ferramentas.py   <span class="com"># as tools da funcionalidade</span>
+│   └── sugestao.py      <span class="com"># a instrução e a função da funcionalidade</span>
+├── rotas/               <span class="com"># as rotas chamam as funções de ia/</span>
+├── servicos/
+└── configuracao.py      <span class="com"># leitura das três chaves</span></pre>
+    </div>
+    <p class="dica">As configurações dos provedores e as tools ficam em <code>ia/</code>. A rota chama a função da funcionalidade.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · PASSO 2: OS MODELOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 6 de 10</p>
+    <h2>Criar o Gemini com as duas reservas</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/ia/modelos.py</div>
+      <pre><span class="kw">from</span> jangada_ai <span class="kw">import</span> LLM
+<span class="kw">import</span> configuracao
+gemini = <span class="fn">LLM</span>(<span class="str">"gemini"</span>, <span class="str">"gemini-3.8-flash"</span>, api_key=configuracao.chave_do_gemini)
+<span class="com"># a primeira reserva: um modelo grátis escolhido pelo OpenRouter</span>
+openrouter = <span class="fn">LLM</span>(<span class="str">"openrouter"</span>, <span class="str">"openrouter/free"</span>,
+                 api_key=configuracao.chave_do_openrouter)
+<span class="com"># a terceira opção: o Claude, pago; só entra quando os outros falham</span>
+claude = <span class="fn">LLM</span>(<span class="str">"anthropic"</span>, <span class="str">"claude-opus-5-5"</span>, api_key=configuracao.chave_do_claude)
+llm = gemini.<span class="fn">with_fallback</span>(openrouter, claude)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No <code>backend/</code>, criar a pasta <code>ia/</code> com um <code>__init__.py</code> vazio.</li>
+      <li>Criar o <code>ia/modelos.py</code> e colar o código.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · PASSO 3: TESTAR O FALLBACK -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 7 de 10</p>
+    <h2>Testar o fallback com um modelo inexistente</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">backend/testar_fallback.py</div>
+      <pre><span class="kw">from</span> ia.modelos <span class="kw">import</span> llm
+
+resposta = llm.<span class="fn">complete</span>(<span class="str">"Diga olá em uma frase."</span>)
+<span class="fn">print</span>(resposta.provider, resposta.model, <span class="str">"respondeu:"</span>, resposta.text)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar <code>backend/testar_fallback.py</code> com o código. Executar no terminal do <code>backend/</code> e conferir o provedor.</li>
+      <li>No <code>backend/ia/modelos.py</code>, trocar <code>gemini-3.8-flash</code> por <code>gemini-modelo-que-nao-existe</code>.</li>
+      <li>Executar novamente. Conferir qual reserva respondeu e o texto retornado.</li>
+      <li>Restaurar <code>gemini-3.8-flash</code> em <code>ia/modelos.py</code> após o teste.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · O QUE É UMA TOOL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Tool: pedir a execução de uma função</h2>
+    <p class="intro">Para consultar um prazo ou um dado do banco, o modelo precisa receber essa informação. Uma tool permite pedir essa consulta ao código.</p>
+    <div class="fluxo">
+      <div class="passo"><span class="t">Pergunta</span><span class="d">com a lista de tools</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">A IA pede</span><span class="d">"rodar dias_ate com este prazo"</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">O código roda</span><span class="d">e devolve o resultado</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">Resposta</span><span class="d">usando o resultado</span></div>
+    </div>
+    <p class="dica">Nas funções do projeto, o backend executa a consulta. O modelo pede a função e informa os argumentos.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 19 · TRÊS TIPOS DE TOOL -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Referência</p>
+    <h2>Três tipos de tool</h2>
+    <table>
+      <thead><tr><th>Tipo</th><th>Exemplos</th><th>Cuidado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Prontas do Jangada</strong></td><td class="neutro"><code>consultar_cep</code>, <code>feriados_nacionais</code>, <code>wikipedia_search</code>, <code>calculator</code></td><td class="neutro">não pedem chave</td></tr>
+        <tr><td><strong>Nativas do provedor</strong></td><td class="neutro"><code>web_search()</code>: no Gemini, a busca do Google</td><td class="neutro">gastam cota e trazem fontes</td></tr>
+        <tr><td><strong>Funções de vocês</strong></td><td class="neutro">contar dias, ler um dado do sistema</td><td class="neutro">tipos e docstring obrigatórios</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">A docstring descreve o que a função faz e quais dados recebe. O modelo usa essa descrição para decidir quando chamá-la.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 20 · PASSO 4: AS FERRAMENTAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 8 de 10</p>
+    <h2>Criar as tools da funcionalidade</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/ia/ferramentas.py</div>
+      <pre><span class="kw">from</span> datetime <span class="kw">import</span> date
+<span class="kw">from</span> jangada_ai.prebuilt <span class="kw">import</span> feriados_nacionais
+
+<span class="com"># uma tool feita à mão: a docstring é o que a IA lê para decidir quando usar</span>
+<span class="kw">def</span> <span class="fn">dias_ate</span>(prazo: str) -&gt; int:
+    <span class="str">"""Conta quantos dias faltam de hoje até o prazo, no formato AAAA-MM-DD."""</span>
+    <span class="kw">return</span> (date.<span class="fn">fromisoformat</span>(prazo) - date.<span class="fn">today</span>()).days
+
+FERRAMENTAS = [dias_ate, feriados_nacionais]</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar <code>backend/ia/ferramentas.py</code> com as tools escolhidas para a funcionalidade.</li>
+      <li>Montar a lista <code>FERRAMENTAS</code> com as tools escolhidas. O exemplo usa uma pronta e uma função do professor.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 21 · PASSO 5: A FUNCIONALIDADE COM AGENT -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 9 de 10</p>
+    <h2>Criar a função que chama o Agent</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/ia/sugestao.py</div>
+      <pre><span class="kw">from</span> jangada_ai <span class="kw">import</span> Agent
+<span class="kw">from</span> ia.modelos <span class="kw">import</span> llm
+<span class="kw">from</span> ia.ferramentas <span class="kw">import</span> FERRAMENTAS
+INSTRUCAO = <span class="str">"""Sugira de 3 a 6 etapas para o checklist desta tarefa.
+Use as ferramentas para ver os dias até o prazo e os feriados.
+Responda com uma etapa por linha, começando com um verbo."""</span>
+<span class="com"># o agente chama as tools quando precisa e devolve o texto final</span>
+<span class="kw">def</span> <span class="fn">sugerir_etapas</span>(titulo, descricao, prazo):
+    agente = <span class="fn">Agent</span>(llm, role=<span class="str">"assistente"</span>, goal=INSTRUCAO, tools=FERRAMENTAS)
+    entrada = <span class="str">f"Título: {titulo}\nDescrição: {descricao}\nPrazo: {prazo}"</span>
+    <span class="kw">return</span> agente.<span class="fn">run</span>(entrada).text</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Criar o arquivo da funcionalidade em <code>backend/ia/</code>. Usar a instrução do seu <code>ia.md</code> e os campos do seu projeto.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 22 · A ROTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · passo 10 de 10</p>
+    <h2>Ligar a funcionalidade a uma rota</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · backend/rotas/tarefas.py</div>
+      <pre><span class="kw">from</span> ia.sugestao <span class="kw">import</span> sugerir_etapas
+<span class="com"># POST: cada pedido gasta cota e a resposta muda. Nada é gravado aqui</span>
+<span class="fn">@router.post</span>(<span class="str">"/{tarefa_id}/sugestoes"</span>)
+<span class="kw">def</span> <span class="fn">sugerir</span>(tarefa=Depends(tarefa_existente)):
+    <span class="kw">try</span>:
+        etapas = <span class="fn">sugerir_etapas</span>(tarefa.titulo, tarefa.descricao, str(tarefa.prazo))
+        <span class="kw">return</span> {<span class="str">"sugestao"</span>: etapas}
+    <span class="kw">except</span> Exception:
+        <span class="kw">raise</span> HTTPException(status_code=<span class="num">503</span>, detail=<span class="str">"Sugestão indisponível agora."</span>)</pre>
+    </div>
+    <ol class="passos curta">
+      <li>No router do seu recurso, criar a rota que chama a função da <code>ia/</code>.</li>
+      <li>Executar <code>fastapi dev main.py</code>, chamar a rota no <code>/docs</code> e conferir o 200 com a sugestão.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 23 · CUIDADO COM AS TOOLS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Segurança</p>
+    <h2>Limitar o que as tools podem fazer</h2>
+    <ol class="passos">
+      <li>Criar tools que apenas leem ou calculam. Deixar a gravação, a exclusão e o envio sob controle da pessoa.</li>
+      <li>Validar os argumentos. Testar, por exemplo, uma data inválida e conferir o tratamento do erro na rota.</li>
+      <li>Restringir o acesso da tool aos dados permitidos para o usuário, sem expor senhas ou chaves.</li>
+      <li>Testar com dados fictícios. O plano grátis usa o que é enviado.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 24 · O PLANO NO SEU PROJETO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">No projeto de vocês</p>
+    <h2>Discutir com a IA antes de escrever código</h2>
+    <ol class="passos">
+      <li>Baixar as regras da aula 2 como <code>REGRAS.md</code> na raiz do projeto. Colar o prompt do plano numa conversa nova.</li>
+      <li>Responder às perguntas e escolher as tools da sua funcionalidade.</li>
+      <li>Conferir os arquivos previstos em <code>ia/</code>, a rota, a tela e os testes de cada passo.</li>
+      <li>Responder <code>pode seguir</code> e implementar um passo por vez, testando entre eles.</li>
+    </ol>
+    <p class="dica">Na apresentação, vocês vão explicar as escolhas do plano e mostrar como testaram.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 25 · EXERCÍCIO -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Exercício individual · projeto da própria cartilha</p>
+    <h2>Implementar a funcionalidade no projeto</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">Executar o pedido direto e pelo Jangada. Testar o fallback com o nome de modelo inexistente.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Testar pelo menos uma tool no <code>Agent</code>, pronta ou criada para o projeto.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">Discutir o plano com o prompt e registrar as escolhas no <code>.docs/ia.md</code>.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">Criar a funcionalidade em <code>backend/ia/</code> e ligar a uma rota.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc3-aula-02-plano.md">copiar o prompt do plano</button>
+      <a class="btn" href="../prompts/uc3-aula-02-regras.md" download="REGRAS_UC3_AULA2.md">baixar o REGRAS_UC3_AULA2.md</a>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 26 · RECAPITULAÇÃO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>O que vocês fizeram hoje</h2>
+    <ul class="recap">
+      <li>Vocês fizeram o pedido pela biblioteca do Google e depois pelo Jangada.</li>
+      <li>A ordem configurada foi Gemini, OpenRouter e Claude. Os pedidos ao Claude são cobrados.</li>
+      <li>Vocês testaram a reserva com um modelo inexistente. Uma chave inválida exige corrigir a configuração.</li>
+      <li>As funções que a IA pode pedir ficam em <code>backend/ia/</code>, junto da configuração da funcionalidade.</li>
+      <li>O plano e os testes ficaram registrados no <code>.docs/ia.md</code>.</li>
+    </ul>
+    <p class="proximo">Quinta, vamos ajustar os projetos até o intervalo. Depois começam as apresentações, com ênfase na funcionalidade de IA.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
