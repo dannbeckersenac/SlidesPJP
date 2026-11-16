@@ -80,7 +80,7 @@ window.UC3 = {
   aulas: [
     { n: 1, data: "2026-11-09", titulo: "As chaves da IA: o Gemini e o OpenRouter", pronto: true },
     { n: 2, data: "2026-11-10", titulo: "O primeiro pedido, o fallback e as tools", pronto: true },
-    { n: 3, data: "2026-11-12", titulo: "Ajustes finais e apresentação do projeto", pronto: false, avaliacao: true }
+    { n: 3, data: "2026-11-12", titulo: "Ajustes finais e apresentação do projeto", pronto: true, avaliacao: true }
   ],
   semAula: [
     { data: "2026-11-04", titulo: "Avaliação final da UC2 e da UC4: apresentações em quatro etapas", avaliacao: true },

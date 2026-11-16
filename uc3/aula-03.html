@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 03 · Ajustes finais e apresentação do projeto · UC3</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="3" data-aula="3">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC3 · Desenvolvimento de Software Apoiado por IA · Aula 03</p>
+    <h1>Ajustes finais e apresentação do projeto</h1>
+    <p class="sub">Até o intervalo, os últimos ajustes. Depois, cada um apresenta o projeto, com ênfase na funcionalidade de IA.</p>
+  </div>
+  <div class="rodape"><span>Da ideia à funcionalidade de IA</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · COMO VAI SER -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Hoje</p>
+    <h2>Como vai ser a avaliação</h2>
+    <ol class="passos">
+      <li>Até o intervalo: refletir e planejar com a IA, ajustar o código e ensaiar.</li>
+      <li>Depois do intervalo: as apresentações, uma por vez.</li>
+      <li>Depois dos dois colegas de cada cartilha, a turma compara os dois caminhos.</li>
+      <li>Se o tempo não der para todos, as apresentações continuam no encontro seguinte.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · ANTES DO INTERVALO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Até o intervalo</p>
+    <h2>Conferir antes de apresentar</h2>
+    <ol class="passos">
+      <li>Executar o <code>testar_fallback.py</code> e conferir que o Gemini responde.</li>
+      <li>Chamar a rota da funcionalidade e conferir que a tool é usada quando faz sentido.</li>
+      <li>Deixar prontos um caso normal e um caso vago, com dados fictícios.</li>
+      <li>Revisar o <code>.docs/ia.md</code>: o plano, as tools escolhidas e o motivo.</li>
+    </ol>
+    <p class="dica">Cada teste gasta cota do Gemini, e o reserva gasta dinheiro. Ensaiar a fala com o prompt não gasta nenhum dos dois.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · A CONVERSA COM A IA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Até o intervalo</p>
+    <h2>Conversar com a IA antes de mexer no código</h2>
+    <ol class="passos">
+      <li>Refletir: explicar com as suas palavras o que aprendeu nas aulas de IA.</li>
+      <li>Recortar o MVP de IA: o menor pedaço que mostra valor, com três critérios de pronto.</li>
+      <li>Decidir como fazer: chamada simples ou <code>Agent</code>, quais tools, o fallback e o que a tela mostra.</li>
+      <li>Montar o plano de construção, tudo em <code>backend/ia/</code>, e mostrar ao professor.</li>
+      <li>Construir um passo por vez, testando entre eles.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc3-aula-03-conducao.md">copiar o prompt das cinco etapas</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · APROVAR O PLANO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes do código</p>
+    <h2>Aprovar o plano, em dois tempos</h2>
+    <ol class="passos">
+      <li>Conferir: todo código de IA está em <code>backend/ia/</code>, e a rota só chama uma função de lá.</li>
+      <li>Conferir: as chaves aparecem só como nomes, e a pessoa confere antes de gravar.</li>
+      <li>Conferir: cada passo tem um teste, e o fallback tem o dele.</li>
+      <li>Mostrar o plano registrado no <code>.docs/ia.md</code> ao professor e esperar o visto.</li>
+      <li>Só então responder <code>pode seguir</code> para a IA começar o código.</li>
+    </ol>
+    <p class="dica">Se a IA escrever código antes da etapa 5, mexer fora de <code>ia/</code> ou pedir chave, parar a conversa.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · O ROTEIRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">O roteiro</p>
+    <h2>O que mostrar na apresentação</h2>
+    <ol class="passos">
+      <li>Lembrar, em uma frase, a persona e a dor que o projeto ataca.</li>
+      <li>Mostrar o sistema funcionando, do login até a tela da funcionalidade.</li>
+      <li>Mostrar a funcionalidade de IA num caso normal e num caso vago.</li>
+      <li>Explicar o fallback e a tool: quem respondeu, e qual ferramenta a IA usou.</li>
+      <li>Dizer uma coisa que a IA ainda não faz bem, e o próximo passo.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · O QUE PODE SER PERGUNTADO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Perguntas da plateia</p>
+    <h2>Saber explicar o que a IA escreveu</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">O pedido</span><span class="d">O que vai para a IA e o que não vai? Por que a instrução fica fixa?</span></div>
+      <div class="cartao"><span class="t">O reserva</span><span class="d">Quando o Claude entra? E quando ele não entra?</span></div>
+      <div class="cartao"><span class="t">As tools</span><span class="d">Por que essa ferramenta? O que ela pode e o que não pode fazer?</span></div>
+    </div>
+    <div class="destaque">A IA pode escrever. Você tem que explicar.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · A ENTREGA -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Entrega individual · projeto da própria cartilha</p>
+    <h2>O que precisa estar no repositório</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">A pasta <code>backend/ia/</code>, com os modelos, as tools e a funcionalidade, ligada a uma rota.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">O <code>.docs/ia.md</code> com a instrução final, o plano, as tools e os testes.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">O <code>.env.exemplo</code> com as duas chaves sem valor, e nenhuma chave no Git.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O roadmap marcando o que foi feito e o que fica para depois.</span></div>
+    </div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc3-aula-03-ensaio.md">copiar o prompt de ensaio</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · A COMPARAÇÃO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Depois de cada cartilha</p>
+    <h2>Dois caminhos para o mesmo problema</h2>
+    <ol class="passos">
+      <li>Os dois escolheram a mesma tarefa para a IA, ou partes diferentes do problema?</li>
+      <li>Que tools cada um deu à IA, e por quê?</li>
+      <li>Qual tela deixa a pessoa conferir com menos esforço?</li>
+      <li>O que um faria diferente depois de ver o outro?</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · FECHAMENTO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Fechando a UC3</p>
+    <h2>O caminho de vocês nesta unidade</h2>
+    <ul class="recap">
+      <li>Cada um criou a chave e fez o primeiro pedido, direto e pelo orquestrador.</li>
+      <li>O Gemini grátis ganhou o Claude como reserva.</li>
+      <li>A IA ganhou tools, e quem roda cada uma é o backend.</li>
+      <li>A funcionalidade entrou no projeto, numa pasta só dela.</li>
+      <li>A IA ajudou a planejar e a escrever. Quem decidiu e explicou foram vocês.</li>
+    </ul>
+    <p class="proximo">A próxima unidade é a de prototipação rápida com IA, com simulados no tema do Hackathon.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
