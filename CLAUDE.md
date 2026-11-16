@@ -41,7 +41,8 @@ Isto define o que pode e o que não pode ser assumido como conhecido:
 - **UC1** metodologias ágeis · **UC5** front-end React. A **UC2** (DevOps) veio depois da UC4, de 22
   a 29/10, e tem slides neste repositório, em `uc2/`, com o `uc2/CLAUDE.md` próprio. A **UC3**
   (desenvolvimento apoiado por IA) vem depois da UC2, de 04 a 12/11, em `uc3/`, com o
-  `uc3/CLAUDE.md` próprio.
+  `uc3/CLAUDE.md` próprio. A **UC6** (prototipação rápida com IA), de 16 a 26/11, é o simulado do
+  Hackathon, em `uc6/`, com o `uc6/CLAUDE.md` próprio.
 - **A UC5 veio ANTES da UC4 nesta turma.** O front-end de cada aluno **já existe** e é o
   cliente real da API que ele vai construir aqui. Não trate o React como exercício futuro.
 
@@ -439,7 +440,8 @@ cronograma/             o calendário do ano inteiro, das seis UCs, página à p
 hackathon/              o hackathon do fim do ano: página do regulamento, apresentação e o PDF
 uc2/                    os slides da UC2, com o CLAUDE.md dela; o manifesto é o window.UC2, no aulas.js
 uc3/                    os slides da UC3, com o CLAUDE.md dela; o manifesto é o window.UC3, no aulas.js
-                        (o índice separa UC3, UC2 e UC4 em abas: index.html#uc3, #uc2 e #uc4)
+uc6/                    os slides da UC6 (o simulado do Hackathon), com o CLAUDE.md dela; manifesto window.UC6
+                        (o índice separa UC6, UC3, UC2 e UC4 em abas: index.html#uc6, #uc3, #uc2 e #uc4)
 ```
 
 **O índice, o cronograma e a página do hackathon são as páginas de navegação** e dividem o mesmo

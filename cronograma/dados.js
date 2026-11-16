@@ -184,7 +184,11 @@ const NOTAS = `
 11-10 encontro da UC6 antecipado de 19/11, usado para a aula 2 da UC3: o primeiro pedido, o fallback com o OpenRouter e o Claude, as tools e o plano no projeto
 11-11 Semana do Trabalho 2026 do Senac: participação obrigatória no evento, no horário de aula, contando como presença
 11-12 ajustes até o intervalo e apresentação final do projeto, com ênfase na funcionalidade de IA; as apresentações podem seguir em 16/11
-11-16 fim das apresentações da UC3, se preciso; formação dos grupos e inscrição no Hackathon, boas práticas para o evento e sorteio dos temas dos simulados, nas frentes de atuação do Senac
+11-16 aula 1 da UC6 e início do simulado do Hackathon: fim das apresentações da UC3, se preciso; grupos, inscrição no Hackathon, boas práticas, escolha do tema de treino e a Matriz CSD (entrega 1 até 19h25 de 18/11)
+11-18 aula 2 da UC6: validação do problema e as primeiras telas com IA (entrega 2 do simulado até 19h25 de 23/11)
+11-23 aula 3 da UC6: Lean Canvas e o MVP com IA, testado pelo outro grupo (entrega 3 do simulado até 19h25 de 25/11)
+11-25 aula 4 da UC6: o pitch de 3 minutos de cada aluno, a entrega 4 do simulado
+11-26 comemoração de fim de ano, sem aula; prazo da entrega 5 do simulado, às 19h25
 `;
 
 const MESES = ["janeiro","fevereiro","março","abril","maio","junho",

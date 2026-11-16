@@ -240,3 +240,36 @@ a{color:var(--hk-roxo)}
   .hk-anima .hk-sec .wrap > *{opacity:1;transform:none}
   .hk-dia,.hk-entrega,.hk-cartao,.hk-regra{break-inside:avoid}
 }
+
+/* ---------- 11. Simulado da UC6 (simulado.html) ---------- */
+.sm-encontros{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.sm-encontro{display:grid;grid-template-columns:110px minmax(0,1fr);gap:18px;align-items:center;
+  border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);padding:14px 18px}
+.sm-encontro time b{display:block;font:700 22px/1 var(--display);letter-spacing:-.02em}
+.sm-encontro time span{font:400 11px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--suave-2)}
+.sm-encontro p{margin:0}
+.sm-encontro .of{font-size:15px}
+.sm-encontro .en{margin-top:4px;font-size:13.6px;color:var(--suave)}
+.sm-encontro .en b{color:var(--hk-rosa);font-weight:600}
+.sm-encontro.hoje{border-color:var(--hk-rosa);box-shadow:0 0 0 1px var(--hk-rosa)}
+.sm-encontro.hoje time span{color:var(--hk-rosa);font-weight:700}
+.sm-encontro.passou{opacity:.55}
+
+.sm-frentes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.sm-frente{border:1px solid var(--linha);background:var(--painel);border-radius:var(--r);padding:18px;position:relative;overflow:hidden}
+.sm-frente::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--hk-gradiente)}
+.sm-frente h3{font-size:18px;margin-bottom:12px}
+.sm-frente ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:t}
+.sm-frente li{counter-increment:t;padding-left:30px;position:relative}
+.sm-frente li::before{content:counter(t);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font:700 11.5px/1 var(--mono);
+  background:color-mix(in srgb,var(--hk-violeta) 22%,transparent);color:var(--hk-roxo)}
+.sm-frente li b{font-weight:600;font-size:15px}
+.sm-frente li p{margin:3px 0 4px;color:var(--suave);font-size:13.6px;line-height:1.5}
+.sm-frente li small{font:400 11px/1.4 var(--mono);color:var(--suave-2)}
+
+@media (max-width:1000px){.sm-frentes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){
+  .sm-frentes{grid-template-columns:1fr}
+  .sm-encontro{grid-template-columns:1fr;gap:8px}
+}

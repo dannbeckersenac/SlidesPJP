@@ -88,6 +88,29 @@ window.UC3 = {
   ]
 };
 
+/* ============================================================
+   UC6 · Prototipação Rápida de Aplicações com IA.
+   De 16 a 26/11, e o simulado do Hackathon: cada encontro
+   repete um dia do evento. O 19/11 foi antecipado para 10/11
+   e usado na UC3, e o 26/11 é a comemoração, sem slides.
+   Os slides ficam em uc6/, com data-uc="6" no <body>, e o
+   painel do simulado é o hackathon/simulado.html.
+   ============================================================ */
+
+window.UC6 = {
+  sigla: "UC6",
+  nome: "Prototipação Rápida de Aplicações com IA",
+  aulas: [
+    { n: 1, data: "2026-11-16", titulo: "O simulado do Hackathon, os grupos e a Matriz CSD", pronto: true },
+    { n: 2, data: "2026-11-18", titulo: "Validação do problema e as primeiras telas com IA", pronto: false },
+    { n: 3, data: "2026-11-23", titulo: "Modelo de negócio e o MVP com IA", pronto: false },
+    { n: 4, data: "2026-11-25", titulo: "O pitch de 3 minutos, cada um apresenta", pronto: false }
+  ],
+  semAula: [
+    { data: "2026-11-26", titulo: "Comemoração de fim de ano · prazo da entrega 5 do simulado, às 19h25" }
+  ]
+};
+
 window.CICLOS = [
   { n: 1, nome: "O contrato",     aulas: "aulas 1 a 5",   guia: "A tela que eu já fiz precisa de quais dados?" },
   { n: 2, nome: "A persistência", aulas: "aula 6",        guia: "Por que meus dados somem quando eu reinicio o servidor?" },

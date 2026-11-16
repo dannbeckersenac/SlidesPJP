@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Simulado do Hackathon · UC6</title>
+<meta name="description" content="O simulado do Hackathon Jovem Programador 2026 na UC6: encontros, entregas, temas de treino e critérios.">
+<script src="../assets/js/tema.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/navegacao.css">
+<link rel="stylesheet" href="hackathon.css">
+</head>
+<body>
+
+<!-- ============ barra fixa do topo, igual à do índice e à do cronograma ============ -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-linha">
+      <div class="brand"><span class="dot"></span><span class="brand-nome"><span class="brand-longo">Desenvolvimento </span>Web com IA</span></div>
+
+      <nav class="abas" aria-label="Páginas do curso">
+        <a href="../index.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4"/></svg>
+          <span>Slides<span class="aba-longo"> das aulas</span></span>
+        </a>
+        <a href="../cronograma/index.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span>Cronograma<span class="aba-longo"> do ano</span></span>
+        </a>
+        <a href="index.html" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 16v5M7 4h10v5a5 5 0 0 1-10 0zM17 6h3v1.5A3.5 3.5 0 0 1 16.6 11M7 6H4v1.5A3.5 3.5 0 0 0 7.4 11"/></svg>
+          <span>Hackathon</span>
+        </a>
+      </nav>
+
+      <button class="btn-tema" id="btnTema" type="button" aria-label="Mudar tema" title="Mudar tema">
+        <svg class="ico-lua" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+        <svg class="ico-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ capa ============ -->
+<header class="hero hk-hero">
+  <div class="wrap">
+    <p class="eyebrow">UC6 · Prototipação Rápida de Aplicações com IA · Turma 2026.10.78</p>
+    <h1>O simulado<br><em>do Hackathon</em></h1>
+    <p class="lede">De 16 a 26/11, cada encontro da UC6 repete um dia do evento. A turma trabalha em dois grupos, escolhe um tema de treino e faz as cinco entregas do regulamento, com o mesmo nome de arquivo e o mesmo horário. Em 28/11, vocês chegam à abertura já tendo passado por todas elas uma vez.</p>
+
+    <div class="acoes">
+      <a class="btn-principal" href="../index.html#uc6">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
+        <span>Slides da UC6</span>
+      </a>
+      <a class="btn-sec" href="index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        <span>Voltar ao regulamento</span>
+      </a>
+    </div>
+
+    <ul class="stats">
+      <li><b>4</b><span>Encontros</span></li>
+      <li><b>2</b><span>Grupos</span></li>
+      <li><b>5</b><span>Entregas, como no evento</span></li>
+      <li><b>18</b><span>Temas de treino</span></li>
+      <li><b>3 min</b><span>De pitch, cada um</span></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============ encontros ============ -->
+<section class="hk-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>Encontro a encontro</h2>
+        <p>Cada oficina prepara a entrega, e o prazo fecha às 19h25 do encontro seguinte, como no evento.</p>
+      </div>
+    </div>
+    <ol class="sm-encontros" id="encontros"></ol>
+  </div>
+</section>
+
+<!-- ============ regras ============ -->
+<section class="hk-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>Como entregar</h2>
+        <p>As regras do regulamento, aplicadas ao simulado.</p>
+      </div>
+    </div>
+    <div class="hk-regras">
+      <div class="hk-regra">
+        <h3>No Teams, com o nome do evento</h3>
+        <p>Cada grupo posta na tarefa do Teams com o número do time e o da entrega:</p>
+        <code class="hk-arquivo">Time T1 - Entrega E1</code>
+      </div>
+      <div class="hk-regra">
+        <h3>Até 19h25, e vale a primeira</h3>
+        <p>O prazo é 19h25 do encontro seguinte. Se o grupo postar duas vezes, só a <b>primeira</b> conta. Combinem quem posta.</p>
+      </div>
+      <div class="hk-regra">
+        <h3>O atraso aparece no retorno</h3>
+        <p>Nas entregas 1, 2 e 3, o retorno mostra os 2 pontos que o atraso custaria no evento. É o treino do relógio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ grupos ============ -->
+<section class="hk-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>Os dois grupos</h2>
+        <p>A sala se divide em dois lados, o time T1 e o time T2, com 4 a 7 pessoas cada, como no evento.</p>
+      </div>
+    </div>
+    <div class="hk-cartoes">
+      <div class="hk-cartao">
+        <span class="hk-ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M14.5 19a4 4 0 0 1 6.5-3.1"/></svg></span>
+        <h3>Um lado é o público do outro</h3>
+        <p>Na validação do problema e no teste do MVP, quem responde e testa é o outro grupo.</p>
+      </div>
+      <div class="hk-cartao">
+        <span class="hk-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></span>
+        <h3>Temas diferentes</h3>
+        <p>Cada grupo escolhe o seu tema na lista abaixo. Os dois grupos não ficam com o mesmo tema.</p>
+      </div>
+      <div class="hk-cartao">
+        <span class="hk-ic"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+        <h3>Todo mundo faz o pitch</h3>
+        <p>No evento, a equipe escolhe quem fala. No simulado, em 25/11, cada aluno apresenta 3 minutos.</p>
+      </div>
+      <div class="hk-cartao">
+        <span class="hk-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+        <h3>A IA que vocês já usam</h3>
+        <p>Para as telas e o MVP: Lovable, v0 ou o assistente que vocês já usam no código.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ temas ============ -->
+<section class="hk-sec" id="temas">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>Os temas de treino</h2>
+        <p>Seis frentes de atuação do Senac, com três temas cada. O grupo escolhe um. São temas de treino: o problema real do Hackathon só é apresentado no evento, em 28/11, às 14h.</p>
+      </div>
+    </div>
+    <div class="sm-frentes" id="frentes"></div>
+  </div>
+</section>
+
+<!-- ============ o que vai em cada entrega ============ -->
+<section class="hk-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>O que vai em cada entrega</h2>
+        <p>O regulamento dá o nome de cada entrega. O conteúdo abaixo é o que pedimos no simulado.</p>
+      </div>
+    </div>
+    <div class="hk-entregas">
+      <article class="hk-entrega"><span class="num">E1</span><h3>Matriz CSD e definição do desafio</h3><p>O tema escolhido e o motivo, a matriz com certezas, suposições e dúvidas, e o desafio numa frase.</p></article>
+      <article class="hk-entrega"><span class="num">E2</span><h3>Validação do problema</h3><p>O roteiro da entrevista, quem foi ouvido (sem nome), o que responderam e o que mudou na matriz.</p></article>
+      <article class="hk-entrega"><span class="num">E3</span><h3>Modelo de negócio e MVP</h3><p>O Lean Canvas, o link ou os prints do MVP e o feedback do teste com o outro grupo.</p></article>
+      <article class="hk-entrega dura"><span class="num">E4</span><h3>Pitch de 3 minutos</h3><p>Ao vivo, em 25/11. Cada aluno apresenta a solução do grupo, com o cronômetro na tela.</p></article>
+      <article class="hk-entrega dura"><span class="num">E5</span><h3>Arquivos da solução</h3><p>Os slides do pitch em PDF, o link do MVP e as evidências da validação e do teste.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ critérios ============ -->
+<section class="hk-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>Os critérios do pitch</h2>
+        <p>Os mesmos do Quadro 4 do regulamento, de 0 a 5 cada. O retorno do pitch de 25/11 vem nesta régua.</p>
+      </div>
+    </div>
+    <ol class="hk-criterios" id="criterios"></ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Simulado da UC6, baseado no Regulamento do Hackathon Jovem Programador 2026. Os temas são de treino.</span>
+    <span>Docente: Daniel Becker Bortoluzzi</span>
+  </div>
+</footer>
+
+<script src="dados.js"></script>
+<script src="simulado.js"></script>
+<script>
+  (function () {
+    "use strict";
+    var S = window.SIMULADO;
+    var DOW = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+    var agora = new Date();
+    var pad = function (n) { return String(n).padStart(2, "0"); };
+    var hoje = agora.getFullYear() + "-" + pad(agora.getMonth() + 1) + "-" + pad(agora.getDate());
+    var curta = function (iso) { return iso.slice(8) + "/" + iso.slice(5, 7); };
+    var semana = function (iso) { var p = iso.split("-").map(Number); return DOW[new Date(p[0], p[1] - 1, p[2]).getDay()]; };
+
+    /* encontros: o de hoje fica aceso, os que passaram ficam apagados */
+    document.getElementById("encontros").innerHTML = S.encontros.map(function (e) {
+      var cls = e.data === hoje ? " hoje" : e.data < hoje ? " passou" : "";
+      return '<li class="sm-encontro' + cls + '">' +
+        '<time><b>' + curta(e.data) + '</b><span>' + semana(e.data) + (e.data === hoje ? " · hoje" : "") + '</span></time>' +
+        '<div><p class="of">' + e.oficina + '</p>' +
+        '<p class="en"><b>' + e.entrega + '</b> · ' + e.prazo + '</p></div></li>';
+    }).join("");
+
+    /* temas: todas as frentes abertas, para o grupo comparar antes de escolher */
+    document.getElementById("frentes").innerHTML = S.frentes.map(function (f) {
+      return '<article class="sm-frente"><h3>' + f.nome + '</h3><ol>' + f.temas.map(function (t) {
+        return '<li><b>' + t.titulo + '</b><p>' + t.problema + '</p><small>quem sofre: ' + t.quem + '</small></li>';
+      }).join("") + '</ol></article>';
+    }).join("");
+
+    /* critérios: os mesmos do regulamento, lidos de dados.js */
+    document.getElementById("criterios").innerHTML = window.HACKATHON.criterios.map(function (c) {
+      return '<li><div><b>' + c.titulo + '</b><span>' + c.pergunta + '</span></div>' +
+        '<span class="escala" aria-label="de 0 a 5 pontos"><i></i><i></i><i></i><i></i><i></i></span></li>';
+    }).join("") + '<li class="total"><div><b>Total possível</b></div><strong>25</strong></li>';
+
+    /* entrada animada das seções, igual à da página do regulamento */
+    if (!("IntersectionObserver" in window)) return;
+    document.documentElement.classList.add("hk-anima");
+    var obs = new IntersectionObserver(function (lista) {
+      lista.forEach(function (x) {
+        if (x.isIntersecting) { x.target.classList.add("visivel"); obs.unobserve(x.target); }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll(".hk-sec").forEach(function (s) { obs.observe(s); });
+  })();
+</script>
+</body>
+</html>

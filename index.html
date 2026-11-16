@@ -62,6 +62,11 @@
   .ucs button[aria-selected="true"] { color: var(--ink); background: var(--texto); }
   .ucs button[aria-selected="true"] small { color: var(--ink); opacity: .7; }
   .painel .hero { padding-top: 34px; }
+  .sec-head a { color: var(--acento); }
+  .btn-sec-indice { display: inline-flex; align-items: center; font: 600 14.5px/1 var(--corpo); text-decoration: none;
+                    color: var(--texto); background: var(--painel); border: 1px solid var(--linha-2);
+                    border-radius: 12px; padding: 13px 18px; transition: transform .16s, border-color .16s; }
+  .btn-sec-indice:hover { transform: translateY(-2px); border-color: var(--acento); }
 
   /* avaliação final da UC2, dentro do painel dela; o texto é escrito à mão no HTML */
   .aval-sec { padding: 44px 0 0; }
@@ -139,6 +144,9 @@
 <div class="ucs-barra">
   <div class="wrap">
     <div class="ucs" role="tablist" aria-label="Unidades curriculares">
+      <button type="button" role="tab" id="aba-uc6" aria-controls="painel-uc6" data-uc="uc6">
+        <b>UC6</b><span>Prototipação com IA</span><small>16 a 26/11</small>
+      </button>
       <button type="button" role="tab" id="aba-uc3" aria-controls="painel-uc3" data-uc="uc3">
         <b>UC3</b><span>IA no desenvolvimento</span><small>04 a 12/11</small>
       </button>
@@ -150,6 +158,45 @@
       </button>
     </div>
   </div>
+</div>
+
+<!-- ============ UC6 ============ -->
+<div class="painel" id="painel-uc6" role="tabpanel" aria-labelledby="aba-uc6">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">UC6 · Senac Blumenau · Turma 2026.10.78</p>
+      <h1>Prototipação rápida<br><em>de aplicações com IA</em></h1>
+      <p class="lede">De 16 a 26/11, a UC6 é o simulado do Hackathon. Cada encontro repete um dia do evento: em dois grupos, a turma escolhe um tema de treino, valida o problema, monta o MVP com IA e faz as cinco entregas do regulamento. Em 25/11, cada aluno apresenta um pitch de 3 minutos. O 26/11 é a comemoração de fim de ano.</p>
+
+      <div class="acoes">
+        <a class="btn-principal" data-campo="botao" href="#" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M10.5 8.2v4.6l3.8-2.3z"/></svg>
+          <span data-campo="rotulo">Abrir a última aula liberada</span>
+        </a>
+        <a class="btn-sec-indice" href="hackathon/simulado.html">Ver o simulado e os temas</a>
+        <p class="acoes-nota" data-campo="nota"></p>
+      </div>
+
+      <ul class="stats">
+        <li><b>4</b><span>Aulas</span></li>
+        <li><b data-campo="liberadas">0</b><span>Aulas liberadas</span></li>
+        <li><b>5</b><span>Entregas do simulado</span></li>
+        <li><b>25/11</b><span>Pitch de cada aluno</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="aulas-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>As aulas</h2>
+          <p>Cada aula abre às 18h do dia do encontro. Os temas, as entregas e os prazos ficam na <a href="hackathon/simulado.html">página do simulado</a>.</p>
+        </div>
+      </div>
+      <div class="ciclos"><ul class="aulas" id="listaUc6"></ul></div>
+    </div>
+  </section>
 </div>
 
 <!-- ============ UC3 ============ -->
@@ -339,7 +386,9 @@
     var agora = new Date();
     var aulasUc2 = window.UC2 ? window.UC2.aulas : [];
     var aulasUc3 = window.UC3 ? window.UC3.aulas : [];
+    var aulasUc6 = window.UC6 ? window.UC6.aulas : [];
     var endereco = function (a) {
+      if (aulasUc6.indexOf(a) > -1) return "uc6/aula-" + pad(a.n) + ".html";
       if (aulasUc3.indexOf(a) > -1) return "uc3/aula-" + pad(a.n) + ".html";
       if (aulasUc2.indexOf(a) > -1) return "uc2/aula-" + pad(a.n) + ".html";
       return a.arquivo ? "aulas/" + a.arquivo : "aulas/aula-" + pad(a.n) + ".html";
@@ -372,8 +421,8 @@
     });
     var pedida = window.location.hash.replace("#", "");
     var comecou = function (lista) { return lista.length && agora >= window.aberturaDaAula(lista[0]); };
-    var maisRecente = comecou(aulasUc3) ? "uc3" : (comecou(aulasUc2) ? "uc2" : "uc4");
-    abrir(["uc2", "uc3", "uc4"].indexOf(pedida) > -1 ? pedida : maisRecente);
+    var maisRecente = comecou(aulasUc6) ? "uc6" : comecou(aulasUc3) ? "uc3" : (comecou(aulasUc2) ? "uc2" : "uc4");
+    abrir(["uc2", "uc3", "uc4", "uc6"].indexOf(pedida) > -1 ? pedida : maisRecente);
 
     /* ---------- capa de cada aba: botão da aula e números ---------- */
 
@@ -402,6 +451,7 @@
         campo("nota").textContent = quandoProxima;
       }
     }
+    capa(document.getElementById("painel-uc6"), aulasUc6);
     capa(document.getElementById("painel-uc3"), aulasUc3);
     capa(document.getElementById("painel-uc2"), aulasUc2);
     capa(document.getElementById("painel-uc4"), window.AULAS);
@@ -460,6 +510,13 @@
     document.getElementById("lista").innerHTML = html;
 
     document.getElementById("listaUc2").innerHTML = aulasUc2.map(linha).join("");
+
+    /* UC6: as aulas e a comemoração de 26/11, em ordem de data */
+    var linhasUc6 = aulasUc6.concat((window.UC6 && window.UC6.semAula) || [])
+      .sort(function (x, y) { return x.data < y.data ? -1 : 1; });
+    document.getElementById("listaUc6").innerHTML = linhasUc6.map(function (a) {
+      return "n" in a ? linha(a) : semAula(a);
+    }).join("");
 
     /* UC3: as aulas e o encontro sem slides de 04/11, em ordem de data */
     var linhasUc3 = aulasUc3.concat((window.UC3 && window.UC3.semAula) || [])
