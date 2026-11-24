@@ -107,7 +107,7 @@ window.UC6 = {
     { n: 4, data: "2026-11-26", titulo: "Simulação das apresentações no auditório e comemoração", pronto: false }
   ],
   semAula: [
-    { data: "2026-11-18", titulo: "Encontro sem a aula 2, que passou para 23/11" }
+    { data: "2026-11-18", titulo: "Finalização das apresentações do projeto da UC3" }
   ]
 };
 
