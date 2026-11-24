@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 02 · Validação do problema e as primeiras telas com IA · UC6</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="6" data-aula="2">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC6 · Prototipação Rápida de Aplicações com IA · Aula 02</p>
+    <h1>Validação do problema e as primeiras telas com IA</h1>
+    <p class="sub">Hoje cada grupo aprende a validar um problema e monta o roteiro. Depois, vai atrás de quem vive o problema, se der, ou ensaia a conversa com a IA.</p>
+  </div>
+  <div class="rodape"><span>Simulado do Hackathon · encontro 2</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · ONDE ESTAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde estamos no simulado</p>
+    <h2>Hoje é o dia da entrega 2</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">E1</span><span class="d">Matriz CSD e o desafio</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">E2</span><span class="d">validação do problema, até 19h25 de 25/11</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">E3</span><span class="d">modelo de negócio e MVP</span></div>
+    </div>
+    <p class="dica">No Hackathon, a validação também é a segunda entrega, um dia depois da matriz.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">A dor</p>
+    <h2>A matriz está cheia de suposições</h2>
+    <p class="intro">O grupo acha que sabe onde está o problema. Se construir em cima de uma suposição errada, o produto resolve um problema que ninguém tem.</p>
+    <div class="destaque">Antes de construir, ouvir quem vive o problema.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · POR QUE FORA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Por que ouvir gente de fora da sala</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">O colega não vive o problema</span><span class="d">Ele imagina como seria. Quem vive conta o detalhe que ninguém inventa.</span></div>
+      <div class="cartao"><span class="t">As pessoas são gentis</span><span class="d">Diante de uma ideia, quase todo mundo elogia. Elogio não prova nada.</span></div>
+      <div class="cartao"><span class="t">O passado não mente</span><span class="d">O que a pessoa já fez vale mais do que o que ela diz que faria.</span></div>
+    </div>
+    <p class="dica">É a ideia do livro The Mom Test, de Rob Fitzpatrick: perguntar sobre a vida da pessoa, e não sobre a sua ideia.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · VALIDAR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O que uma entrevista de validação procura</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">Como é hoje</span><span class="d">O que a pessoa faz quando o problema aparece, passo a passo.</span></div>
+      <div class="cartao"><span class="t">O que já tentou</span><span class="d">Caderno, planilha, grupo de mensagem. O que funcionou e o que não.</span></div>
+      <div class="cartao"><span class="t">Quanto dói</span><span class="d">O que acontece quando dá errado: tempo, dinheiro, estresse.</span></div>
+    </div>
+    <p class="dica">A entrevista é sobre a pessoa e o problema dela. A ideia do grupo não aparece.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · SINAIS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Como saber que o problema é real</h2>
+    <table>
+      <thead><tr><th>Sinal forte</th><th>Sinal fraco</th></tr></thead>
+      <tbody>
+        <tr><td>conta um caso recente, com detalhes</td><td class="neutro">"acho que acontece, sim"</td></tr>
+        <tr><td>já tem uma gambiarra: caderno, planilha, grupo</td><td class="neutro">"nunca pensei nisso"</td></tr>
+        <tr><td>já gastou tempo ou dinheiro tentando resolver</td><td class="neutro">"seria legal ter algo assim"</td></tr>
+        <tr><td>fala sem você precisar puxar</td><td class="neutro">elogia a ideia do grupo</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Três pessoas contando a mesma dor, com casos diferentes, já mostram um padrão.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · PERGUNTAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>Pergunta que atrapalha e pergunta que ajuda</h2>
+    <table>
+      <thead><tr><th>Evitar</th><th>Preferir</th></tr></thead>
+      <tbody>
+        <tr><td class="neutro">Você usaria um app que avisa o prazo?</td><td>Conte a última vez que um prazo passou.</td></tr>
+        <tr><td class="neutro">Isso é um problema para você?</td><td>Como você faz isso hoje?</td></tr>
+        <tr><td class="neutro">Seria bom ter um lembrete?</td><td>O que você já tentou para não esquecer?</td></tr>
+        <tr><td class="neutro">Você perde muito tempo com isso?</td><td>O que acontece quando dá errado?</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">A da esquerda se responde com sim ou não, ou já fala da solução. Todo mundo diz que usaria.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · EXEMPLO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Exemplo do professor · o escritório do Tarefa Certa</p>
+    <h2>O que a entrevista mudou na matriz</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">A pergunta</span><span class="d">"Conte a última vez que um pedido atrasou."</span></div>
+      <div class="cartao"><span class="t">A resposta</span><span class="d">"O pedido não se perdeu. Ninguém sabia quem tinha pegado."</span></div>
+      <div class="cartao"><span class="t">O que mudou</span><span class="d">A suposição "pedidos se perdem" caiu. A dúvida nova: como saber quem pegou cada pedido?</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · QUEM PROCURAR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Fora da sala</p>
+    <h2>Quem procurar, se der</h2>
+    <ol class="passos">
+      <li>Quem vive o problema do tema: o dono do comércio, a profissional, o cliente.</li>
+      <li>Onde achar: família, vizinhos, o comércio do bairro, o trabalho, grupos do bairro.</li>
+      <li>Cada conversa com alguém de fora vale mais do que muitas suposições. Uma já ajuda.</li>
+      <li>Uma conversa de uns 10 minutos: pessoalmente, por chamada ou por áudio.</li>
+    </ol>
+    <p class="dica">Colega da turma não conta. Ele conhece o tema de treino, e não a rotina de quem vive o problema.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · O CONVITE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Fora da sala</p>
+    <h2>Convidar e cuidar de quem aceita</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">um modelo de convite · trocar o que está entre colchetes</div>
+      <pre>Oi, [nome]! Estou num curso do Senac, num projeto
+sobre [o problema, em poucas palavras].
+Você teria 10 minutos para me contar como isso funciona no seu dia a dia?
+Não vou vender nada, e o seu nome não aparece no trabalho.</pre>
+    </div>
+    <ol class="passos curta">
+      <li>Pedir permissão antes de gravar. Sem permissão, só anotar.</li>
+      <li>Na entrega, descrever a pessoa sem nome, como "dona de mercado de bairro".</li>
+      <li>No fim, perguntar se pode voltar a falar depois, para testar o MVP.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · O ROTEIRO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · em grupo · 20 minutos</p>
+    <h2>Montar o roteiro da entrevista</h2>
+    <ol class="passos">
+      <li>Pegar as três dúvidas da entrega 1.</li>
+      <li>Escrever de cinco a sete perguntas abertas, sem a IA, com pelo menos uma para cada dúvida.</li>
+      <li>Revisar com o prompt e reescrever as perguntas que a IA apontou.</li>
+      <li>Combinar no grupo quem tenta conversar com alguém de fora até 25/11.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc6-aula-02-roteiro.md">copiar o prompt de revisão do roteiro</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · A ENTREVISTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Fora da sala · se der, até 25/11</p>
+    <h2>Fazer a entrevista</h2>
+    <ol class="passos">
+      <li>Explicar o objetivo: entender a rotina da pessoa, e não vender uma ideia.</li>
+      <li>Perguntar e deixar a pessoa falar. Silêncio também é resposta.</li>
+      <li>Pedir um exemplo sempre que a resposta for genérica.</li>
+      <li>Anotar as frases do jeito que a pessoa falou.</li>
+      <li>Agradecer e lembrar que o nome não aparece no trabalho.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · PLANO B -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Plano B</p>
+    <h2>Sem ninguém para ouvir? Ensaiar com a IA</h2>
+    <ol class="passos">
+      <li>Colar o prompt de simulação, com o tema e a pessoa descrita sem nome.</li>
+      <li>Fazer as perguntas do roteiro, uma por vez, como numa conversa de verdade.</li>
+      <li>Escrever <code>fim da entrevista</code> e ler o que a IA aponta como suposição.</li>
+      <li>Na entrega, marcar como "simulado com IA" o que saiu daqui.</li>
+    </ol>
+    <div class="alerta">A IA inventa a rotina de uma pessoa que não existe. Isso ajuda a treinar as perguntas, mas não valida o problema.</div>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc6-aula-02-simulacao.md">copiar o prompt de simulação</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · DEPOIS DA ENTREVISTA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Depois das conversas · em grupo</p>
+    <h2>Atualizar a matriz com o que ouviram</h2>
+    <ol class="passos">
+      <li>Mover para certezas o que a entrevista confirmou, com a frase que mostra isso.</li>
+      <li>Riscar as suposições que a entrevista derrubou.</li>
+      <li>Escrever as dúvidas novas que apareceram.</li>
+      <li>Reler o desafio. Se o problema mudou, reescrever a frase.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · AS PRIMEIRAS TELAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>As primeiras telas são rascunho</h2>
+    <p class="intro">Com a IA, duas ou três telas saem em minutos. Elas servem para conversar: mostrar e perguntar o que a pessoa entende.</p>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">Servem para</span><span class="d">Conferir se o grupo entendeu o problema. Achar o que confunde antes do MVP.</span></div>
+      <div class="cartao"><span class="t">Não servem para</span><span class="d">Decidir o produto. Isso vem no próximo encontro, com o MoSCoW.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · MÃO NA MASSA TELAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · em grupo · 30 minutos</p>
+    <h2>Fazer o rascunho de telas com IA</h2>
+    <ol class="passos">
+      <li>Preencher o molde com o desafio e o momento em que o problema aparece.</li>
+      <li>Colar no Lovable, no v0 ou no assistente que o grupo já usa.</li>
+      <li>No fim da conversa, depois das perguntas, mostrar e perguntar: o que você entende desta tela?</li>
+      <li>Anotar o que confundiu e guardar os prints para a entrega 3.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc6-aula-02-telas.md">copiar o molde das primeiras telas</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · ENTREGA 2 -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Entrega 2 do simulado · no Teams até 19h25 de 25/11</p>
+    <h2>Validação do problema</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">O roteiro da entrevista, com as perguntas finais.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">Quem foi ouvido, descrito sem nome. Conversa simulada com IA vai marcada como simulada.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">O que responderam, com pelo menos três frases do jeito que a pessoa falou.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O que mudou na matriz e no desafio.</span></div>
+    </div>
+    <p class="dica">Em PDF, com o nome <code>Time T1 - Entrega E2</code> ou <code>Time T2 - Entrega E2</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · RECAPITULAÇÃO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>Antes de encerrar</h2>
+    <ul class="recap">
+      <li>Validar é ouvir quem vive o problema antes de construir. Sem ninguém por perto, ensaiar com a IA.</li>
+      <li>Pergunta boa pede a última vez que aconteceu. Pergunta ruim fala da solução.</li>
+      <li>A matriz muda depois da entrevista. Se não mudou nada, a entrevista foi fraca.</li>
+      <li>Sinal forte é caso recente, gambiarra e dinheiro gasto. Elogio é sinal fraco.</li>
+      <li>A entrega 2 vai no Teams até 19h25 de 25/11.</li>
+    </ul>
+    <p class="proximo">Em 25/11, o MoSCoW, o Lean Canvas e o MVP com IA.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>

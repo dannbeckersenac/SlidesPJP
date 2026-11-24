@@ -102,12 +102,12 @@ window.UC6 = {
   nome: "Prototipação Rápida de Aplicações com IA",
   aulas: [
     { n: 1, data: "2026-11-16", titulo: "O simulado do Hackathon, os grupos e a Matriz CSD", pronto: true },
-    { n: 2, data: "2026-11-18", titulo: "Validação do problema e as primeiras telas com IA", pronto: false },
-    { n: 3, data: "2026-11-23", titulo: "Modelo de negócio e o MVP com IA", pronto: false },
-    { n: 4, data: "2026-11-25", titulo: "O pitch de 3 minutos, cada um apresenta", pronto: false }
+    { n: 2, data: "2026-11-23", titulo: "Validação do problema e as primeiras telas com IA", pronto: true },
+    { n: 3, data: "2026-11-25", titulo: "Modelo de negócio e o MVP com IA", pronto: false },
+    { n: 4, data: "2026-11-26", titulo: "Simulação das apresentações no auditório e comemoração", pronto: false }
   ],
   semAula: [
-    { data: "2026-11-26", titulo: "Comemoração de fim de ano · prazo da entrega 5 do simulado, às 19h25" }
+    { data: "2026-11-18", titulo: "Encontro sem a aula 2, que passou para 23/11" }
   ]
 };
 
