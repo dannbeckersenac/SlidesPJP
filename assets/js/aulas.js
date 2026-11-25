@@ -103,7 +103,7 @@ window.UC6 = {
   aulas: [
     { n: 1, data: "2026-11-16", titulo: "O simulado do Hackathon, os grupos e a Matriz CSD", pronto: true },
     { n: 2, data: "2026-11-23", titulo: "Validação do problema e as primeiras telas com IA", pronto: true },
-    { n: 3, data: "2026-11-25", titulo: "Modelo de negócio e o MVP com IA", pronto: false },
+    { n: 3, data: "2026-11-25", titulo: "Modelo de negócio e o MVP com IA", pronto: true },
     { n: 4, data: "2026-11-26", titulo: "Simulação das apresentações no auditório e comemoração", pronto: false }
   ],
   semAula: [

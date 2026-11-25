@@ -15,14 +15,12 @@ window.SIMULADO = {
   encontros: [
     { data: "2026-11-16", oficina: "Grupos, inscrição no Hackathon, boas práticas, escolha do tema, Design Thinking e Matriz CSD",
       entrega: "E1 · Matriz CSD e definição do desafio", prazo: "até 19h25 de 18/11" },
-    { data: "2026-11-18", oficina: "Validação do problema com entrevistas e as primeiras telas com IA",
-      entrega: "E2 · Validação do problema", prazo: "até 19h25 de 23/11" },
-    { data: "2026-11-23", oficina: "Modelo de negócio no Lean Canvas, o MVP com IA e o teste com o outro grupo",
-      entrega: "E3 · Modelo de negócio e MVP", prazo: "até 19h25 de 25/11" },
-    { data: "2026-11-25", oficina: "Roteiro do pitch e o pitch de 3 minutos de cada aluno, ao vivo",
-      entrega: "E4 · Pitch, cada um apresenta", prazo: "em sala, 25/11" },
-    { data: "2026-11-26", oficina: "Comemoração de fim de ano, sem aula",
-      entrega: "E5 · Arquivos da solução", prazo: "até 19h25 de 26/11" }
+    { data: "2026-11-23", oficina: "Validação do problema com entrevistas e as primeiras telas com IA",
+      entrega: "E2 · Validação do problema", prazo: "até 19h25 de 25/11" },
+    { data: "2026-11-25", oficina: "MoSCoW, modelo de negócio no Lean Canvas, o MVP com IA e o teste com o outro grupo",
+      entrega: "E3 · Modelo de negócio e MVP", prazo: "até 19h25 de 26/11" },
+    { data: "2026-11-26", oficina: "Encerramento no auditório: a simulação das apresentações e a comemoração",
+      entrega: "E4 · Pitch, cada um apresenta · E5 · Arquivos da solução", prazo: "pitch no auditório; arquivos até 19h25 de 26/11" }
   ],
 
   /* as frentes de atuação do Senac, com três temas de treino cada */

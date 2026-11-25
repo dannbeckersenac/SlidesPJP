@@ -166,7 +166,7 @@
     <div class="wrap">
       <p class="eyebrow">UC6 · Senac Blumenau · Turma 2026.10.78</p>
       <h1>Prototipação rápida<br><em>de aplicações com IA</em></h1>
-      <p class="lede">De 16 a 26/11, a UC6 é o simulado do Hackathon. Cada encontro repete um dia do evento: em dois grupos, a turma escolhe um tema de treino, valida o problema, monta o MVP com IA e faz as cinco entregas do regulamento. Em 25/11, cada aluno apresenta um pitch de 3 minutos. O 26/11 é a comemoração de fim de ano.</p>
+      <p class="lede">De 16 a 26/11, a UC6 é o simulado do Hackathon. Cada encontro repete um dia do evento: em dois grupos, a turma escolhe um tema de treino, valida o problema, monta o MVP com IA e faz as cinco entregas do regulamento. Em 26/11, no auditório, cada aluno apresenta um pitch de 3 minutos, e a turma fecha o ano com a comemoração.</p>
 
       <div class="acoes">
         <a class="btn-principal" data-campo="botao" href="#" hidden>
@@ -181,7 +181,7 @@
         <li><b>4</b><span>Aulas</span></li>
         <li><b data-campo="liberadas">0</b><span>Aulas liberadas</span></li>
         <li><b>5</b><span>Entregas do simulado</span></li>
-        <li><b>25/11</b><span>Pitch de cada aluno</span></li>
+        <li><b>26/11</b><span>Pitch no auditório</span></li>
       </ul>
     </div>
   </header>
@@ -511,7 +511,7 @@
 
     document.getElementById("listaUc2").innerHTML = aulasUc2.map(linha).join("");
 
-    /* UC6: as aulas e a comemoração de 26/11, em ordem de data */
+    /* UC6: as aulas e o encontro sem aula de 18/11, em ordem de data */
     var linhasUc6 = aulasUc6.concat((window.UC6 && window.UC6.semAula) || [])
       .sort(function (x, y) { return x.data < y.data ? -1 : 1; });
     document.getElementById("listaUc6").innerHTML = linhasUc6.map(function (a) {

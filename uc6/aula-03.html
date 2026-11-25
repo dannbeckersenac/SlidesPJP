@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 03 · Modelo de negócio e o MVP com IA · UC6</title>
+<link rel="stylesheet" href="../assets/css/slides.css">
+</head>
+<body data-uc="6" data-aula="3">
+<div class="palco">
+
+<!-- 1 · TÍTULO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">UC6 · Prototipação Rápida de Aplicações com IA · Aula 03</p>
+    <h1>Modelo de negócio e o MVP com IA</h1>
+    <p class="sub">Hoje vamos escolher as funções do MVP, preencher o Lean Canvas com ajuda da IA e construir uma versão para o outro grupo testar.</p>
+  </div>
+  <div class="rodape"><span>Simulado do Hackathon · encontro 3</span><span>Senac Blumenau · 2026.10.78</span></div>
+</section>
+
+<!-- 2 · ONDE ESTAMOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Onde estamos no simulado</p>
+    <h2>Hoje vamos preparar a entrega 3</h2>
+    <div class="fluxo">
+      <div class="passo"><span class="t">E1</span><span class="d">Matriz CSD e o desafio</span></div>
+      <span class="seta">→</span>
+      <div class="passo"><span class="t">E2</span><span class="d">validação, até 19h25 de hoje</span></div>
+      <span class="seta">→</span>
+      <div class="passo enfase"><span class="t">E3</span><span class="d">modelo de negócio e MVP, até 19h25 de 26/11</span></div>
+    </div>
+    <p class="dica">No Hackathon, a entrega 3 é no dia seguinte à validação. Aqui também teremos esse prazo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 3 · A DOR -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de construir</p>
+    <h2>Dá tempo de fazer tudo isso?</h2>
+    <p class="intro">A lista de ideias cresce: login, notificação, relatório, chat, painel. No fim do dia, nada funciona do começo ao fim, e o outro grupo não tem o que testar.</p>
+    <div class="destaque">O grupo precisa escolher o que consegue terminar hoje, com tempo para testar.</div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 4 · O MVP -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito</p>
+    <h2>O que precisa funcionar no MVP?</h2>
+    <div class="cartoes n2">
+      <div class="cartao"><span class="t">Uma tarefa completa</span><span class="d">A pessoa precisa conseguir fazer a tarefa principal, da primeira tela até o resultado.</span></div>
+      <div class="cartao"><span class="t">Um teste com alguém</span><span class="d">Vamos observar se a pessoa consegue usar o produto e se ele ajuda a resolver o problema.</span></div>
+    </div>
+    <p class="dica">MVP significa produto mínimo viável. Nesta aula, vamos construir só o necessário para esse primeiro teste.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 5 · MOSCOW -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">De volta da UC1</p>
+    <h2>MoSCoW: o que entra nesta versão?</h2>
+    <table>
+      <thead><tr><th>Letra</th><th>Quer dizer</th><th>A pergunta</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Must</strong></td><td class="neutro">tem que ter</td><td class="neutro">sem isto, o problema continua?</td></tr>
+        <tr><td><strong>Should</strong></td><td class="neutro">deveria ter</td><td class="neutro">faz falta, mas o teste funciona sem?</td></tr>
+        <tr><td><strong>Could</strong></td><td class="neutro">poderia ter</td><td class="neutro">dá para incluir se sobrar tempo?</td></tr>
+        <tr><td><strong>Won't</strong></td><td class="neutro">não terá, desta vez</td><td class="neutro">o grupo decidiu deixar para depois?</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Neste simulado, vamos construir só os Must. Registrar os Won't ajuda o grupo a explicar o que ficou de fora e por quê.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 6 · EXEMPLO MOSCOW -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Exemplo do professor · o escritório do Tarefa Certa</p>
+    <h2>O MoSCoW do escritório</h2>
+    <div class="cartoes n4">
+      <div class="cartao"><span class="t">Must</span><span class="d">Registrar o pedido com prazo. Ver os pedidos atrasados.</span></div>
+      <div class="cartao"><span class="t">Should</span><span class="d">Aviso quando o prazo está perto.</span></div>
+      <div class="cartao"><span class="t">Could</span><span class="d">A IA sugerindo as etapas de cada pedido.</span></div>
+      <div class="cartao"><span class="t">Won't</span><span class="d">Login, app no celular e ligação com o WhatsApp.</span></div>
+    </div>
+    <p class="dica">Neste exemplo, a sugestão com IA pode esperar. Primeiro, precisamos testar o registro dos pedidos e a consulta dos atrasados.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 7 · MÃO NA MASSA MOSCOW -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · em grupo · 15 minutos</p>
+    <h2>Fazer o MoSCoW do grupo</h2>
+    <ol class="passos">
+      <li>Listar no quadro as funções que o grupo pensou em construir.</li>
+      <li>Classificar cada uma em Must, Should, Could ou Won't, usando as perguntas da tabela.</li>
+      <li>Escolher no máximo três Must para esta versão.</li>
+      <li>Conferir que cada Must responde a algo que apareceu nas entrevistas da entrega 2.</li>
+      <li>Fotografar o quadro para incluir na entrega 3.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 8 · LEAN CANVAS 1 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito · Lean Canvas, parte 1</p>
+    <h2>O modelo de negócio numa página</h2>
+    <table>
+      <thead><tr><th>Bloco</th><th>Responde</th><th>Vem de</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 Problema</strong></td><td class="neutro">quais os principais problemas?</td><td class="neutro">E1 e E2</td></tr>
+        <tr><td><strong>2 Segmento de clientes</strong></td><td class="neutro">quem passa por esses problemas?</td><td class="neutro">E1 e E2</td></tr>
+        <tr><td><strong>3 Proposta única de valor</strong></td><td class="neutro">por que escolher o produto, em uma frase?</td><td class="neutro">o grupo</td></tr>
+        <tr><td><strong>4 Solução</strong></td><td class="neutro">como vamos resolver os problemas?</td><td class="neutro">os Must</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Começar pelo que apareceu nas entrevistas. Depois, conferir se os Must atendem a esses problemas.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 9 · LEAN CANVAS 2 -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Conceito · Lean Canvas, parte 2</p>
+    <h2>Como manter o produto funcionando?</h2>
+    <table>
+      <thead><tr><th>Bloco</th><th>Responde</th></tr></thead>
+      <tbody>
+        <tr><td><strong>5 Canais</strong></td><td class="neutro">como a pessoa fica sabendo e começa a usar?</td></tr>
+        <tr><td><strong>6 Fontes de receita</strong></td><td class="neutro">quem paga, e de que jeito?</td></tr>
+        <tr><td><strong>7 Estrutura de custos</strong></td><td class="neutro">o que custa manter o produto no ar?</td></tr>
+        <tr><td><strong>8 Métricas-chave</strong></td><td class="neutro">que número mostra que está funcionando?</td></tr>
+        <tr><td><strong>9 Vantagem injusta</strong></td><td class="neutro">o que é difícil de copiar?</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 10 · CANVAS PREENCHIDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Exemplo do professor · o escritório do Tarefa Certa</p>
+    <h2>O Lean Canvas preenchido</h2>
+    <table>
+      <tbody>
+        <tr><td><strong>1 Problema</strong><br>Pedido sem dono. Prazo que passa sem aviso.</td><td><strong>2 Segmento</strong><br>Escritórios de 3 a 10 pessoas.</td><td class="neutro"><strong>3 Proposta única</strong><br>Todo pedido com dono e prazo, num lugar só.</td></tr>
+        <tr><td><strong>4 Solução</strong><br>Registrar o pedido com prazo. Ver os atrasados.</td><td><strong>5 Canais</strong><br>Indicação entre escritórios. ?</td><td class="neutro"><strong>6 Receita</strong><br>Assinatura mensal por escritório. ?</td></tr>
+        <tr><td><strong>7 Custos</strong><br>Hospedagem, banco e suporte. ?</td><td><strong>8 Métricas</strong><br>Pedidos atrasados por semana.</td><td class="neutro"><strong>9 Vantagem injusta</strong><br>Ainda não temos.</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">O <code>?</code> marca o que ainda é suposição. A solução tem só os dois Must do MoSCoW.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 11 · CANVAS COM IA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · em grupo · 25 minutos</p>
+    <h2>Montar o Lean Canvas com a IA, bloco a bloco</h2>
+    <ol class="passos">
+      <li>Colar o prompt no assistente, com o briefing, as entregas 1 e 2 e o MoSCoW do grupo.</li>
+      <li>Ler cada bloco que a IA propõe e conferir de onde ela tirou cada linha.</li>
+      <li>Responder <code>ok</code> ou corrigir antes de a IA passar ao próximo bloco.</li>
+      <li>No fim, copiar o canvas completo e a lista de suposições para a entrega 3.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc6-aula-03-canvas.md">copiar o prompt do Lean Canvas</button>
+    </div>
+    <p class="dica">Se uma informação não estiver no material do grupo, marcar com <code>?</code>. Ela ainda precisa ser confirmada.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 12 · FERRAMENTAS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Prototipação rápida</p>
+    <h2>Figma Make ou Lovable?</h2>
+    <table>
+      <thead><tr><th></th><th>Figma Make</th><th>Lovable</th></tr></thead>
+      <tbody>
+        <tr><td><strong>O que faz</strong></td><td class="neutro">transforma um pedido em texto num protótipo interativo, dentro do Figma</td><td class="neutro">gera um app web a partir de um pedido em texto, e publica um link</td></tr>
+        <tr><td><strong>Bom para</strong></td><td class="neutro">mostrar o fluxo e o visual das telas</td><td class="neutro">um MVP que funciona e o outro grupo testa pelo link</td></tr>
+        <tr><td><strong>Plano grátis</strong></td><td class="neutro">limite diário e mensal de créditos de IA</td><td class="neutro">5 créditos de construção por dia</td></tr>
+      </tbody>
+    </table>
+    <p class="dica">Preparar o pedido antes de usar os créditos. Combinar no grupo quem vai usar a própria conta em cada etapa.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 13 · EXEMPLO DE PEDIDO -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Exemplo do professor · o pedido do MVP</p>
+    <h2>O que escrever no pedido à IA</h2>
+    <div class="codigo compacto">
+      <div class="arquivo">exemplo do professor · pedido com base no MoSCoW e no canvas</div>
+      <pre>Quero construir uma primeira versão para testar com pessoas.
+O problema: pedidos chegam por mensagem, ninguém sabe quem pegou,
+e o prazo passa sem aviso.
+Quem usa: a equipe de um escritório com 3 a 10 pessoas.
+O MVP tem só:
+1. registrar um pedido com responsável e prazo;
+2. ver os pedidos atrasados.
+Fluxo: abrir a lista, cadastrar um pedido e vê-lo atrasado depois do prazo.
+Não construir agora: login, app de celular e ligação com o WhatsApp.
+Telas simples, em português, com dados fictícios já preenchidos.</pre>
+    </div>
+    </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 14 · O MVP COM IA -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · em grupo · 50 minutos</p>
+    <h2>Construir o MVP com IA</h2>
+    <ol class="passos">
+      <li>Preencher o molde do pedido com os Must, o fluxo principal e os Won't.</li>
+      <li>Colar no Figma Make, no Lovable ou no assistente que o grupo já usa.</li>
+      <li>Percorrer o fluxo principal como se fosse a pessoa do canvas.</li>
+      <li>Corrigir com pedidos pequenos, um de cada vez.</li>
+      <li>Publicar e conferir que o link abre num celular de outra pessoa.</li>
+    </ol>
+    <div class="acoes">
+      <button class="btn" data-copiar="../prompts/uc6-aula-03-mvp.md">copiar o molde do pedido do MVP</button>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 15 · CUIDADOS -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Antes de pedir mais uma tela</p>
+    <h2>Conferir o que a IA construiu</h2>
+    <div class="cartoes n3">
+      <div class="cartao"><span class="t">Funções</span><span class="d">Conferir se a IA fez os Must. Pedir para remover o que o grupo deixou como Won't.</span></div>
+      <div class="cartao"><span class="t">Dados</span><span class="d">Só dados fictícios. Nada de nome, telefone ou foto de pessoa real.</span></div>
+      <div class="cartao"><span class="t">Fluxo</span><span class="d">Testar os botões e percorrer a tarefa principal até o resultado.</span></div>
+    </div>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 16 · O TESTE -->
+<section class="slide">
+  <div class="corpo">
+    <p class="eyebrow">Mão na massa · troca entre os grupos · 20 minutos</p>
+    <h2>Testar o MVP com o outro grupo</h2>
+    <ol class="passos">
+      <li>Dar uma tarefa curta, como "registrar um pedido com prazo", sem explicar as telas.</li>
+      <li>Observar em silêncio e anotar onde a pessoa trava ou pergunta.</li>
+      <li>Perguntar ao final o que a pessoa esperava ver e o que faltou.</li>
+      <li>Trocar os papéis: agora o seu grupo testa o MVP do outro.</li>
+      <li>Escrever o que o grupo vai mudar por causa do teste.</li>
+    </ol>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 17 · ENTREGA 3 -->
+<section class="slide exercicio">
+  <div class="corpo">
+    <p class="eyebrow">Entrega 3 do simulado · no Teams até 19h25 de 26/11</p>
+    <h2>Modelo de negócio e MVP</h2>
+    <div class="tarefas">
+      <div class="tarefa"><span class="n">1</span><span class="txt">O MoSCoW, com no máximo três Must e os Won't escritos.</span></div>
+      <div class="tarefa"><span class="n">2</span><span class="txt">O Lean Canvas com os nove blocos.</span></div>
+      <div class="tarefa"><span class="n">3</span><span class="txt">O link do MVP, ou os prints do fluxo principal.</span></div>
+      <div class="tarefa"><span class="n">4</span><span class="txt">O feedback do teste com o outro grupo e o que vai mudar.</span></div>
+    </div>
+    <p class="dica">Em PDF, com o nome <code>Time T1 - Entrega E3</code> ou <code>Time T2 - Entrega E3</code>.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+<!-- 18 · RECAPITULAÇÃO -->
+<section class="slide escuro">
+  <div class="corpo">
+    <p class="eyebrow">Recapitulando</p>
+    <h2>Antes de encerrar</h2>
+    <ul class="recap">
+      <li>Conferir se o MVP permite completar a tarefa principal.</li>
+      <li>Guardar o MoSCoW com os Must e os Won't definidos pelo grupo.</li>
+      <li>Revisar os nove blocos do canvas e marcar as suposições com ?.</li>
+      <li>Registrar o que aconteceu no teste e o que precisa mudar.</li>
+      <li>Enviar a entrega 3 no Teams até 19h25 de 26/11.</li>
+    </ul>
+    <p class="proximo">Em 26/11, no auditório, o pitch de 3 minutos. Cada um apresenta a solução do grupo.</p>
+  </div>
+  <div class="rodape"></div>
+</section>
+
+</div>
+<nav class="barra" id="barra"></nav>
+<script src="../assets/js/aulas.js"></script>
+<script src="../assets/js/slides.js"></script>
+</body>
+</html>
